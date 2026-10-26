@@ -23,7 +23,7 @@
 | Backend/database | Định hướng ASP.NET Core Web API, .NET 10 LTS, SQL Server/EF Core, ưu tiên Modular Monolith; chưa cài đặt hoặc xác minh tương thích |
 | Kiểm thử ứng dụng | Chưa có runner hoặc bài kiểm thử |
 | OpenBA | Đã nhập và kiểm tra tính toàn vẹn, đường dẫn; chưa xác minh toàn bộ khả năng thực thi của 56 skill |
-| Đồng bộ GitHub | Chưa push các commit của công việc này; chưa merge vào nhánh mặc định |
+| Đồng bộ GitHub | Đã xác minh push checkpoint `5c08b92` lên `origin/work`; chưa merge vào `main`. Bản bàn giao này được lưu tiếp trên cùng nhánh |
 
 ## Công việc đang làm và bước tiếp theo
 

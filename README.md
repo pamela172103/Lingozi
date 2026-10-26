@@ -4,6 +4,8 @@ Dự án website học tiếng Anh, quản lý tài liệu sản phẩm, nội d
 
 ## Bắt đầu
 
+Trước mỗi phiên, đọc [trạng thái dự án](docs/project/STATUS.md) và [quy trình bàn giao](docs/project/README.md).
+
 1. Đọc [mục lục tài liệu](docs/README.md) để nắm quy trình xây sản phẩm.
 2. Dùng [hướng dẫn OpenBA](docs/guides/using-openba.md) khi viết tài liệu với AI.
 3. Đọc [quy trình đóng góp](CONTRIBUTING.md) trước khi tạo thay đổi.
@@ -22,7 +24,7 @@ Dự án website học tiếng Anh, quản lý tài liệu sản phẩm, nội d
 
 ## Trạng thái
 
-Đã thiết lập nền repository và tích hợp OpenBA. Chưa chọn framework, cơ sở dữ liệu hoặc nhà cung cấp dịch vụ; chưa có ứng dụng chạy được hay bộ kiểm thử ứng dụng.
+Trạng thái hiện tại, vướng mắc và bước tiếp theo được duy trì tại [docs/project/STATUS.md](docs/project/STATUS.md). Kết quả mỗi phiên nằm trong [nhật ký phiên](docs/project/sessions/README.md).
 
 Tài liệu dự án viết bằng tiếng Việt; tên file, thư mục và mã định danh dùng tiếng Anh. Không đưa secret, dữ liệu người học thật hoặc tệp âm thanh/video dung lượng lớn vào Git.
 

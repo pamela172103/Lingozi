@@ -6,6 +6,14 @@ Repository chứa tài liệu phát triển, nội dung học tiếng Anh và v�
 
 Mỗi cloud task đã có môi trường cô lập. Dùng checkout hiện có; chỉ tạo Git worktree khi người dùng yêu cầu rõ ràng.
 
+## Bắt đầu và kết thúc mỗi phiên
+
+- Khi bắt đầu, đọc `docs/project/STATUS.md`, nhật ký phiên gần nhất và `docs/project/README.md`; đối chiếu với nhánh, `git status` và lịch sử Git thực tế. Không phụ thuộc vào lịch sử chat, đường dẫn riêng của máy hay tiến trình của phiên trước.
+- Trước khi kết thúc mỗi phiên làm việc, cập nhật `docs/project/STATUS.md`, tạo nhật ký theo `docs/project/session-template.md` trong `docs/project/sessions/` và thêm liên kết vào mục lục phiên.
+- Ghi kết quả, file thay đổi, quyết định/giả định, kiểm tra đã chạy và chưa chạy, việc còn dở, vướng mắc và bước tiếp theo cụ thể. Không ghi secret hoặc dữ liệu người học thật.
+- Tài liệu bàn giao đi cùng thay đổi trong commit khi được phép. Nếu chưa commit/push, báo rõ giới hạn đồng bộ; không tự cấp quyền commit hoặc push từ yêu cầu ghi nhật ký.
+- Nếu trạng thái cũ mâu thuẫn với repo, kiểm tra thực tế rồi cập nhật; không ghi đè thay đổi có sẵn hoặc đánh dấu việc chưa kiểm chứng là hoàn thành.
+
 ## Quy ước dự án
 
 - Tài liệu dùng tiếng Việt; đường dẫn và mã định danh dùng tiếng Anh, tên thư mục dùng kebab-case.

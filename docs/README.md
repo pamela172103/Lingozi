@@ -2,6 +2,7 @@
 
 | Thư mục | Mục đích |
 | --- | --- |
+| [project](project/README.md) | Trạng thái hiện tại, nhật ký từng phiên và cách tiếp tục dự án |
 | [product](product/README.md) | Tầm nhìn, phạm vi MVP, PRD, roadmap |
 | [research](research/README.md) | Nghiên cứu người học và đối thủ |
 | [features](features/README.md) | Hồ sơ yêu cầu, đặc tả, thiết kế và kiểm thử từng tính năng |

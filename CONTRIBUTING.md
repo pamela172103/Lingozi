@@ -24,3 +24,9 @@ Với tính năng mới, nối yêu cầu → user story/AC → triển khai →
 ## Quản lý tài nguyên
 
 Không commit `.env`, khóa riêng, dependency, cache, build output hoặc dữ liệu người dùng thật. `.env.example` chỉ chứa tên biến và giá trị mẫu an toàn. Tài nguyên học tập cần thông tin nguồn và quyền sử dụng; lưu media lớn trên dịch vụ phù hợp rồi tham chiếu bằng ID hoặc URL.
+
+## Bàn giao sau mỗi phiên
+
+Đọc [trạng thái dự án](docs/project/STATUS.md) khi bắt đầu. Trước khi kết thúc, cập nhật trạng thái, tạo [nhật ký phiên](docs/project/session-template.md) và thêm liên kết vào [mục lục phiên](docs/project/sessions/README.md). Ghi rõ việc còn dở và bước tiếp theo kể cả khi phiên bị chặn hoặc chỉ hoàn thành một phần.
+
+Khi được phép commit, đưa bàn giao vào cùng thay đổi. Commit cục bộ chưa đồng bộ sang máy khác; chỉ push khi được cho phép. Xem [quy trình tiếp tục trên môi trường khác](docs/project/README.md).

@@ -3,7 +3,7 @@
 - Ngày / múi giờ:
 - Mục tiêu do người dùng yêu cầu:
 - Nhánh và commit nền đã kiểm tra:
-- Trạng thái cuối phiên: hoàn thành / một phần / bị chặn.
+- Status: PASS / PARTIAL / BLOCKED / FAIL (chỉ xét phạm vi phiên).
 
 ## Kết quả và file liên quan
 
@@ -16,6 +16,14 @@ Ghi xác nhận của người dùng; phân biệt đề xuất và quyết đ�
 ## Kiểm tra
 
 Ghi lệnh hoặc cách kiểm tra, phạm vi và kết quả. Phân biệt pass, fail, skipped và chưa chạy; không ghi secret hoặc output nhạy cảm.
+
+## Database/API/UI
+
+Ghi thay đổi tương ứng hoặc không áp dụng.
+
+## Security checks
+
+Ghi kiểm tra đã thực hiện và giới hạn; không mặc định đã kiểm tra bảo mật ứng dụng.
 
 ## Việc còn lại và vướng mắc
 

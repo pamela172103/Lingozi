@@ -4,5 +4,7 @@ Mỗi phiên dùng một file `YYYY-MM-DD-NN-short-topic.md`, theo [mẫu](../se
 
 - [2026-10-26 · 01 · Nền repo và OpenBA](2026-10-26-01-repository-foundation.md).
 - [2026-10-26 · 02 · Trạng thái và bàn giao](2026-10-26-02-project-continuity.md).
+- [2026-10-26 · 03 · Quy tắc Codex và định hướng stack](2026-10-26-03-codex-working-rules.md).
+- [2026-10-26 · 04 · Checkpoint Git](2026-10-26-04-git-checkpoint.md).
 
 Thêm liên kết nhật ký mới vào danh sách này sau mỗi phiên.

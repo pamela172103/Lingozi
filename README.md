@@ -9,7 +9,7 @@ Trước mỗi phiên, đọc [trạng thái dự án](docs/project/STATUS.md) v
 1. Đọc [mục lục tài liệu](docs/README.md) để nắm quy trình xây sản phẩm.
 2. Dùng [hướng dẫn OpenBA](docs/guides/using-openba.md) khi viết tài liệu với AI.
 3. Đọc [quy trình đóng góp](CONTRIBUTING.md) trước khi tạo thay đổi.
-4. Chọn công nghệ trước khi khởi tạo ứng dụng trong [apps/web](apps/web/README.md).
+4. Đọc [định hướng kiến trúc](docs/architecture/README.md), xác minh phiên bản và phạm vi MVP trước khi khởi tạo [website](apps/web/README.md).
 
 ## Cấu trúc
 

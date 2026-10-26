@@ -7,4 +7,6 @@ Mỗi phiên dùng một file `YYYY-MM-DD-NN-short-topic.md`, theo [mẫu](../se
 - [2026-10-26 · 03 · Quy tắc Codex và định hướng stack](2026-10-26-03-codex-working-rules.md).
 - [2026-10-26 · 04 · Checkpoint Git](2026-10-26-04-git-checkpoint.md).
 
+- [2026-10-26 · 05 · Gộp work vào main](2026-10-26-05-merge-work-main.md).
+
 Thêm liên kết nhật ký mới vào danh sách này sau mỗi phiên.

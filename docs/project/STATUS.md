@@ -2,8 +2,8 @@
 
 - Cập nhật: 2026-10-26.
 - Giai đoạn: chuẩn bị nền dự án và quy trình tài liệu.
-- Phiên gần nhất: [Lưu và đồng bộ checkpoint Git](sessions/2026-10-26-04-git-checkpoint.md).
-- Commit nền đã kiểm tra: `58bc041` trên nhánh `work`. Các cập nhật quy tắc và bàn giao được lưu cùng checkpoint phiên 04; tra commit thực tế bằng `git log -- docs/project/`.
+- Phiên gần nhất: [Gộp work vào main](sessions/2026-10-26-05-merge-work-main.md).
+- Đã đọc và gộp 4 commit từ `origin/work` vào `main` theo fast-forward, tới `61514e0`. Bàn giao phiên 05 được lưu cùng commit tài liệu tiếp theo; tra bằng `git log -- docs/project/`.
 
 ## Đã hoàn thành
 
@@ -23,7 +23,7 @@
 | Backend/database | Định hướng ASP.NET Core Web API, .NET 10 LTS, SQL Server/EF Core, ưu tiên Modular Monolith; chưa cài đặt hoặc xác minh tương thích |
 | Kiểm thử ứng dụng | Chưa có runner hoặc bài kiểm thử |
 | OpenBA | Đã nhập và kiểm tra tính toàn vẹn, đường dẫn; chưa xác minh toàn bộ khả năng thực thi của 56 skill |
-| Đồng bộ GitHub | Đã xác minh push checkpoint `5c08b92` lên `origin/work`; chưa merge vào `main`. Bản bàn giao này được lưu tiếp trên cùng nhánh |
+| Đồng bộ GitHub | Đã gộp `origin/work` (`61514e0`) vào `main` cục bộ; phiên 05 sẽ push cùng bàn giao và đối chiếu GitHub sau push |
 
 ## Công việc đang làm và bước tiếp theo
 
@@ -45,7 +45,7 @@ Không có công việc triển khai đang dở. Thứ tự dưới đây là đ
 ## Bằng chứng kiểm tra
 
 - Phiên nền repo: 413 file nhập khớp từng byte với ZIP, 56 symlink hợp lệ, liên kết tài liệu và quy tắc ignore đã kiểm tra; commit `9feddba`.
-- Phiên hiện tại: kiểm tra liên kết Markdown của tài liệu dự án và whitespace của thay đổi tài liệu. Xem nhật ký phiên gần nhất để biết phạm vi.
+- Phiên 05: xác minh lịch sử fast-forward, 56 symlink và liên kết Markdown nội bộ. Whitespace tài liệu Lingozi đạt; bộ OpenBA nhập sẵn có trailing whitespace, giữ nguyên nguồn.
 - Không có build/test ứng dụng để chạy; không coi đây là kiểm thử đã pass.
 
 ## Cách tiếp tục

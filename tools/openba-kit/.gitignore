@@ -1,0 +1,5 @@
+/test
+/test/**
+/scripts/**
+!/scripts/render_diagrams.py
+.DS_Store

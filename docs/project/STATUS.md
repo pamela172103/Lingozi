@@ -1,8 +1,8 @@
 # Trạng thái dự án Lingozi
 
-- Cập nhật: 2026-10-26.
+- Cập nhật: 2026-11-08.
 - Giai đoạn: chuẩn bị nền dự án và quy trình tài liệu.
-- Phiên gần nhất: [Gộp work vào main](sessions/2026-10-26-05-merge-work-main.md).
+- Phiên gần nhất: [Thêm tổng quan sản phẩm](sessions/2026-11-08-01-product-overview.md).
 - Đã đọc và gộp 4 commit từ `origin/work` vào `main` theo fast-forward, tới `61514e0`. Bàn giao phiên 05 được lưu cùng commit tài liệu tiếp theo; tra bằng `git log -- docs/project/`.
 
 ## Đã hoàn thành
@@ -17,7 +17,7 @@
 
 | Phần | Trạng thái thực tế |
 | --- | --- |
-| Tài liệu sản phẩm | Có cấu trúc; chưa có PRD hoặc phạm vi MVP được duyệt |
+| Tài liệu sản phẩm | Có tổng quan đã duyệt (`docs/product/overview.md`); chưa có PRD hoặc phạm vi MVP được duyệt; thiếu file brainstorm và discovery mà tổng quan liên kết tới |
 | Nội dung học | Có cấu trúc; chưa có giáo trình, bài học hoặc bài tập |
 | Website | Định hướng Next.js App Router/React/TypeScript strict; chưa khởi tạo ứng dụng |
 | Backend/database | Định hướng ASP.NET Core Web API, .NET 10 LTS, SQL Server/EF Core, ưu tiên Modular Monolith; chưa cài đặt hoặc xác minh tương thích |
@@ -31,7 +31,8 @@ Không có công việc triển khai đang dở. Thứ tự dưới đây là đ
 
 | ID | Trạng thái | Công việc | Đầu ra / điều kiện hoàn thành |
 | --- | --- | --- | --- |
-| PLAN-01 | todo | Làm rõ người học mục tiêu và mục tiêu học tiếng Anh | Bối cảnh, nhu cầu và giả định được ghi trong `docs/product/` |
+| PLAN-01 | in-progress | Làm rõ người học mục tiêu và mục tiêu học tiếng Anh | Bối cảnh, nhu cầu và giả định được ghi trong `docs/product/` |
+| DOC-01 | todo | Bổ sung brainstorm và discovery được tổng quan liên kết | `docs/product/brainstorms/personal-english-knowledge.md`, `docs/product/03-discovery-report.md` từ nguồn của chủ dự án |
 | PLAN-02 | todo | Viết PRD và chốt phạm vi MVP | `docs/product/prd.md`, `docs/product/mvp-scope.md`, có xác nhận phạm vi |
 | PLAN-03 | todo | Xác minh phiên bản/tương thích và thiết kế chi tiết theo stack người dùng cung cấp | Bằng chứng kiểm tra và quyết định tại `docs/decisions/`; không tự thay đổi stack |
 | PLAN-04 | todo | Đặc tả tính năng đầu tiên rồi khởi tạo web | Hồ sơ trong `docs/features/`, ứng dụng và hướng dẫn chạy đã kiểm chứng |
@@ -43,6 +44,8 @@ Không có công việc triển khai đang dở. Thứ tự dưới đây là đ
 - Chưa có yêu cầu credential ứng dụng được xác định; không cần xin secret ở giai đoạn này.
 
 ## Bằng chứng kiểm tra
+
+- Phiên 2026-11-08-01: file tổng quan khớp từng byte với bản người dùng gửi; liên kết `../project/STATUS.md` hợp lệ, hai liên kết brainstorm/discovery chưa có đích.
 
 - Phiên nền repo: 413 file nhập khớp từng byte với ZIP, 56 symlink hợp lệ, liên kết tài liệu và quy tắc ignore đã kiểm tra; commit `9feddba`.
 - Phiên 05: xác minh lịch sử fast-forward, 56 symlink và liên kết Markdown nội bộ. Whitespace tài liệu Lingozi đạt; bộ OpenBA nhập sẵn có trailing whitespace, giữ nguyên nguồn.

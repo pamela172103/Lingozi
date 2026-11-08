@@ -19,5 +19,6 @@ Mỗi phiên dùng một file `YYYY-MM-DD-NN-short-topic.md`, theo [mẫu](../se
 - [2026-11-08 · 09 · Vòng 0: walking skeleton và CI](2026-11-08-09-walking-skeleton.md).
 - [2026-11-08 · 10 · Thêm đăng nhập Facebook](2026-11-08-10-facebook-login.md).
 - [2026-11-08 · 11 · Vòng 1: thiết kế FEAT-01 và FEAT-02](2026-11-08-11-round-1-design.md).
+- [2026-11-08 · 12 · FEAT-02: chọn loại, phiên âm IPA, gợi ý nghĩa](2026-11-08-12-knowledge-type-forms.md).
 
 Thêm liên kết nhật ký mới vào danh sách này sau mỗi phiên.

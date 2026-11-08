@@ -24,6 +24,7 @@
 | 10 | Cách phát triển | Agile theo vòng 2 tuần; mỗi vòng thiết kế → phát triển → demo một vài tính năng | Chủ dự án, 2026-11-08 |
 | 11 | Thiết bị ưu tiên | **Desktop-first**, responsive xuống tablet và phone | Chủ dự án, 2026-11-08 |
 | 12 | Đăng nhập MVP | **Email + mật khẩu**, **Google** và **Facebook** (Facebook bổ sung sau, cùng ngày) | Chủ dự án, 2026-11-08 |
+| 14 | Form nhập theo loại | Chọn loại trước, mỗi loại chỉ bắt buộc một trường; nghĩa gợi ý và không bắt buộc; từ vựng có phiên âm IPA tự điền, người dùng sửa hoặc thêm được | Chủ dự án, 2026-11-08 |
 | 13 | Theme MVP | Default + **Coquette** (`Q-09`) | Chủ dự án, 2026-11-08 |
 
 ## 3. Câu hỏi còn mở
@@ -33,7 +34,7 @@ Mỗi câu hỏi gắn với vòng cần câu trả lời. Phương án mặc đ
 | ID | Câu hỏi | Cần trước | Phương án mặc định đề xuất |
 | --- | --- | --- | --- |
 | `Q-01` | Nhóm tuổi và trình độ tiếng Anh của người dùng mục tiêu? | Vòng 0 (PRD) | Người lớn tự học, trình độ từ sơ cấp trở lên, có thói quen tiêu thụ nội dung tiếng Anh |
-| `Q-02` | Nội dung không phải từ vựng (cấu trúc, mẫu câu, trích dẫn) thể hiện "từ và nghĩa" thế nào? | Vòng 1 | Một form chung: trường "nội dung tiếng Anh" và "nghĩa/giải thích", cộng trường "loại" để phân biệt |
+| `Q-02` | Nội dung không phải từ vựng thể hiện "từ và nghĩa" thế nào? | — | **Đã chốt** (chủ dự án, 2026-11-08, quyết định 14): người dùng chọn loại trước; mỗi loại có một trường bắt buộc ("Từ" cho từ vựng, "Điểm ngữ pháp" cho ngữ pháp, "Nội dung" cho các loại còn lại); nghĩa không bắt buộc, được gợi ý |
 | `Q-03` | Tiêu chí coi là "tương tự" khi gợi ý mục trùng? | Vòng 1 | Trùng nội dung tiếng Anh sau khi chuẩn hóa hoa/thường và khoảng trắng |
 | `Q-04` | Email Google/Facebook trùng với tài khoản email/mật khẩu đã có thì xử lý ra sao? | — | **Đã chốt** trong ADR 0004: Google chỉ liên kết khi email ở cả hai phía đã xác minh; Facebook không tự liên kết, người dùng đăng nhập tài khoản cũ rồi liên kết |
 | `Q-05` | Xóa bộ sưu tập thì các mục bên trong ra sao? Xóa mục có phục hồi được không? | Vòng 2 | Xóa bộ sưu tập chỉ gỡ liên kết, không xóa mục. Xóa mục cần xác nhận và không phục hồi ở MVP |

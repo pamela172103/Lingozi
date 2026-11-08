@@ -50,3 +50,38 @@ sequenceDiagram
         W-->>U: /library/items/{id} + 'Đã lưu thay đổi'
     end
 ```
+
+## 3. Chọn loại, form theo loại và gợi ý (cập nhật 2026-11-08)
+
+```mermaid
+flowchart TD
+    A[Bấm Lưu kiến thức] --> K[Lưới 9 loại<br/>chưa có ô nhập]
+    K --> T{Chọn loại}
+    T -- Từ vựng --> W[Form: Từ* · Phiên âm · Nghĩa · Ví dụ · Ghi chú · Nguồn]
+    T -- Ngữ pháp --> G[Form: Điểm ngữ pháp* · Nghĩa · Ví dụ · Ghi chú · Nguồn]
+    T -- Loại khác --> O[Form: Nội dung* · Nghĩa · Ví dụ · Ghi chú · Nguồn]
+    W --> WT{Rời ô Từ hoặc 500 ms}
+    WT --> SG[GET /suggestions?term&kind=word]
+    SG --> IPA{ipa có giá trị?}
+    IPA -- Có --> PF[Điền phiên âm, nhãn 'Tự động từ điển']
+    IPA -- Không --> PE[Ô phiên âm trống<br/>hoặc 'Không lấy được phiên âm tự động']
+    G --> GT{Rời ô Điểm ngữ pháp}
+    O --> OT{Rời ô Nội dung}
+    GT --> SG2[GET /suggestions?term&kind=grammar]
+    OT --> SG3[GET /suggestions?term&kind=...]
+    SG2 --> M[Chip gợi ý nghĩa 'Từ mục của bạn' / 'Từ từ điển']
+    SG3 --> M
+    PF --> M
+    PE --> M
+    M -- Bấm chip --> F[Điền ô Nghĩa, vẫn sửa được]
+    M -- Không bấm --> S[Ô nghĩa trống, vẫn lưu được]
+    F --> SAVE[POST /items]
+    S --> SAVE
+    SAVE --> R{Kết quả}
+    R -- 201/200 --> OK[Chi tiết + 'Đã lưu']
+    R -- 400-01/02 --> E[Lỗi dưới ô]
+```
+
+- Gợi ý chỉ gọi khi có term; với loại khác từ vựng, không gọi nguồn phiên âm (AC-08 US-LIB-08).
+- Đổi loại khi đã nhập dữ liệu: giữ các trường chung (nội dung, nghĩa, ví dụ, ghi chú, nguồn); phiên âm bị xóa nếu loại mới không phải từ vựng, có hộp xác nhận trước khi xóa.
+

@@ -1,6 +1,6 @@
 # Wireframe — FEAT-02 Mục kiến thức
 
-- Cập nhật: 2026-11-08. Trạng thái: **chờ duyệt**.
+- Cập nhật: 2026-11-08 (v0.2). Trạng thái: **chờ duyệt**.
 - Figma đang BLOCKED (`DES-01`). Wireframe ASCII này là căn cứ cho DoR. Thiết kế chính ở 1440 px, nằm trong app shell (sidebar 240 px + thanh trên).
 
 ## W-LIB-01 Danh sách thư viện (`/library`)
@@ -30,42 +30,63 @@
 
 `KnowledgeItemCard` là một link tới trang chi tiết. Term dùng `text.h3`, nghĩa dùng `text.body` có `line-clamp: 2`, loại hiển thị bằng `Badge`, ngày dùng `text.caption` trong thẻ `<time>`.
 
-## W-LIB-02 Form tạo/sửa (`/library/items/new`, `/library/items/{id}/edit`)
+## W-LIB-02a Chọn loại (`/library/items/new`, bước 1)
+
+```text
+┌ Sidebar ┬──────────────────────────────────────────────────────────────────┐
+│         │ ← Thư viện    Lưu kiến thức mới                                 h1 │
+│         │ Bạn muốn lưu loại nào?                                           h2 │
+│         │ ┌ Từ vựng ─────┐ ┌ Ngữ pháp ────┐ ┌ Cụm từ ───────┐             │
+│         │ │ word, giải   │ │ grammar, mẫu │ │ phrase       │             │
+│         │ │ nghĩa, IPA   │ │ câu, cấu trúc│ │              │             │
+│         │ └──────────────┘ └──────────────┘ └──────────────┘             │
+│         │ ┌ Cụm động từ ┐ ┌ Thành ngữ ──┐ ┌ Cấu trúc câu ┐ ┌ Mẫu giao tiếp┐  │
+│         │ ┌ Câu/đoạn trích ┐ ┌ Ghi chú cách dùng ┐                       │
+└─────────┴──────────────────────────────────────────────────────────────────┘
+```
+
+- Lưới thẻ, mỗi thẻ là một nút (`role="radio"` trong `radiogroup`, dùng phím mũi tên để chọn). Mỗi thẻ có tên loại và một dòng mô tả ngắn.
+- Chưa chọn thì không có ô nhập nào; nút "Tiếp tục" disabled.
+- Sau khi chọn, bấm "Tiếp tục" hoặc Enter để sang form. Nút "Đổi loại" có ở đầu form.
+
+## W-LIB-02 Form theo loại (`/library/items/new` sau khi chọn loại, `/library/items/{id}/edit`)
 
 ```text
 ┌ Sidebar ┬───────────────────────────────────────────────────────────────────────┐
-│         │ ← Thư viện    Lưu kiến thức mới (hoặc: Sửa "give up")             h1 │
+│         │ ← Thư viện   Từ vựng · [Đổi loại]                                  h1 │
 │         │ ┌─ cột trái ──────────────────────┐ ┌─ cột phải ──────────────────┐ │
-│         │ │ Nội dung tiếng Anh *            │ │ Ví dụ (0/20)                │ │
+│         │ │ Từ *                            │ │ Ví dụ (0/20)                │ │
 │         │ │ [give up_______________________]│ │ ┌ Ví dụ 1 ───────────────┐  │ │
-│         │ │ Loại *                          │ │ │ Câu ví dụ *            │  │ │
-│         │ │ [Cụm động từ               ▾]   │ │ │ [Don't give up.______] │  │ │
-│         │ │ Nghĩa / giải thích *            │ │ │ Bản dịch               │  │ │
-│         │ │ [từ bỏ_________________________]│ │ │ [Đừng bỏ cuộc._______] │  │ │
-│         │ │ [______________________________]│ │ │            [🗑 Xóa ví dụ]│  │ │
-│         │ └─────────────────────────────────┘ │ └────────────────────────┘  │ │
-│         │                                     │ [ + Thêm ví dụ ]            │ │
-│         │                                     │ Ghi chú cá nhân             │ │
-│         │                                     │ [__________________________]│ │
-│         │                                     │ Gặp ở đâu (nguồn)           │ │
-│         │                                     │ [Friends S01E01___________] │ │
+│         │ │ Phiên âm                        │ │ │ Câu ví dụ               │  │ │
+│         │ │ [/ɡɪv ʌp/_____________________] │ │ │ [Don't give up._______] │  │ │
+│         │ │ ✓ Tự động từ điển  [Sửa]        │ │ │ Bản dịch                │  │ │
+│         │ │ Nghĩa (không bắt buộc)          │ │ │ [Đừng bỏ cuộc.________] │  │ │
+│         │ │ [từ bỏ_________________________]│ │ │            [🗑 Xóa ví dụ]│  │ │
+│         │ │ Gợi ý: (từ mục của bạn) từ bỏ   │ │ └────────────────────────┘  │ │
+│         │ │        (từ từ điển) bỏ cuộc     │ │ [ + Thêm ví dụ ]            │ │
+│         │ └─────────────────────────────────┘ │ Ghi chú cá nhân             │ │
+│         │                                     │ Nguồn                       │ │
 │         │                                     └─────────────────────────────┘ │
 │         │                                   [ Hủy ]   [ Lưu ] / [ Lưu thay đổi ]│
 └─────────┴───────────────────────────────────────────────────────────────────────┘
 ```
 
+Form của **Ngữ pháp** và các loại khác giống hệt, trừ:
+
+- Nhãn trường bắt buộc: "Điểm ngữ pháp" hoặc "Nội dung".
+- Không có ô Phiên âm và không gọi nguồn phiên âm.
+
 | Trạng thái | Hiển thị |
 | --- | --- |
-| Đang lưu | Nút Lưu có spinner, các ô bị khóa; `Hủy` vẫn dùng được |
-| Lỗi 400-01 | Lỗi dưới từng ô; `InlineAlert` tóm tắt có link tới từng ô lỗi |
-| Lỗi 409-01 (sửa) | `InlineAlert` (warning) "Mục này vừa được sửa ở nơi khác." + nút "Tải bản mới nhất". Nội dung đang nhập được giữ và hiển thị trong panel "Bản bạn đang sửa" |
-| Lỗi 422-01 | `InlineAlert` (danger) |
-| Lỗi mạng | `InlineAlert` + nút "Thử lại" (gửi lại cùng `clientRequestId`) |
-| Đạt 20 ví dụ | Nút "Thêm ví dụ" disabled, kèm chú thích "Tối đa 20 ví dụ" |
-| Có thay đổi chưa lưu | Rời trang thì hiện hộp thoại xác nhận của trình duyệt |
-| Panel "Nội dung bạn vừa nhập" (từ US-LIB-02 AC-02) | Khối `bg.subtle` phía trên form sửa, chỉ đọc, có nút "Đóng" |
-
-Đếm ký tự hiện dưới ô khi còn dưới 10% giới hạn, ví dụ "950/1000".
+| Phiên âm từ nguồn | Nhãn "✓ Tự động từ điển" kèm nút "Sửa" (nhãn đổi thành "Bạn đã chỉnh sửa" sau khi sửa) |
+| Phiên âm trống | Gợi ý "Chưa có phiên âm, bạn có thể tự nhập" |
+| Nguồn lỗi | Dòng "Không lấy được phiên âm tự động" (màu `text.muted`, không đỏ) |
+| Ô phiên âm sai ký tự | Lỗi dưới ô (ERR-LIB-400-02) |
+| Gợi ý nghĩa | Chip nhỏ dưới ô Nghĩa, nhãn nguồn bằng chữ; bấm để điền; không tự điền |
+| Không có gợi ý | Không hiện chip và không có thông báo |
+| Lỗi 400-01 (trường bắt buộc) | "Vui lòng nhập từ" / "Vui lòng nhập điểm ngữ pháp" / "Vui lòng nhập nội dung" dưới ô |
+| Đổi loại khi đã nhập | Hộp xác nhận nếu sẽ mất phiên âm; giữ các trường chung |
+| Đang lưu, 409-01, 422-01, lỗi mạng, rời trang | Như bản trước (giữ nguyên) |
 
 ## W-LIB-03 Dialog mục tương tự
 

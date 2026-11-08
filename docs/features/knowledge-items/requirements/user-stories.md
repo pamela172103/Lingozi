@@ -4,39 +4,64 @@
 - Mọi story yêu cầu người dùng đã đăng nhập và đã xác thực email (FEAT-01, BR-AUTH-003). Mã BR và ERR xem [srs.md](../srs/srs.md).
 - Câu đặt trong ngoặc kép là thông báo hiển thị cho người dùng. Câu chữ cuối cùng nằm trong `messages/vi.json`.
 
-## US-LIB-01 — Lưu một mục kiến thức
+## US-LIB-01 — Chọn loại và lưu mục kiến thức
 
-Là người tự học, tôi muốn lưu nhanh một từ hoặc cách diễn đạt kèm nghĩa vừa gặp, để không quên và tìm lại được.
+Là người tự học, tôi muốn chọn loại kiến thức trước (từ vựng, ngữ pháp, cụm từ…) và chỉ phải nhập đúng phần bắt buộc của loại đó, để lưu nhanh.
+
+Quy ước (cập nhật 2026-11-08): loại không có mặc định; mỗi loại chỉ có một trường bắt buộc; nghĩa không bắt buộc và được gợi ý (US-LIB-09).
 
 ```gherkin
-Scenario: AC-01 Lưu với thông tin tối thiểu
-  Given tôi đang ở Thư viện
-  When tôi chọn "Lưu kiến thức", nhập nội dung "give up", nghĩa "từ bỏ" và bấm "Lưu"
-  Then mục được lưu với loại mặc định "Từ vựng"
-  And tôi thấy trang chi tiết của mục cùng thông báo "Đã lưu"
+Scenario: AC-01 Chọn loại trước khi nhập
+  Given tôi mở "Lưu kiến thức"
+  Then tôi thấy lưới 9 loại: Từ vựng, Ngữ pháp, Cụm từ, Cụm động từ, Thành ngữ, Cấu trúc câu, Mẫu giao tiếp, Câu/đoạn trích, Ghi chú cách dùng
+  And chưa có ô nhập nào hiện ra cho tới khi tôi chọn một loại
 
-Scenario: AC-02 Lưu đầy đủ
-  When tôi nhập nội dung, nghĩa, chọn loại "Cụm động từ", thêm 2 ví dụ (một ví dụ có bản dịch), ghi chú và nguồn "Phim Friends S01E01"
-  Then mục và 2 ví dụ được lưu đúng thứ tự tôi nhập
+Scenario: AC-02 Từ vựng chỉ bắt buộc "Từ"
+  Given tôi chọn "Từ vựng"
+  When tôi nhập "Từ" là "give up", để trống nghĩa, rồi bấm "Lưu"
+  Then mục được lưu với loại "word" và nghĩa là null
+  And tôi thấy trang chi tiết với thông báo "Đã lưu"
 
-Scenario: AC-03 Thiếu trường bắt buộc
-  When tôi bấm "Lưu" khi nội dung hoặc nghĩa để trống, hoặc chỉ có khoảng trắng
-  Then mục không được lưu
-  And ô thiếu hiện "Vui lòng nhập nội dung tiếng Anh" hoặc "Vui lòng nhập nghĩa" (ERR-LIB-400-01), focus vào ô lỗi đầu tiên
+Scenario: AC-03 Ngữ pháp chỉ bắt buộc "Điểm ngữ pháp"
+  Given tôi chọn "Ngữ pháp"
+  When tôi để trống "Điểm ngữ pháp" và bấm "Lưu"
+  Then mục không được lưu và ô hiện "Vui lòng nhập điểm ngữ pháp" (ERR-LIB-400-01)
+  When tôi nhập "Present perfect" và để trống nghĩa rồi bấm "Lưu"
+  Then mục được lưu với loại "grammar"
 
-Scenario: AC-04 Biên độ dài và số ví dụ
-  When nội dung dài 1001 ký tự, hoặc tôi thêm ví dụ thứ 21
-  Then không lưu được, và hiện lỗi giới hạn cụ thể (BR-LIB-001, BR-LIB-004)
-  And nội dung dài đúng 1000 ký tự với 20 ví dụ thì lưu được
+Scenario: AC-04 Các loại khác dùng nhãn "Nội dung"
+  Given tôi chọn "Thành ngữ"
+  When tôi để trống "Nội dung" và bấm "Lưu"
+  Then mục không được lưu và ô hiện "Vui lòng nhập nội dung"
 
-Scenario: AC-05 Bấm Lưu hai lần hoặc mạng gửi lại
-  When cùng một yêu cầu tạo được gửi hai lần với cùng mã yêu cầu (clientRequestId)
-  Then chỉ có một mục được tạo, và lần gửi thứ hai nhận về chính mục đó (BR-LIB-008)
+Scenario: AC-05 Nghĩa không bắt buộc, khoảng trắng được coi là trống
+  Given tôi chọn "Cụm từ" và nhập nội dung "in a nutshell"
+  When tôi nhập nghĩa chỉ gồm khoảng trắng rồi bấm "Lưu"
+  Then mục được lưu và nghĩa được lưu là null
 
-Scenario: AC-06 Đạt giới hạn số mục
+Scenario: AC-06 Giới hạn độ dài
+  When tôi nhập nội dung dài 1001 ký tự, hoặc nghĩa dài 2001 ký tự
+  Then không lưu được và ô tương ứng hiện lỗi ERR-LIB-400-01
+  And nội dung dài đúng 1000 ký tự và nghĩa dài đúng 2000 ký tự thì lưu được
+
+Scenario: AC-07 Ví dụ không bắt buộc
+  Given tôi đã nhập đủ trường bắt buộc
+  When tôi không thêm ví dụ nào
+  Then mục vẫn được lưu
+  And khi thêm ví dụ thứ 21 thì hiện "Tối đa 20 ví dụ" (BR-LIB-004)
+
+Scenario: AC-08 Bấm Lưu hai lần hoặc mạng gửi lại
+  When cùng một yêu cầu tạo được gửi hai lần với cùng clientRequestId
+  Then chỉ có một mục được tạo (BR-LIB-008)
+
+Scenario: AC-09 Đạt giới hạn số mục
   Given tôi đã có 10.000 mục
   When tôi lưu thêm một mục
   Then không lưu được và thấy ERR-LIB-422-01
+
+Scenario: AC-10 API từ chối yêu cầu thiếu loại
+  When một client gửi POST không có "kind"
+  Then API trả 400 ERR-LIB-400-01 với lỗi ở trường "kind" và không tạo mục
 ```
 
 ## US-LIB-02 — Được gợi ý khi lưu mục tương tự
@@ -170,4 +195,83 @@ Scenario: AC-02 Mọi thao tác với ID của người khác
 Scenario: AC-03 Không tin UserId từ client
   When request tạo hoặc sửa gửi kèm trường userId của người khác
   Then trường đó bị bỏ qua; mục luôn thuộc người đang đăng nhập
+```
+
+## US-LIB-08 — Tự điền phiên âm IPA cho từ vựng
+
+Là người học từ vựng, tôi muốn có phiên âm IPA tự động, nhưng vẫn sửa được hoặc tự nhập nếu không có.
+
+Phụ thuộc: nguồn từ điển chưa được chọn (ADR 0007). Trạng thái hiện tại: **integration ready** với provider giả trong test; không ghi là hoạt động cho tới khi có nguồn thật.
+
+```gherkin
+Scenario: AC-01 Tự điền phiên âm
+  Given tôi chọn "Từ vựng" và nhập "give up"
+  When tôi rời ô "Từ" (hoặc sau 500 ms không gõ)
+  Then ô "Phiên âm" được điền "/ɡɪv ʌp/" với nhãn "Tự động từ điển"
+  And tôi có thể lưu mà không sửa gì
+
+Scenario: AC-02 Sửa phiên âm do máy điền
+  Given ô phiên âm đang có giá trị từ điển
+  When tôi sửa thành "/ɡɪv ʌp/ (ghi chú của tôi)" hoặc thay bằng giá trị khác rồi lưu
+  Then mục lưu IpaSource = 2 (người dùng) và nhãn chuyển thành "Bạn đã chỉnh sửa"
+
+Scenario: AC-03 Không có phiên âm từ nguồn
+  Given nguồn không có phiên âm cho "xyzzy"
+  When tôi nhập "xyzzy"
+  Then ô phiên âm trống với gợi ý "Chưa có phiên âm, bạn có thể tự nhập"
+  And tôi lưu được mục với Ipa là null
+
+Scenario: AC-04 Tự nhập phiên âm
+  Given ô phiên âm trống
+  When tôi nhập "/ˈzɪzli/" rồi lưu
+  Then mục lưu Ipa = "/ˈzɪzli/" và IpaSource = 2
+
+Scenario: AC-05 Phiên âm sai ký tự
+  When tôi nhập "<b>give</b>" vào ô phiên âm
+  Then không lưu được và thấy ERR-LIB-400-02 "Phiên âm chỉ được chứa ký tự IPA"
+
+Scenario: AC-06 Nguồn lỗi hoặc quá thời gian
+  Given nguồn không phản hồi trong 3 giây
+  When tôi nhập "give up"
+  Then form vẫn dùng được, ô phiên âm trống
+  And có dòng "Không lấy được phiên âm tự động" (BR-LIB-015), không hiện lỗi đỏ
+
+Scenario: AC-07 Xóa phiên âm
+  Given ô phiên âm có giá trị
+  When tôi xóa hết và lưu
+  Then mục lưu Ipa = null và IpaSource = null
+
+Scenario: AC-08 Không có ô phiên âm cho loại khác
+  When tôi chọn "Cụm từ" hoặc "Ngữ pháp"
+  Then không có ô phiên âm và không gọi nguồn phiên âm
+```
+
+## US-LIB-09 — Gợi ý nghĩa khi nhập
+
+Là người học, tôi muốn được gợi ý nghĩa để nhanh hơn, nhưng gợi ý không tự điền vào form.
+
+```gherkin
+Scenario: AC-01 Gợi ý từ mục của chính tôi
+  Given tôi đã lưu "give up" với nghĩa "từ bỏ"
+  When tôi nhập "give up" ở bất kỳ loại nào
+  Then ô nghĩa hiện gợi ý "từ bỏ" với nhãn "Từ mục của bạn"
+  And ô nghĩa vẫn trống cho tới khi tôi bấm gợi ý
+
+Scenario: AC-02 Gợi ý từ nguồn từ điển
+  Given nguồn trả về nghĩa "to stop trying" cho "give up"
+  When tôi nhập "give up"
+  Then gợi ý hiện với nhãn "Từ từ điển"
+
+Scenario: AC-03 Không gợi ý dữ liệu của người khác
+  Given người dùng B đã lưu "give up" với nghĩa "bỏ cuộc"
+  When tôi (người dùng A, chưa có mục nào) nhập "give up"
+  Then không có gợi ý "bỏ cuộc"
+
+Scenario: AC-04 Bấm gợi ý mới điền
+  When tôi bấm gợi ý "từ bỏ"
+  Then ô nghĩa được điền "từ bỏ" và tôi vẫn sửa được
+
+Scenario: AC-05 Không có gợi ý
+  When không có nguồn nào trả nghĩa cho từ tôi nhập
+  Then không hiện gợi ý, không có thông báo lỗi, và nghĩa vẫn không bắt buộc
 ```

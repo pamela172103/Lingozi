@@ -12,5 +12,6 @@ Nội dung gồm: trạng thái, ngày, bối cảnh, các phương án, quyết
 | [0004](0004-authentication.md) | Xác thực: ASP.NET Core Identity, cookie cùng site, Google, Facebook (bổ sung 2026-11-08) | Accepted 2026-11-08 |
 | [0005](0005-email-delivery.md) | Gửi email giao dịch | Accepted 2026-11-08; nhà cung cấp production chưa chọn |
 | [0006](0006-hosting-and-ci.md) | Hosting trên máy chủ riêng + SQL Server, môi trường, CI GitHub Actions | Accepted 2026-11-08; còn HOST-01–05 |
+| [0007](0007-pronunciation-and-meaning-suggestions.md) | Nguồn phiên âm IPA và gợi ý nghĩa | Proposed — chờ chọn nguồn |
 
 `Proposed` nghĩa là chờ chủ dự án duyệt; khi duyệt đổi thành `Accepted` kèm ngày.

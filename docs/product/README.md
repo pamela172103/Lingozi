@@ -7,3 +7,4 @@ Bắt đầu bằng việc làm rõ người học mục tiêu, mục tiêu họ
 ## Tài liệu hiện có
 
 - [Tổng quan website Lingozi](overview.md): định hướng sản phẩm đã được chủ dự án duyệt ngày 2026-10-26; chưa phải PRD hoặc phạm vi MVP.
+- [Lộ trình phát triển](roadmap.md): đề xuất hai quy trình Thiết kế và Phát triển, Now/Next/Later và các mốc; chờ duyệt.

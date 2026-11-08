@@ -2,7 +2,7 @@
 
 - Cập nhật: 2026-11-08.
 - Giai đoạn: chuẩn bị nền dự án và quy trình tài liệu.
-- Phiên gần nhất: [Thêm tổng quan sản phẩm](sessions/2026-11-08-01-product-overview.md).
+- Phiên gần nhất: [Lộ trình phát triển](sessions/2026-11-08-02-product-roadmap.md).
 - Đã đọc và gộp 4 commit từ `origin/work` vào `main` theo fast-forward, tới `61514e0`. Bàn giao phiên 05 được lưu cùng commit tài liệu tiếp theo; tra bằng `git log -- docs/project/`.
 
 ## Đã hoàn thành

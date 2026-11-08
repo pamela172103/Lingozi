@@ -17,5 +17,6 @@ Mỗi phiên dùng một file `YYYY-MM-DD-NN-short-topic.md`, theo [mẫu](../se
 - [2026-11-08 · 07 · Vòng 0: design system nền](2026-11-08-07-round-0-design-system.md).
 - [2026-11-08 · 08 · Cài .NET SDK và Docker cho phiên cloud](2026-11-08-08-dev-environment.md).
 - [2026-11-08 · 09 · Vòng 0: walking skeleton và CI](2026-11-08-09-walking-skeleton.md).
+- [2026-11-08 · 10 · Thêm đăng nhập Facebook](2026-11-08-10-facebook-login.md).
 
 Thêm liên kết nhật ký mới vào danh sách này sau mỗi phiên.

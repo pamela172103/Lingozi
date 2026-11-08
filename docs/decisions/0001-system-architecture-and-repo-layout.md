@@ -22,7 +22,7 @@ Chọn **phương án 1**.
 Trình duyệt ──HTTPS──▶ Next.js (apps/web) ──/api/* rewrite──▶ ASP.NET Core API (apps/api) ──▶ SQL Server
                                                                      │
                                                                      ├─▶ Dịch vụ email (ADR 0005)
-                                                                     └─▶ Google Identity (ADR 0004)
+                                                                     └─▶ Google, Facebook Login (ADR 0004)
 ```
 
 - Trình duyệt chỉ nói chuyện với một origin là web. Next.js chuyển tiếp (rewrite) `/api/*` sang API, để cookie đăng nhập là cookie cùng site (first-party) và không phải mở CORS (ADR 0004).

@@ -170,6 +170,7 @@ Mỗi component phải có đủ các trạng thái: default, hover, focus-visib
 | Nhóm | Component | Ghi chú bắt buộc |
 | --- | --- | --- |
 | Hành động | `Button` (primary, secondary, ghost, danger), `IconButton` | Cao 40 px (32 px cho kích thước nhỏ); có trạng thái loading khóa nút và giữ nguyên chiều rộng; `IconButton` luôn có `aria-label` |
+| Đăng nhập | `SocialSignInButton` (Google, Facebook) | Làm theo hướng dẫn thương hiệu chính thức của Google và Meta về logo, màu và nhãn ("Tiếp tục với …"); đặt cùng cỡ với nút chính; thứ tự cố định |
 | Nhập liệu | `TextField`, `TextArea`, `Select`, `Checkbox`, `FormField` (nhãn, gợi ý, lỗi) | Nhãn luôn hiển thị, không chỉ dùng placeholder; lỗi gắn với ô qua `aria-describedby`, hiện bằng chữ và icon; ô bắt buộc có đánh dấu bằng chữ |
 | Nội dung | `KnowledgeItemCard`, `Tag/Chip`, `Badge`, `EmptyState`, `Skeleton` | Card hiện Term (`text.term` hoặc `h3`), Meaning, loại, thẻ, thời gian; cả card bấm được nhưng các nút con vẫn focus riêng được |
 | Điều hướng | `Sidebar`, `TopBar`, `Tabs`, `Pagination`, `Breadcrumb` | Mục đang chọn dùng `aria-current`; `Tabs` theo mẫu ARIA tabs |

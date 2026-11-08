@@ -51,7 +51,7 @@ erDiagram
         nvarchar Email
         nvarchar NormalizedEmail UK
         bit EmailConfirmed
-        nvarchar PasswordHash "null nếu chỉ dùng Google"
+        nvarchar PasswordHash "null nếu chỉ dùng Google/Facebook"
         nvarchar SecurityStamp
         datetimeoffset LockoutEnd
         int AccessFailedCount
@@ -170,10 +170,10 @@ Các bảng Identity dùng schema mặc định của ASP.NET Core Identity, đ�
 | Tên trường | Cột | Kiểu | Độ dài | Null? | Khóa | Ràng buộc / mặc định | Diễn giải nghiệp vụ |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | Mã người dùng | `Id` | uniqueidentifier | — | Không | PK | Sequential GUID | Định danh dùng ở mọi module |
-| Email | `Email` | nvarchar | 256 | Không | — | Định dạng email, validate ở server | Email đăng nhập và nhận thư |
+| Email | `Email` | nvarchar | 256 | Không | — | Định dạng email, validate ở server | Email đăng nhập và nhận thư. Đăng nhập Facebook không trả email thì người dùng phải nhập (ADR 0004) |
 | Email chuẩn hóa | `NormalizedEmail` | nvarchar | 256 | Không | UK | Viết hoa theo Identity | Bảo đảm mỗi email chỉ có một tài khoản |
 | Đã xác thực email | `EmailConfirmed` | bit | — | Không | — | Mặc định 0 | Tài khoản mật khẩu phải là 1 mới dùng được thư viện (ADR 0004) |
-| Mật khẩu băm | `PasswordHash` | nvarchar | max | Có | — | `PasswordHasher` của Identity | Null với tài khoản chỉ đăng nhập Google |
+| Mật khẩu băm | `PasswordHash` | nvarchar | max | Có | — | `PasswordHasher` của Identity | Null với tài khoản chỉ đăng nhập Google hoặc Facebook |
 | Security stamp | `SecurityStamp` | nvarchar | 64 | Không | — | Đổi khi đổi mật khẩu hoặc đăng xuất mọi nơi | Vô hiệu hóa phiên cũ |
 | Concurrency stamp | `ConcurrencyStamp` | nvarchar | 64 | Không | — | Identity quản lý | Optimistic concurrency của Identity |
 | Khóa tới | `LockoutEnd` | datetimeoffset | — | Có | — | — | Hết khóa sau 15 phút (NFR-SEC-001) |
@@ -184,12 +184,12 @@ Các bảng Identity dùng schema mặc định của ASP.NET Core Identity, đ�
 
 Các cột Identity không dùng ở MVP (`PhoneNumber`, `TwoFactorEnabled`, …) được giữ mặc định, không có chức năng nào dùng tới.
 
-**`accounts.UserLogins`**: đăng nhập ngoài (Google).
+**`accounts.UserLogins`**: đăng nhập ngoài (Google, Facebook). Thêm Facebook không cần đổi schema.
 
 - PK: (`LoginProvider` nvarchar(128), `ProviderKey` nvarchar(128)).
 - `UserId` FK → `Users.Id`, cascade.
 - `ProviderDisplayName` nvarchar(128), null.
-- Một tài khoản Google chỉ gắn với một user.
+- Một tài khoản Google hoặc Facebook chỉ gắn với một user; một user có thể gắn cả hai.
 
 **`accounts.UserTokens`**: token của Identity (xác thực email, đặt lại mật khẩu dùng token có chữ ký nên không cần bảng riêng).
 

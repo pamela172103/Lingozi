@@ -1,6 +1,6 @@
-# ADR 0004 — Xác thực: ASP.NET Core Identity, cookie cùng site, Google
+# ADR 0004 — Xác thực: ASP.NET Core Identity, cookie cùng site, Google, Facebook
 
-- **Trạng thái:** Accepted — chủ dự án duyệt ngày 2026-11-08. Quy tắc liên kết tài khoản Google (`Q-04`) theo phương án mặc định trong ADR này.
+- **Trạng thái:** Accepted — chủ dự án duyệt ngày 2026-11-08. Quy tắc liên kết tài khoản Google (`Q-04`) theo phương án mặc định trong ADR này. **Bổ sung 2026-11-08:** chủ dự án yêu cầu thêm đăng nhập Facebook (mục "Bổ sung: Facebook Login" ở cuối).
 - **Ngày:** 2026-11-08.
 - **Liên quan:** FEAT-01, [PRD](../product/prd.md) NFR-PRIV-001, NFR-SEC-001; [brainstorm](../product/brainstorms/personal-english-knowledge.md) `Q-04`.
 
@@ -48,3 +48,35 @@ Chọn **phương án 1**.
   - Thông tin dịch vụ email (ADR 0005).
   - Chỉ lưu qua secret store hoặc biến môi trường, không commit. Nếu thiếu, trạng thái của FEAT-01 là `PARTIAL`/`integration ready`, không được coi là hoạt động đầy đủ.
 - Trong test tự động, luồng Google được thay bằng handler giả, chỉ có ở project test.
+
+## Bổ sung: Facebook Login (2026-11-08)
+
+Chủ dự án yêu cầu thêm đăng nhập bằng Facebook vào FEAT-01. Cách triển khai giống Google (external login của ASP.NET Core Identity, callback về API, lưu trong `accounts.UserLogins`), nhưng có ba điểm khác cần quy tắc riêng.
+
+**Triển khai:**
+
+- Dùng `Microsoft.AspNetCore.Authentication.Facebook` 10.0.14 (đã kiểm tra trên NuGet ngày 2026-11-08), cùng phiên bản với các gói ASP.NET Core khác.
+- Chỉ xin hai quyền `public_profile` và `email`. Không xin thêm quyền nào khác.
+
+**Email từ Facebook:**
+
+Email từ Facebook có thể **không có** (tài khoản Facebook đăng ký bằng số điện thoại, hoặc người dùng từ chối chia sẻ email). Lingozi **không coi email từ Facebook là đã xác minh**. Quy tắc:
+
+| Trường hợp | Xử lý |
+| --- | --- |
+| Facebook trả email, email chưa có tài khoản Lingozi | Tạo tài khoản với `EmailConfirmed = 0`, gửi email xác thực. Người dùng phải xác thực rồi mới dùng được thư viện, giống tài khoản mật khẩu |
+| Facebook không trả email | Yêu cầu người dùng nhập email, rồi xác thực như trên. `accounts.Users.Email` vẫn bắt buộc (ERD không đổi) |
+| Email trùng tài khoản Lingozi đã có | **Không tự liên kết**, vì email Facebook chưa được xác minh nên tự liên kết có nguy cơ chiếm tài khoản. Yêu cầu người dùng đăng nhập tài khoản cũ, rồi liên kết Facebook từ phần cài đặt tài khoản |
+
+**Yêu cầu của Meta, cần chủ dự án chuẩn bị trước khi bật ở staging/production:**
+
+- Tạo Meta App có sản phẩm Facebook Login, bằng tài khoản Meta for Developers của chủ dự án.
+- Cung cấp URL chính sách quyền riêng tư công khai.
+- Cung cấp cách xóa dữ liệu người dùng: URL hướng dẫn xóa dữ liệu, hoặc data deletion callback. Hiện ERD chưa có tính năng xóa tài khoản (`ERD-05` để sau MVP), nên cần chốt phương án ở `Q-12`.
+- Chuyển app sang chế độ Live. Meta có thể yêu cầu xác minh doanh nghiệp hoặc App Review tùy loại tài khoản và quyền; phải kiểm tra trên trang Meta for Developers lúc đăng ký, không giả định trước.
+
+**Credential cần thêm:** Facebook App ID và App Secret. Chỉ lưu trong secret store hoặc biến môi trường. Nếu thiếu, trạng thái đăng nhập Facebook là `integration ready`, không được coi là đã hoạt động.
+
+**Giao diện:** nút "Tiếp tục với Facebook" và "Tiếp tục với Google" làm theo hướng dẫn thương hiệu chính thức của Meta và Google. Đây là trường hợp được phép dùng logo theo điều khoản của nhà cung cấp, không phải sao chép tài sản của sản phẩm khác.
+
+**Kiểm thử:** luồng Facebook trong test tự động dùng handler giả, đặt trong project test, giống luồng Google. Ba trường hợp trong bảng trên đều phải có integration test.

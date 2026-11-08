@@ -2,7 +2,7 @@
 
 - Cập nhật: 2026-11-08.
 - Giai đoạn: **Vòng 0 — Nền dự án** (Agile, vòng 2 tuần, bắt đầu 2026-11-08). Xem [lộ trình](../product/roadmap.md) §5.
-- Phiên gần nhất: [Vòng 0: walking skeleton và CI](sessions/2026-11-08-09-walking-skeleton.md).
+- Phiên gần nhất: [Thêm đăng nhập Facebook](sessions/2026-11-08-10-facebook-login.md).
 - Đã đọc và gộp 4 commit từ `origin/work` vào `main` theo fast-forward, tới `61514e0`. Bàn giao phiên 05 được lưu cùng commit tài liệu tiếp theo; tra bằng `git log -- docs/project/`.
 
 ## Đã hoàn thành
@@ -17,6 +17,7 @@
 - Vòng 0: tái lập brainstorm và discovery từ tổng quan; viết Lean PRD và phạm vi MVP (Draft). Quyết định: desktop-first; đăng nhập email + mật khẩu và Google.
 - Vòng 0: viết [ADR 0001–0006](../decisions/README.md) (Proposed), đã xác minh phiên bản ngày 2026-11-08: .NET 10.0.14 LTS, EF Core/Identity 10.0.14, SQL Server 2025, Next.js 16.4.5, React 19.3.1.
 - Vòng 0: chủ dự án duyệt ADR 0001–0006 (2026-11-08), chọn máy chủ riêng + SQL Server. Viết [ERD tổng thể](../architecture/erd.md); duyệt 2026-11-08.
+- Chủ dự án yêu cầu thêm **đăng nhập Facebook** (2026-11-08): cập nhật ADR 0004, PRD 0.2.0, MVP, ERD, brainstorm (`Q-12` về xóa dữ liệu).
 - Vòng 0: viết [design system nền](../architecture/design-system.md) với token trong `design-tokens.json`, gồm 2 theme (default, coquette; chủ dự án chọn Coquette 2026-11-08) đạt WCAG AA cho 19/19 cặp màu mỗi theme; script `tools/design-tokens/check_contrast.py` (Draft).
 
 ## Hiện trạng các phần
@@ -46,6 +47,7 @@ Không có công việc triển khai đang dở. Thứ tự dưới đây là đ
 | PLAN-04 | todo | Vòng 1: thiết kế (D2–D5) FEAT-01 Tài khoản và FEAT-02 Mục kiến thức, rồi phát triển | Hồ sơ trong `docs/features/`, đạt DoR rồi DoD |
 | ADR-01 | done | Chủ dự án duyệt ADR 0001–0006 | Accepted 2026-11-08; hosting: máy chủ riêng + SQL Server |
 | HOST-01 | todo | Chủ dự án cung cấp thông tin máy chủ `HOST-01`–`HOST-05` (OS/cấu hình, edition SQL Server, domain, nơi backup, staging) | Ghi vào ADR 0006; hạn cuối Vòng 1 |
+| FB-01 | todo | Chủ dự án tạo Meta App (Facebook Login), chuẩn bị URL chính sách quyền riêng tư và chốt cách xóa dữ liệu (`Q-12`) | Có App ID/Secret trong secret store trước khi bật Facebook ở staging; trước đó trạng thái là `integration ready` |
 | MAIL-01 | todo | Chọn nhà cung cấp email production | ADR 0005 cập nhật; hạn trước khi phát hành staging |
 | ERD-01 | done | Chủ dự án duyệt ERD tổng thể | Duyệt 2026-11-08 |
 | DS-01 | todo | Chủ dự án duyệt design system (theme thứ hai đã chọn: Coquette) | `docs/architecture/design-system.md` chuyển trạng thái đã duyệt |
@@ -56,7 +58,7 @@ Không có công việc triển khai đang dở. Thứ tự dưới đây là đ
 
 - PRD/MVP chờ duyệt. Câu hỏi mở cần cho Vòng 0–1: `Q-01`, `Q-02`, `Q-04`, `Q-09`, `Q-11` trong [brainstorm](../product/brainstorms/personal-english-knowledge.md).
 - Đã ghi định hướng Next.js, ASP.NET Core, .NET 10 LTS, SQL Server/EF Core từ người dùng; chưa xác minh phiên bản/tương thích và thiết kế chi tiết. Phương thức đăng nhập đã chốt (email + mật khẩu, Google); cách triển khai đề xuất ở ADR 0004. Hosting: máy chủ riêng (ADR 0006); còn thiếu thông tin `HOST-01`–`HOST-05`. Chưa chọn nhà cung cấp email production hay giấy phép cho mã Lingozi.
-- Credential sẽ cần (chưa xin): Google OAuth client cho FEAT-01, tài khoản dịch vụ gửi email. Chưa cần ở bước tài liệu.
+- Credential sẽ cần (chưa xin): Google OAuth client và Facebook App ID/Secret cho FEAT-01, tài khoản dịch vụ gửi email. Chưa cần ở bước tài liệu.
 
 ## Bằng chứng kiểm tra
 
@@ -69,6 +71,7 @@ Không có công việc triển khai đang dở. Thứ tự dưới đây là đ
   - Kiểm tra tay: tắt SQL Server thì `/api/system/status` trả `database: unavailable`, bật lại thì `ok`.
   - Script token: 0 lỗi tương phản; `tokens.css` khớp với nguồn.
   - CI GitHub Actions run #1 (Node 26, ubuntu-24.04): 4/4 job success.
+- Phiên 2026-11-08-10: chỉ thay đổi tài liệu; kiểm tra liên kết trong `docs/`.
 - Phiên 2026-11-08-08: `dotnet --list-sdks` → 10.0.114; `docker info` → 29.9.2; chạy container SQL Server 2025 Express và truy vấn `SERVERPROPERTY` thành công, sau đó đã xóa container.
 - Phiên 2026-11-08-07 (bổ sung): đổi theme Garden sang Coquette; script tương phản vẫn 0 failure.
 - Phiên 2026-11-08-07: `python3 tools/design-tokens/check_contrast.py docs/architecture/design-tokens.json` cho 0 failure (19 cặp × 2 theme); đã kiểm tra liên kết trong `docs/`.

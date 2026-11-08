@@ -49,7 +49,7 @@ Bên trong mỗi vòng:
 
 | Feature ID | Mã module | Tính năng | Không gian | Đề xuất vòng |
 | --- | --- | --- | --- | --- |
-| `FEAT-01` | `AUTH` | Tài khoản, đăng nhập email + mật khẩu và Google, thư viện riêng tư theo chủ sở hữu | Chung | Vòng 1 |
+| `FEAT-01` | `AUTH` | Tài khoản, đăng nhập email + mật khẩu, Google và Facebook, thư viện riêng tư theo chủ sở hữu | Chung | Vòng 1 |
 | `FEAT-02` | `LIB` | Lưu, xem, sửa, xóa mục kiến thức (bắt buộc từ + nghĩa) và gợi ý mục trùng | Library | Vòng 1 |
 | `FEAT-03` | `ORG` | Bộ sưu tập, thẻ, xem theo dòng thời gian | Library | Vòng 2 |
 | `FEAT-04` | `SRCH` | Tìm kiếm kết hợp lọc theo bộ sưu tập, thẻ, thời gian | Library | Vòng 2 |

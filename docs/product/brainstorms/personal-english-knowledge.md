@@ -23,7 +23,7 @@
 | 9 | Quyền riêng tư | Thư viện hoàn toàn riêng tư, không chia sẻ công khai | Tổng quan §4.7 |
 | 10 | Cách phát triển | Agile theo vòng 2 tuần; mỗi vòng thiết kế → phát triển → demo một vài tính năng | Chủ dự án, 2026-11-08 |
 | 11 | Thiết bị ưu tiên | **Desktop-first**, responsive xuống tablet và phone | Chủ dự án, 2026-11-08 |
-| 12 | Đăng nhập MVP | **Email + mật khẩu** và **Google** | Chủ dự án, 2026-11-08 |
+| 12 | Đăng nhập MVP | **Email + mật khẩu**, **Google** và **Facebook** (Facebook bổ sung sau, cùng ngày) | Chủ dự án, 2026-11-08 |
 | 13 | Theme MVP | Default + **Coquette** (`Q-09`) | Chủ dự án, 2026-11-08 |
 
 ## 3. Câu hỏi còn mở
@@ -35,7 +35,7 @@ Mỗi câu hỏi gắn với vòng cần câu trả lời. Phương án mặc đ
 | `Q-01` | Nhóm tuổi và trình độ tiếng Anh của người dùng mục tiêu? | Vòng 0 (PRD) | Người lớn tự học, trình độ từ sơ cấp trở lên, có thói quen tiêu thụ nội dung tiếng Anh |
 | `Q-02` | Nội dung không phải từ vựng (cấu trúc, mẫu câu, trích dẫn) thể hiện "từ và nghĩa" thế nào? | Vòng 1 | Một form chung: trường "nội dung tiếng Anh" và "nghĩa/giải thích", cộng trường "loại" để phân biệt |
 | `Q-03` | Tiêu chí coi là "tương tự" khi gợi ý mục trùng? | Vòng 1 | Trùng nội dung tiếng Anh sau khi chuẩn hóa hoa/thường và khoảng trắng |
-| `Q-04` | Email Google trùng với tài khoản email/mật khẩu đã có thì xử lý ra sao? | Vòng 1 | Chỉ liên kết khi email đã được xác thực ở cả hai phía |
+| `Q-04` | Email Google/Facebook trùng với tài khoản email/mật khẩu đã có thì xử lý ra sao? | — | **Đã chốt** trong ADR 0004: Google chỉ liên kết khi email ở cả hai phía đã xác minh; Facebook không tự liên kết, người dùng đăng nhập tài khoản cũ rồi liên kết |
 | `Q-05` | Xóa bộ sưu tập thì các mục bên trong ra sao? Xóa mục có phục hồi được không? | Vòng 2 | Xóa bộ sưu tập chỉ gỡ liên kết, không xóa mục. Xóa mục cần xác nhận và không phục hồi ở MVP |
 | `Q-06` | Dòng thời gian sắp theo mốc nào? | Vòng 2 | Thời điểm tạo mục (UTC, hiển thị theo múi giờ người dùng) |
 | `Q-07` | Phạm vi tìm kiếm và tìm gần đúng? | Vòng 2 | Tìm theo nội dung tiếng Anh, nghĩa, ví dụ, ghi chú; không phân biệt hoa/thường, bỏ dấu tiếng Việt; chưa có tìm theo ngữ nghĩa |
@@ -43,6 +43,7 @@ Mỗi câu hỏi gắn với vòng cần câu trả lời. Phương án mặc đ
 | `Q-09` | Hai theme đầu tiên là theme nào? | — | **Đã chốt:** Default + Coquette (quyết định 13) |
 | `Q-10` | Nhà cung cấp AI, ngôn ngữ phản hồi, hạn mức, chi phí? | Vòng 4 | Quyết định bằng ADR trước Vòng 4 |
 | `Q-11` | Giao diện hỗ trợ ngôn ngữ nào từ đầu? | Vòng 0 | Giao diện tiếng Việt ở MVP, chuẩn bị cấu trúc i18n để thêm tiếng Anh (AGENTS.md hướng tới cả hai) |
+| `Q-12` | Người dùng yêu cầu xóa dữ liệu (Meta bắt buộc khi dùng Facebook Login) xử lý thế nào trong MVP? | Vòng 1 (trước khi bật Facebook ở staging) | Trang hướng dẫn xóa dữ liệu, người dùng gửi yêu cầu qua email; quy trình xử lý bằng tay trong 30 ngày, ghi trong tài liệu vận hành. Xóa tự phục vụ để sau MVP (`ERD-05`) |
 
 ## 4. Phạm vi đã thống nhất
 

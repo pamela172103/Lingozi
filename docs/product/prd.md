@@ -3,7 +3,7 @@
 ## Metadata
 
 - **Product name:** Lingozi.
-- **Phiên bản:** 0.1.0 (Lean PRD cho Vòng 0).
+- **Phiên bản:** 0.2.0 (Lean PRD cho Vòng 0).
 - **Trạng thái:** Draft, chờ chủ dự án duyệt.
 - **Product Owner:** chủ dự án Lingozi.
 - **Cập nhật:** 2026-11-08.
@@ -44,6 +44,7 @@ Phân loại theo `rules/17-actor-role-definition.md`. Nhóm tuổi và trình �
 | `PER-02` | Primary | Người đi làm cần tiếng Anh công việc | Gom mẫu câu và từ chuyên ngành theo mục đích | Kiến thức nằm lẫn trong email và tài liệu | Desktop công sở |
 | `ACT-SYS-01` | Secondary (hệ thống) | Nhà cung cấp AI | Nhận xét câu người dùng viết | — | — (Vòng 4) |
 | `ACT-SYS-02` | Secondary (hệ thống) | Google Identity | Xác thực đăng nhập Google | — | — |
+| `ACT-SYS-03` | Secondary (hệ thống) | Meta (Facebook Login) | Xác thực đăng nhập Facebook | — | — |
 
 ## 3. Phạm vi
 
@@ -51,7 +52,7 @@ Phân loại theo `rules/17-actor-role-definition.md`. Nhóm tuổi và trình �
 
 Chi tiết từng tính năng ở [mvp-scope.md](mvp-scope.md).
 
-- Tài khoản: email + mật khẩu và Google; thư viện riêng tư.
+- Tài khoản: email + mật khẩu, Google và Facebook; thư viện riêng tư.
 - Library: lưu, xem, sửa, xóa mục; gợi ý mục trùng; bộ sưu tập, thẻ, dòng thời gian; tìm kiếm có bộ lọc.
 - Practice: luyện gõ (nghĩa → từ).
 - Giao diện: desktop-first, responsive; 1–2 theme có sẵn; chế độ giảm trang trí; giao diện tiếng Việt.
@@ -67,7 +68,7 @@ Chi tiết từng tính năng ở [mvp-scope.md](mvp-scope.md).
 
 | Feature ID | Module | Tính năng | Ưu tiên | Persona | Vòng |
 | --- | --- | --- | --- | --- | --- |
-| `FEAT-01` | `AUTH` | Đăng ký và đăng nhập bằng email + mật khẩu, đăng nhập Google, đăng xuất, quên mật khẩu, thư viện riêng tư theo chủ sở hữu | P0 | PER-01, PER-02 | 1 |
+| `FEAT-01` | `AUTH` | Đăng ký và đăng nhập bằng email + mật khẩu, đăng nhập Google và Facebook, đăng xuất, quên mật khẩu, thư viện riêng tư theo chủ sở hữu | P0 | PER-01, PER-02 | 1 |
 | `FEAT-02` | `LIB` | Tạo, xem, sửa, xóa mục kiến thức; gợi ý mục trùng | P0 | PER-01, PER-02 | 1 |
 | `FEAT-03` | `ORG` | Bộ sưu tập, thẻ, xem theo dòng thời gian | P0 | PER-01, PER-02 | 2 |
 | `FEAT-04` | `SRCH` | Tìm kiếm và lọc theo bộ sưu tập, thẻ, thời gian | P0 | PER-01, PER-02 | 2 |
@@ -93,12 +94,13 @@ Các ngưỡng là **đề xuất**, được xác nhận khi duyệt PRD và ki
 
 ## 6. Giả định và ràng buộc
 
-- **Giả định:** người dùng có email hoặc tài khoản Google; persona ở mục 2 chưa được kiểm chứng (R-01).
+- **Giả định:** người dùng có email, tài khoản Google hoặc tài khoản Facebook; tài khoản đăng nhập bằng Facebook vẫn cần một email đã xác thực (ADR 0004); persona ở mục 2 chưa được kiểm chứng (R-01).
 - **Ràng buộc:**
   - Stack đã định hướng trong `AGENTS.md`: Next.js App Router, React, TypeScript strict; ASP.NET Core Web API, .NET 10 LTS; SQL Server, EF Core; Modular Monolith. Phiên bản cụ thể sẽ xác minh bằng ADR ở Vòng 0.
   - Mỗi vòng 2 tuần, theo [lộ trình](roadmap.md).
 - **Phụ thuộc:**
   - Google OAuth client cho FEAT-01.
+  - Meta App (Facebook Login) cho FEAT-01, kèm URL chính sách quyền riêng tư và cách xóa dữ liệu (`Q-12`).
   - Dịch vụ gửi email để xác thực và đặt lại mật khẩu, chọn ở ADR.
   - Quyền truy cập Figma.
   - Nhà cung cấp AI ở Vòng 4.
@@ -108,3 +110,4 @@ Các ngưỡng là **đề xuất**, được xác nhận khi duyệt PRD và ki
 | Phiên bản | Ngày | Thay đổi |
 | --- | --- | --- |
 | 0.1.0 | 2026-11-08 | Bản Lean PRD đầu tiên cho Vòng 0 |
+| 0.2.0 | 2026-11-08 | Thêm đăng nhập Facebook vào FEAT-01 theo yêu cầu chủ dự án |

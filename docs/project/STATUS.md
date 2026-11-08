@@ -2,7 +2,7 @@
 
 - Cập nhật: 2026-11-08.
 - Giai đoạn: **Vòng 0 — Nền dự án** (Agile, vòng 2 tuần, bắt đầu 2026-11-08). Xem [lộ trình](../product/roadmap.md) §5.
-- Phiên gần nhất: [Vòng 0: design system nền](sessions/2026-11-08-07-round-0-design-system.md).
+- Phiên gần nhất: [Cài .NET SDK và Docker cho phiên cloud](sessions/2026-11-08-08-dev-environment.md).
 - Đã đọc và gộp 4 commit từ `origin/work` vào `main` theo fast-forward, tới `61514e0`. Bàn giao phiên 05 được lưu cùng commit tài liệu tiếp theo; tra bằng `git log -- docs/project/`.
 
 ## Đã hoàn thành
@@ -48,7 +48,7 @@ Không có công việc triển khai đang dở. Thứ tự dưới đây là đ
 | MAIL-01 | todo | Chọn nhà cung cấp email production | ADR 0005 cập nhật; hạn trước khi phát hành staging |
 | ERD-01 | done | Chủ dự án duyệt ERD tổng thể | Duyệt 2026-11-08 |
 | DS-01 | todo | Chủ dự án duyệt design system (theme thứ hai đã chọn: Coquette) | `docs/architecture/design-system.md` chuyển trạng thái đã duyệt |
-| ENV-01 | blocked | Môi trường để dựng walking skeleton | Phiên cloud thiếu .NET SDK (host `dot.net`, `builds.dotnet.microsoft.com` bị chặn) và Docker daemon. Gỡ chặn: mở các host đó trong cài đặt network của môi trường, hoặc dựng trên máy local |
+| ENV-01 | done | Môi trường để dựng walking skeleton | Cài .NET SDK 10.0.114 (runtime 10.0.14) từ kho Ubuntu; Docker 29.9.2 chạy được; đã chạy thử SQL Server 2025 Express 17.0.5035.5. Môi trường cloud "Lingozi" tự cài .NET SDK; Docker daemon phải khởi động tay mỗi phiên (xem Cách tiếp tục) |
 | DES-01 | blocked | Vẽ giao diện Figma | Chờ quyền truy cập Figma hoặc người thiết kế tự vẽ từ wireframe; đặc tả theo `figma-spec.md` |
 
 ## Vướng mắc và quyết định còn thiếu
@@ -59,6 +59,7 @@ Không có công việc triển khai đang dở. Thứ tự dưới đây là đ
 
 ## Bằng chứng kiểm tra
 
+- Phiên 2026-11-08-08: `dotnet --list-sdks` → 10.0.114; `docker info` → 29.9.2; chạy container SQL Server 2025 Express và truy vấn `SERVERPROPERTY` thành công, sau đó đã xóa container.
 - Phiên 2026-11-08-07 (bổ sung): đổi theme Garden sang Coquette; script tương phản vẫn 0 failure.
 - Phiên 2026-11-08-07: `python3 tools/design-tokens/check_contrast.py docs/architecture/design-tokens.json` cho 0 failure (19 cặp × 2 theme); đã kiểm tra liên kết trong `docs/`.
 - Phiên 2026-11-08-06: kiểm tra cú pháp sơ đồ Mermaid trong ERD bằng script (12 entity, 14 quan hệ, không có tham chiếu thiếu). Chưa render được hình, vì lệnh cài mermaid-cli bị chặn quyền. Đã kiểm tra liên kết trong `docs/`.
@@ -75,4 +76,6 @@ Không có công việc triển khai đang dở. Thứ tự dưới đây là đ
 
 ## Cách tiếp tục
 
-Đọc [quy trình bàn giao](README.md), kiểm tra nhánh và lịch sử Git thực tế, rồi tiếp tục Vòng 0 theo bảng tiến độ trong lộ trình §5 nếu người dùng chưa có ưu tiên khác. Trạng thái này đi cùng repository; không phụ thuộc lịch sử chat hoặc các tiến trình đang chạy.
+Đọc [quy trình bàn giao](README.md), kiểm tra nhánh và lịch sử Git thực tế, rồi tiếp tục Vòng 0 theo bảng tiến độ trong lộ trình §5 nếu người dùng chưa có ưu tiên khác.
+
+Trong phiên cloud trên môi trường "Lingozi": .NET SDK được setup script cài sẵn (cần kiểm tra lại `dotnet --version` ở phiên mới, vì script chưa được chứng minh trên container mới). Docker daemon không tự chạy; khởi động bằng `nohup dockerd > /tmp/dockerd.log 2>&1 &`, rồi kiểm tra bằng `docker info`. Trạng thái này đi cùng repository; không phụ thuộc lịch sử chat hoặc các tiến trình đang chạy.

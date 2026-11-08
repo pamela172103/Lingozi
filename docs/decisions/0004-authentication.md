@@ -51,6 +51,8 @@ Chọn **phương án 1**.
 
 ## Bổ sung: Facebook Login (2026-11-08)
 
+**Trạng thái:** Accepted. Chủ dự án đồng ý các quy tắc dưới đây và phương án xóa dữ liệu `Q-12` ngày 2026-11-08.
+
 Chủ dự án yêu cầu thêm đăng nhập bằng Facebook vào FEAT-01. Cách triển khai giống Google (external login của ASP.NET Core Identity, callback về API, lưu trong `accounts.UserLogins`), nhưng có ba điểm khác cần quy tắc riêng.
 
 **Triển khai:**

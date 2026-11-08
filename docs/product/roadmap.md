@@ -2,7 +2,7 @@
 
 - Cập nhật: 2026-11-08.
 - Trạng thái: **đã duyệt** ngày 2026-11-08. Chủ dự án đồng ý cách làm Agile theo vòng lặp, cách nhóm tính năng theo vòng và mỗi vòng dài **2 tuần**. Nội dung từng vòng vẫn được sắp lại ở bước review cuối mỗi vòng.
-- Đang làm: **Vòng 0** (xem §5).
+- Đang làm: **Vòng 1** (bắt đầu 2026-11-08, kết thúc dự kiến 2026-11-21). Vòng 0 xong phần việc; các tài liệu còn chờ duyệt ghi ở §5.
 - Nguồn: [Tổng quan website](overview.md) (đã duyệt 2026-10-26), [trạng thái dự án](../project/STATUS.md), bộ OpenBA trong `tools/openba-kit/`.
 - Hiện trạng: repository mới có tài liệu. Chưa có ứng dụng, database hay bản thiết kế giao diện.
 
@@ -117,6 +117,23 @@ Mỗi tính năng nằm trên một nhánh, review qua PR, CI phải xanh trư�
 | Walking skeleton + CI | done (local và CI GitHub đều đạt, 4/4 job) | `apps/api`, `apps/web`, `tests/e2e`, `compose.yaml`, `.github/workflows/ci.yml`, [hướng dẫn chạy](../guides/local-development.md) |
 
 ### Vòng 1 — Lưu được kiến thức của riêng mình
+
+- **Thời gian:** 2026-11-08 → 2026-11-21 (2 tuần).
+- **Mục tiêu vòng:** một người dùng thật đăng ký hoặc đăng nhập (email, Google, Facebook) rồi lưu, xem, sửa, xóa mục kiến thức của riêng mình trên SQL Server thật; người khác không truy cập được.
+- **Tiêu chí demo:**
+  1. Đăng ký bằng email, nhận thư xác thực (Mailpit ở local), đăng nhập, đăng xuất, quên mật khẩu.
+  2. Đăng nhập Google và Facebook ở mức `integration ready` (test bằng handler giả). Chạy với nhà cung cấp thật khi có credential (`FB-01` và Google OAuth client).
+  3. Tạo mục có ví dụ, được gợi ý mục trùng, xem danh sách và chi tiết, sửa, xóa.
+  4. Test chứng minh user A không đọc hoặc sửa được dữ liệu của user B.
+  5. CI xanh: unit, integration (SQL Server), E2E và axe.
+- **Hồ sơ thiết kế:** [Tài khoản](../features/accounts/README.md), [Mục kiến thức](../features/knowledge-items/README.md).
+- **Giả định dùng cho Vòng 1** (chủ dự án chưa trả lời, dùng phương án mặc định trong brainstorm; có thể đổi khi review):
+  - `Q-01`: người lớn tự học, trình độ từ sơ cấp trở lên.
+  - `Q-02`: một form chung với trường "loại".
+  - `Q-03`: so trùng theo nội dung tiếng Anh đã chuẩn hóa.
+  - `Q-11`: giao diện chỉ có tiếng Việt.
+  - `ERD-02`, `ERD-03`: độ dài cột như ERD; tối đa 10.000 mục mỗi người.
+
 
 - **Tính năng:** FEAT-01 (tài khoản, quyền riêng tư) và FEAT-02 (mục kiến thức).
 - **Điểm kỹ thuật chính:**

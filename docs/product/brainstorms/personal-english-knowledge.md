@@ -43,7 +43,7 @@ Mỗi câu hỏi gắn với vòng cần câu trả lời. Phương án mặc đ
 | `Q-09` | Hai theme đầu tiên là theme nào? | — | **Đã chốt:** Default + Coquette (quyết định 13) |
 | `Q-10` | Nhà cung cấp AI, ngôn ngữ phản hồi, hạn mức, chi phí? | Vòng 4 | Quyết định bằng ADR trước Vòng 4 |
 | `Q-11` | Giao diện hỗ trợ ngôn ngữ nào từ đầu? | Vòng 0 | Giao diện tiếng Việt ở MVP, chuẩn bị cấu trúc i18n để thêm tiếng Anh (AGENTS.md hướng tới cả hai) |
-| `Q-12` | Người dùng yêu cầu xóa dữ liệu (Meta bắt buộc khi dùng Facebook Login) xử lý thế nào trong MVP? | Vòng 1 (trước khi bật Facebook ở staging) | Trang hướng dẫn xóa dữ liệu, người dùng gửi yêu cầu qua email; quy trình xử lý bằng tay trong 30 ngày, ghi trong tài liệu vận hành. Xóa tự phục vụ để sau MVP (`ERD-05`) |
+| `Q-12` | Người dùng yêu cầu xóa dữ liệu (Meta bắt buộc khi dùng Facebook Login) xử lý thế nào trong MVP? | — | **Đã chốt** (chủ dự án đồng ý 2026-11-08): trang hướng dẫn xóa dữ liệu; người dùng gửi yêu cầu qua email; xử lý bằng tay trong tối đa 30 ngày; xóa tự phục vụ để sau MVP (`ERD-05`) |
 
 ## 4. Phạm vi đã thống nhất
 

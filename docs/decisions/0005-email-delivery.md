@@ -1,6 +1,6 @@
 # ADR 0005 — Gửi email giao dịch
 
-- **Trạng thái:** Proposed. Phần abstraction và môi trường local đã đề xuất xong; **nhà cung cấp cho production chưa chọn**, phụ thuộc ADR 0006 và chi phí.
+- **Trạng thái:** Accepted (2026-11-08) cho abstraction, outbox và Mailpit ở local. **Nhà cung cấp production chưa chọn.** Hosting là máy chủ riêng, nên vẫn cần một dịch vụ gửi email bên ngoài; không khuyến nghị tự vận hành mail server vì khó đảm bảo email tới được hộp thư.
 - **Ngày:** 2026-11-08.
 - **Liên quan:** [ADR 0004](0004-authentication.md), FEAT-01.
 

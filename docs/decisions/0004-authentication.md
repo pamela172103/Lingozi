@@ -1,6 +1,6 @@
 # ADR 0004 — Xác thực: ASP.NET Core Identity, cookie cùng site, Google
 
-- **Trạng thái:** Proposed. Phương thức đăng nhập (email + mật khẩu và Google) đã được chủ dự án chốt ngày 2026-11-08; ADR này chọn cách triển khai.
+- **Trạng thái:** Accepted — chủ dự án duyệt ngày 2026-11-08. Quy tắc liên kết tài khoản Google (`Q-04`) theo phương án mặc định trong ADR này.
 - **Ngày:** 2026-11-08.
 - **Liên quan:** FEAT-01, [PRD](../product/prd.md) NFR-PRIV-001, NFR-SEC-001; [brainstorm](../product/brainstorms/personal-english-knowledge.md) `Q-04`.
 

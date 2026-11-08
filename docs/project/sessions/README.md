@@ -13,5 +13,6 @@ Mỗi phiên dùng một file `YYYY-MM-DD-NN-short-topic.md`, theo [mẫu](../se
 - [2026-11-08 · 03 · Lộ trình Agile theo vòng](2026-11-08-03-agile-roadmap.md).
 - [2026-11-08 · 04 · Bắt đầu Vòng 0: brainstorm, discovery, PRD](2026-11-08-04-round-0-prd.md).
 - [2026-11-08 · 05 · Vòng 0: quyết định kỹ thuật (ADR)](2026-11-08-05-round-0-adr.md).
+- [2026-11-08 · 06 · Vòng 0: duyệt ADR, ERD tổng thể](2026-11-08-06-round-0-erd.md).
 
 Thêm liên kết nhật ký mới vào danh sách này sau mỗi phiên.

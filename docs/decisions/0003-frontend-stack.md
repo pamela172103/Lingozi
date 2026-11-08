@@ -1,6 +1,6 @@
 # ADR 0003 — Frontend: Next.js App Router, React, TypeScript strict
 
-- **Trạng thái:** Proposed. Stack do chủ dự án định hướng; ADR này xác minh phiên bản và chọn công cụ đi kèm.
+- **Trạng thái:** Accepted — chủ dự án duyệt ngày 2026-11-08.
 - **Ngày:** 2026-11-08.
 - **Liên quan:** [ADR 0001](0001-system-architecture-and-repo-layout.md), [ADR 0004](0004-authentication.md), [PRD §5](../product/prd.md) (desktop-first, WCAG 2.2 AA, i18n).
 

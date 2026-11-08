@@ -112,8 +112,8 @@ Mỗi tính năng nằm trên một nhánh, review qua PR, CI phải xanh trư�
 | Lean PRD và phạm vi MVP | done (Draft, chờ duyệt) | [prd.md](prd.md), [mvp-scope.md](mvp-scope.md) |
 | Phỏng vấn 3–5 người dùng (H-01, H-02) | todo | Cập nhật discovery |
 | Design system nền | todo | `docs/architecture/design-system.md` + Figma (DES-01) |
-| ADR stack, xác thực, email, hosting, CI | done (Proposed, chờ duyệt; hosting và email production chờ chọn) | [ADR 0001–0006](../decisions/README.md) |
-| ERD phác thảo tổng thể | todo | `docs/architecture/` |
+| ADR stack, xác thực, email, hosting, CI | done (Accepted 2026-11-08; máy chủ riêng + SQL Server; còn HOST-01–05 và nhà cung cấp email) | [ADR 0001–0006](../decisions/README.md) |
+| ERD phác thảo tổng thể | done (Draft, chờ duyệt) | [erd.md](../architecture/erd.md) |
 | Walking skeleton + CI | todo | `apps/` hoặc cấu trúc được chốt ở ADR |
 
 ### Vòng 1 — Lưu được kiến thức của riêng mình
@@ -179,5 +179,5 @@ Chọn từ mục "sau Vòng 5" của backlog dựa trên kết quả review và
 ## 7. Bước tiếp theo ngay
 
 1. Chủ dự án duyệt PRD và MVP; trả lời các câu hỏi mở cần cho Vòng 0–1 (`Q-01`, `Q-02`, `Q-04`, `Q-09`, `Q-11` trong brainstorm).
-2. Chủ dự án duyệt ADR 0001–0006 và chọn phương án hosting (ADR 0006).
-3. Tiếp tục Vòng 0: ERD phác thảo → design system nền → walking skeleton.
+2. Chủ dự án duyệt ERD và cung cấp thông tin máy chủ `HOST-01`–`HOST-05` (ADR 0006).
+3. Tiếp tục Vòng 0: design system nền → walking skeleton.

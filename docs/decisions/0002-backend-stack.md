@@ -1,6 +1,6 @@
 # ADR 0002 — Backend: .NET 10 LTS, ASP.NET Core, EF Core, SQL Server
 
-- **Trạng thái:** Proposed. Stack do chủ dự án định hướng; ADR này xác minh phiên bản và chọn chi tiết.
+- **Trạng thái:** Accepted — chủ dự án duyệt ngày 2026-11-08 và xác nhận dùng SQL Server.
 - **Ngày:** 2026-11-08.
 - **Liên quan:** [ADR 0001](0001-system-architecture-and-repo-layout.md), [PRD §5 NFR](../product/prd.md).
 
@@ -35,7 +35,7 @@ Phiên bản cụ thể được pin trong `Directory.Packages.props` khi dựng
   - Migration được review trong PR. Migration có thể làm mất dữ liệu phải được chủ dự án xác nhận trước.
 - **Database theo môi trường:**
   - Local và CI: container `mcr.microsoft.com/mssql/server:2025-latest`. Registry này truy cập được từ phiên cloud.
-  - Production: theo ADR 0006. Nếu dùng Azure SQL Database thì kiểm tra tương thích, vì Azure SQL Database là nền tảng luôn cập nhật, khác với SQL Server cài đặt.
+  - Production: SQL Server 2025 cài trên máy chủ riêng của chủ dự án (ADR 0006). Edition chọn theo mục "Còn phải chốt" của ADR 0006.
 - **Kiểm thử:**
   - xUnit cho unit test.
   - Integration test dùng `WebApplicationFactory` cộng Testcontainers SQL Server thật. Không dùng EF Core InMemory.

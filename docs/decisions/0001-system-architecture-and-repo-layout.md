@@ -1,6 +1,6 @@
 # ADR 0001 — Kiến trúc tổng thể và cấu trúc repository
 
-- **Trạng thái:** Proposed (chờ chủ dự án duyệt).
+- **Trạng thái:** Accepted — chủ dự án duyệt ngày 2026-11-08.
 - **Ngày:** 2026-11-08.
 - **Liên quan:** [PRD](../product/prd.md), [lộ trình](../product/roadmap.md), `AGENTS.md` §7.
 

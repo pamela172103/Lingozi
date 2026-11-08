@@ -12,6 +12,14 @@ Lưu kiến trúc hệ thống, mô hình dữ liệu, API dùng chung, cấu h�
 
 Nguồn định hướng: quy tắc người dùng cung cấp, đã ghi tại `AGENTS.md`. Đây chưa phải bằng chứng toolchain được cài, ứng dụng đã chạy hoặc thiết kế chi tiết được nghiệm thu.
 
+## Quyết định đã đề xuất (2026-11-08)
+
+Chi tiết và phiên bản đã xác minh nằm trong [ADR 0001–0006](../decisions/README.md), trạng thái Proposed. Tóm tắt:
+
+- Trình duyệt → Next.js (`apps/web`) → rewrite `/api/*` → ASP.NET Core Minimal APIs (`apps/api`) → SQL Server.
+- Bốn module `Accounts`, `Library`, `Practice`, `Personalization`; mỗi module một schema và một `DbContext`.
+- Đăng nhập bằng ASP.NET Core Identity, cookie HttpOnly cùng site, có Google.
+
 ## Cần làm rõ trước khi triển khai
 
-Phạm vi MVP, phiên bản frontend/EF Core/SQL Server và cấu hình tương thích, phương án xác thực, lưu trữ và hạ tầng triển khai. Ghi quyết định cùng lý do/đánh đổi trong `docs/decisions/`; không tự đổi định hướng đã được cung cấp. Không khởi tạo backend hoặc database chỉ để cập nhật tài liệu quy trình.
+Duyệt ADR 0001–0006; chọn hosting và nhà cung cấp email production; xác minh TypeScript 7 với Next.js 16 khi dựng khung. Ghi quyết định cùng lý do/đánh đổi trong `docs/decisions/`; không tự đổi định hướng đã được cung cấp. Không khởi tạo backend hoặc database chỉ để cập nhật tài liệu quy trình.

@@ -1,7 +1,7 @@
 # ERD tổng thể — Lingozi
 
 - Cập nhật: 2026-11-08.
-- Trạng thái: **Draft, chờ chủ dự án duyệt**. Đây là bản phác thảo tổng thể của Vòng 0. Bảng của từng tính năng được chốt chi tiết ở bước Thiết kế của vòng tương ứng, trong `docs/features/<feature>/srs/`. Migration chỉ được tạo từ phần đã chốt.
+- Trạng thái: **đã duyệt** ngày 2026-11-08, ở mức phác thảo tổng thể của Vòng 0. Các điểm mở ở §5 vẫn chốt theo từng vòng. Bảng của từng tính năng được chốt chi tiết ở bước Thiết kế của vòng tương ứng, trong `docs/features/<feature>/srs/`. Migration chỉ được tạo từ phần đã chốt.
 - Nguồn:
   - [ADR 0001](../decisions/0001-system-architecture-and-repo-layout.md): mỗi module một schema và một `DbContext`.
   - [ADR 0002](../decisions/0002-backend-stack.md): SQL Server 2025, EF Core 10.

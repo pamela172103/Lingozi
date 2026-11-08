@@ -23,8 +23,9 @@ Chi tiết và phiên bản đã xác minh nằm trong [ADR 0001–0006](../deci
 
 ## Tài liệu
 
-- [ERD tổng thể](erd.md): Draft, gồm 4 schema, từ điển dữ liệu cho MVP và phác thảo cho Vòng 4–5.
+- [ERD tổng thể](erd.md): đã duyệt 2026-11-08; gồm 4 schema, từ điển dữ liệu cho MVP và phác thảo cho Vòng 4–5.
+- [Design system nền](design-system.md) và [design tokens](design-tokens.json): Draft. Kiểm tra tương phản bằng `tools/design-tokens/check_contrast.py`.
 
 ## Cần làm rõ trước khi triển khai
 
-Duyệt ERD; thông tin máy chủ `HOST-01`–`HOST-05`; nhà cung cấp email production; xác minh TypeScript 7 với Next.js 16 khi dựng khung. Ghi quyết định cùng lý do/đánh đổi trong `docs/decisions/`; không tự đổi định hướng đã được cung cấp. Không khởi tạo backend hoặc database chỉ để cập nhật tài liệu quy trình.
+Duyệt design system; thông tin máy chủ `HOST-01`–`HOST-05`; nhà cung cấp email production; xác minh TypeScript 7 với Next.js 16 khi dựng khung. Ghi quyết định cùng lý do/đánh đổi trong `docs/decisions/`; không tự đổi định hướng đã được cung cấp. Không khởi tạo backend hoặc database chỉ để cập nhật tài liệu quy trình.

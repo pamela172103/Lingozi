@@ -53,7 +53,7 @@ Không có công việc triển khai đang dở. Thứ tự dưới đây là đ
 | ERD-01 | done | Chủ dự án duyệt ERD tổng thể | Duyệt 2026-11-08 |
 | DS-01 | todo | Chủ dự án duyệt design system (theme thứ hai đã chọn: Coquette) | `docs/architecture/design-system.md` chuyển trạng thái đã duyệt |
 | ENV-01 | done | Môi trường để dựng walking skeleton | Cài .NET SDK 10.0.114 (runtime 10.0.14) từ kho Ubuntu; Docker 29.9.2 chạy được; đã chạy thử SQL Server 2025 Express 17.0.5035.5. Môi trường cloud "Lingozi" tự cài .NET SDK; Docker daemon phải khởi động tay mỗi phiên (xem Cách tiếp tục) |
-| DES-01 | blocked | Vẽ giao diện Figma | Chờ quyền truy cập Figma hoặc người thiết kế tự vẽ từ wireframe; đặc tả theo `figma-spec.md` |
+| DES-01 | in-progress | Vẽ design system nền trong Figma | Đã dựng biến (màu hai theme, khoảng cách, bo góc) và trang xem trước trong file Lingozi; còn component và text style. Xem [design-system.md](../architecture/design-system.md) §7.1 |
 
 ## Vướng mắc và quyết định còn thiếu
 
@@ -72,6 +72,7 @@ Không có công việc triển khai đang dở. Thứ tự dưới đây là đ
   - Kiểm tra tay: tắt SQL Server thì `/api/system/status` trả `database: unavailable`, bật lại thì `ok`.
   - Script token: 0 lỗi tương phản; `tokens.css` khớp với nguồn.
   - CI GitHub Actions run #1 (Node 26, ubuntu-24.04): 4/4 job success.
+- Phiên 2026-11-08-14: dựng biến và trang xem trước design system nền trong Figma (file tIrqU4XF6eEOTraGqv2EpY). Gói Free giới hạn một chế độ mỗi bộ biến, nên theme tách thành hai bộ.
 - Phiên 2026-11-08-13: chủ dự án chọn phương án B và chỉ mở 2 loại ở Vòng 1. Không truy cập được dictionaryapi.dev từ máy cloud nên chưa kiểm tra điều khoản. Script truy vết: 45/45 AC, 50 TC.
 - Phiên 2026-11-08-12: cập nhật FEAT-02 v0.2 và ERD (sửa đổi có ghi); ADR 0007 Proposed; script truy vết: 45/45 AC có test case, 50 TC.
 - Phiên 2026-11-08-11: script kiểm tra truy vết AC → TC: FEAT-01 có 37/37 AC có test case (38 TC), FEAT-02 có 28/28 AC (32 TC); kiểm tra liên kết trong `docs/`.

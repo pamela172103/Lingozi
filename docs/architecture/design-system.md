@@ -201,3 +201,15 @@ Nếu Figma được kết nối cho môi trường làm việc, có thể dùng
 | `DS-02` | Có cần chế độ tối cho theme Default ở MVP không | Vòng 3; chế độ tối phải đi qua cùng kiểm tra tương phản |
 | `DS-03` | Logo, minh họa, linh vật: ai tạo và theo giấy phép nào | Trước Vòng 3 |
 | `DS-04` | Xác minh subset tiếng Việt của Be Vietnam Pro và Playfair Display qua `next/font` | Khi dựng khung |
+
+## 7.1 Đã dựng trong Figma (2026-11-08)
+
+- File: [Lingozi](https://www.figma.com/design/tIrqU4XF6eEOTraGqv2EpY/Lingozi) (gói Free). Trang **Design system nền** (node `8:3`) là trang xem trước: bảng màu hai theme, kiểu chữ, nút, ô nhập, trạng thái, khoảng cách, bo góc. Mỗi màu gắn với biến, không phải giá trị cứng.
+- Biến (Local variables):
+  - `Theme Mặc định`: 19 biến `color/*`, một chế độ tên "Mặc định".
+  - `Theme Coquette`: 19 biến `color/*` cùng tên, một chế độ tên "Coquette".
+  - `Khoảng cách`: 11 biến `space/*` (chế độ "Giá trị").
+  - `Bo góc`: 5 biến `radius/*` (chế độ "Giá trị").
+- Mỗi biến có phạm vi (`FRAME_FILL`, `TEXT_FILL`, `STROKE_COLOR`, `GAP`, `CORNER_RADIUS`) và cú pháp mã WEB `var(--lz-...)`, khớp với `tokens.css`.
+- **Giới hạn gói Free:** mỗi bộ biến chỉ có một chế độ (Figma trả lỗi "Limited to 1 modes only"). Vì vậy hai theme được tách thành hai bộ biến cùng tên. Không chuyển theme được bằng chế độ trong một bộ. Muốn chuyển theme trong một bộ thì cần gói trả phí.
+- Chưa làm: component thật (nút, ô nhập dạng component với variant), kiểu chữ dạng text style, hiệu ứng bóng. Các mục này là bước sau.

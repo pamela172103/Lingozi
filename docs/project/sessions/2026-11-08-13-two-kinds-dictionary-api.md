@@ -48,3 +48,13 @@
 - Việc tiếp theo: chạy cổng kiểm tra điều khoản ADR 0007; duyệt thiết kế; sau đó code FEAT-01, rồi FEAT-02.
 - Trạng thái lưu Git: đi cùng commit phiên này.
 - Trạng thái đồng bộ: push lên `claude/friendly-brahmagupta-yzqxik`.
+
+## Cập nhật sau khi kiểm tra lại (cùng phiên)
+
+- Trang `dictionaryapi.dev` và `api.dictionaryapi.dev` truy cập được bằng `curl` (200) sau khi chủ dự án xác nhận. Trình đọc web vẫn không resolve được host này.
+- **Giấy phép:** phản hồi API ghi `CC BY-SA 3.0`, dữ liệu từ `en.wiktionary.org`. Ghi nguồn bắt buộc (đã thiết kế). **Share-alike là câu hỏi pháp lý, chưa xem xét.**
+- **Giọng Anh-Anh:** phiên âm không gắn nhãn giọng trong text; chỉ file âm thanh có `-uk.mp3`. Quy tắc mới trong BR-LIB-013: chỉ điền khi có bản `-uk`.
+- **Độ phủ:** 6/13 từ mẫu có phiên âm Anh-Anh (water, tomato, hello, book, apple, beautiful); 7 từ không có (learn, improve, vocabulary, pronunciation, run, schedule, give up).
+- **Giới hạn gọi:** header `x-ratelimit-limit: 450`, đơn vị thời gian chưa rõ.
+- **Điều khoản sử dụng:** chưa tìm được trang ToS riêng.
+- Sửa ví dụ trong thiết kế: "give up" không có phiên âm nên không dùng làm ví dụ; thay bằng "water" (`/ˈwɔːtə/`).

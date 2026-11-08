@@ -44,7 +44,7 @@ Không có công việc triển khai đang dở. Thứ tự dưới đây là đ
 | PLAN-02 | in-progress | Viết PRD và chốt phạm vi MVP (Draft xong, chờ duyệt) | `docs/product/prd.md`, `docs/product/mvp-scope.md`, có xác nhận phạm vi |
 | PLAN-03 | done | Xác minh phiên bản/tương thích và thiết kế chi tiết theo stack người dùng cung cấp (ADR Accepted; ghi nhận khi dựng khung trong ADR 0001–0003) | Bằng chứng kiểm tra và quyết định tại `docs/decisions/`; không tự thay đổi stack |
 | SKEL-01 | done | Walking skeleton + CI (Vòng 0) | Build/test/E2E đạt ở local; CI GitHub run #1 (commit `2c98e96`) có 4/4 job success |
-| ADR-07 | in-progress | Nguồn phiên âm và gợi ý nghĩa: đã chọn API từ điển miễn phí (phương án B, 2026-11-08) | Kiểm tra trực tiếp điều khoản, giấy phép, lưu đệm, giới hạn gọi (cổng trong ADR 0007); đổi ADR sang `Accepted`; US-LIB-08/09 chỉ được ghi là hoạt động khi đạt |
+| ADR-07 | in-progress | Nguồn phiên âm: API từ điển miễn phí (B), giọng Anh-Anh (2026-11-08) | Cổng còn mở: (1) pháp lý về CC BY-SA 3.0 (share-alike) khi lưu phiên âm; (2) trang điều khoản chưa tìm được; (3) độ phủ Anh-Anh ~6/13 từ mẫu, cần đo; US-LIB-08/09 chỉ ghi hoạt động khi đạt |
 | PLAN-04 | in-progress | Vòng 1: thiết kế FEAT-01 Tài khoản và FEAT-02 Mục kiến thức, rồi phát triển | Thiết kế xong ([accounts](../features/accounts/README.md), [knowledge-items](../features/knowledge-items/README.md)); **chờ chủ dự án duyệt DoR** rồi mới code |
 | ADR-01 | done | Chủ dự án duyệt ADR 0001–0006 | Accepted 2026-11-08; hosting: máy chủ riêng + SQL Server |
 | HOST-01 | todo | Chủ dự án cung cấp thông tin máy chủ `HOST-01`–`HOST-05` (OS/cấu hình, edition SQL Server, domain, nơi backup, staging) | Ghi vào ADR 0006; hạn cuối Vòng 1 |

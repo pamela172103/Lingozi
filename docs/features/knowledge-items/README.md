@@ -16,7 +16,7 @@
 **Có trong vòng này:**
 
 - Chọn loại trước, rồi form theo loại. Vòng 1 chỉ có hai loại: **Từ vựng** (bắt buộc "Từ") và **Ngữ pháp** (bắt buộc "Điểm ngữ pháp"). Nghĩa, ví dụ, ghi chú, nguồn đều không bắt buộc.
-- Từ vựng: phiên âm IPA tự điền từ API từ điển miễn phí (ADR 0007, phương án B đã chọn); người dùng sửa hoặc tự nhập. **Chưa được ghi là hoạt động** cho tới khi kiểm tra điều khoản và giới hạn gọi của nhà cung cấp.
+- Từ vựng: phiên âm IPA **Anh-Anh** tự điền từ API từ điển miễn phí (ADR 0007, phương án B đã chọn; chỉ khi nguồn có bản Anh-Anh được gắn nhãn, nếu không ô để trống); ghi nguồn Wiktionary CC BY-SA 3.0; người dùng sửa hoặc tự nhập. **Chưa được ghi là hoạt động** cho tới khi kiểm tra điều khoản và giới hạn gọi của nhà cung cấp.
 - Gợi ý nghĩa khi nhập: từ mục của chính người dùng và nguồn từ điển; không lấy dữ liệu người khác. Gợi ý không tự điền, phải bấm.
 - Gợi ý mục trùng khi tạo; người dùng tự quyết bổ sung vào mục cũ hay tạo mục riêng.
 - Danh sách mục, mới nhất trước, có phân trang.

@@ -204,21 +204,25 @@ Là người học từ vựng, tôi muốn có phiên âm IPA tự động, nh�
 Phụ thuộc: nguồn từ điển chưa được chọn (ADR 0007). Trạng thái hiện tại: **integration ready** với provider giả trong test; không ghi là hoạt động cho tới khi có nguồn thật.
 
 ```gherkin
-Scenario: AC-01 Tự điền phiên âm
-  Given tôi chọn "Từ vựng" và nhập "give up"
+Scenario: AC-01 Tự điền phiên âm Anh-Anh
+  Given tôi chọn "Từ vựng" và nhập "water"
   When tôi rời ô "Từ" (hoặc sau 500 ms không gõ)
-  Then ô "Phiên âm" được điền "/ɡɪv ʌp/" với nhãn "Tự động từ điển"
+  Then ô "Phiên âm" được điền "/ˈwɔːtə/" với nhãn "Tự động từ điển (Anh-Anh)" và "Nguồn: Wiktionary, CC BY-SA 3.0"
   And tôi có thể lưu mà không sửa gì
+
+Scenario: AC-01a Chỉ điền khi có phiên âm Anh-Anh được gắn nhãn
+  Given tôi nhập "learn", nguồn có phiên âm nhưng không có bản Anh-Anh được gắn nhãn
+  Then ô "Phiên âm" trống, không điền phiên âm Anh-Mỹ hay không nhãn vào ô này
 
 Scenario: AC-02 Sửa phiên âm do máy điền
   Given ô phiên âm đang có giá trị từ điển
-  When tôi sửa thành "/ɡɪv ʌp/ (ghi chú của tôi)" hoặc thay bằng giá trị khác rồi lưu
+  When tôi sửa thành "/ˈwɔːtə/ (ghi chú của tôi)" hoặc thay bằng giá trị khác rồi lưu
   Then mục lưu IpaSource = 2 (người dùng) và nhãn chuyển thành "Bạn đã chỉnh sửa"
 
 Scenario: AC-03 Không có phiên âm từ nguồn
-  Given nguồn không có phiên âm cho "xyzzy"
-  When tôi nhập "xyzzy"
-  Then ô phiên âm trống với gợi ý "Chưa có phiên âm, bạn có thể tự nhập"
+  Given nguồn không có phiên âm Anh-Anh cho "learn"
+  When tôi nhập "learn"
+  Then ô phiên âm trống với gợi ý "Chưa có phiên âm Anh-Anh, bạn có thể tự nhập"
   And tôi lưu được mục với Ipa là null
 
 Scenario: AC-04 Tự nhập phiên âm

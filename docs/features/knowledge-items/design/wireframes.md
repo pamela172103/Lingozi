@@ -57,8 +57,8 @@
 │         │ │ Từ *                            │ │ Ví dụ (0/20)                │ │
 │         │ │ [give up_______________________]│ │ ┌ Ví dụ 1 ───────────────┐  │ │
 │         │ │ Phiên âm                        │ │ │ Câu ví dụ               │  │ │
-│         │ │ [/ɡɪv ʌp/_____________________] │ │ │ [Don't give up._______] │  │ │
-│         │ │ ✓ Tự động từ điển  [Sửa]        │ │ │ Bản dịch                │  │ │
+│         │ │ [/ˈwɔːtə/_____________________] │ │ │ [Drink some water.____] │  │ │
+│         │ │ ✓ Tự động (Anh-Anh) · Wiktionary [Sửa] │ │ │ Bản dịch                │  │ │
 │         │ │ Nghĩa (không bắt buộc)          │ │ │ [Đừng bỏ cuộc.________] │  │ │
 │         │ │ [từ bỏ_________________________]│ │ │            [🗑 Xóa ví dụ]│  │ │
 │         │ │ Gợi ý: (từ mục của bạn) từ bỏ   │ │ └────────────────────────┘  │ │
@@ -77,7 +77,7 @@ Form của **Ngữ pháp** giống form Từ vựng, trừ:
 
 | Trạng thái | Hiển thị |
 | --- | --- |
-| Phiên âm từ nguồn | Nhãn "✓ Tự động từ điển" kèm nút "Sửa" (nhãn đổi thành "Bạn đã chỉnh sửa" sau khi sửa) |
+| Phiên âm từ nguồn | Nhãn "✓ Tự động (Anh-Anh)" kèm dòng nguồn "Wiktionary, CC BY-SA 3.0" và nút "Sửa" (nhãn đổi thành "Bạn đã chỉnh sửa" sau khi sửa) |
 | Phiên âm trống | Gợi ý "Chưa có phiên âm, bạn có thể tự nhập" |
 | Nguồn lỗi | Dòng "Không lấy được phiên âm tự động" (màu `text.muted`, không đỏ) |
 | Ô phiên âm sai ký tự | Lỗi dưới ô (ERR-LIB-400-02) |

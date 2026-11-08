@@ -35,7 +35,11 @@ Repository chưa có nguồn dữ liệu từ điển nào. Chưa kiểm tra đi
 
 - **Đã chọn (chủ dự án, 2026-11-08):** phương án B, API từ điển miễn phí, gọi lúc người dùng nhập từ. Lý do: triển khai nhanh.
 - **Nhà cung cấp:** dictionaryapi.dev (endpoint `https://api.dictionaryapi.dev/api/v2/entries/en/{từ}`, theo tài liệu thứ cấp; chưa xác nhận trực tiếp).
-- **Giọng:** chưa quyết định (Anh-Anh hoặc Anh-Mỹ). API trả nhiều phiên âm; ưu tiên giọng đầu tiên có giá trị, và ghi rõ giọng khi hiển thị nếu xác định được.
+- **Giọng: Anh-Anh (chủ dự án chọn, 2026-11-08).** API không gắn nhãn giọng trong trường text; chỉ file âm thanh có hậu tố `-uk.mp3` / `-us.mp3`. Quy tắc: chỉ tự điền phiên âm đi kèm file `-uk.mp3` (BR-LIB-013). Không có thì để trống.
+- **Độ phủ đo được (2026-11-08, 13 từ mẫu):** có phiên âm Anh-Anh cho 6 từ (water, tomato, hello, book, apple, beautiful); không có cho 7 từ (learn, improve, vocabulary, pronunciation, run, schedule, give up). Khoảng một nửa từ vựng sẽ phải nhập tay. Thiết kế đã xử lý bằng ô nhập tay; cần đo trên bộ từ thật của người dùng.
+- **Giấy phép đã xác minh từ phản hồi API:** `license = CC BY-SA 3.0`, `source = en.wiktionary.org`. Yêu cầu: ghi nguồn khi hiển thị (đã thiết kế). **Chưa được luật sư hoặc chủ dự án xem xét** về việc lưu phiên âm vào database của Lingozi có thuộc phạm vi "chia sẻ lại theo cùng điều kiện" (share-alike) của CC BY-SA 3.0 hay không. Đây là câu hỏi pháp lý cần quyết định trước khi Accepted.
+- **Giới hạn gọi (từ header phản hồi):** `x-ratelimit-limit: 450`, kèm `x-ratelimit-reset`. Đơn vị thời gian của giới hạn chưa được ghi rõ; cần đo.
+- **Điều khoản sử dụng:** trang chủ không có mục điều khoản hay giấy phép riêng ngoài thông tin trong phản hồi API; chưa tìm được trang ToS. Chưa xác minh được.
 - **Chỉ gửi từ cần tra** tới nhà cung cấp. Không gửi `UserId`, email, IP người dùng do server gọi, hay ngữ cảnh khác.
 
 ## Cổng kiểm tra trước khi Accepted
@@ -44,12 +48,12 @@ Chưa được xác minh (môi trường cloud của phiên này không truy c�
 
 | Mục | Cần xác nhận | Kết quả |
 | --- | --- | --- |
-| Điều khoản sử dụng | Có cho phép dùng trong sản phẩm thương mại và đăng ký tài khoản không | Chưa kiểm tra |
-| Giấy phép dữ liệu | Có được hiển thị phiên âm và nghĩa cho người dùng; có ghi nguồn bắt buộc không | Chưa kiểm tra |
+| Điều khoản sử dụng | Có cho phép dùng trong sản phẩm thương mại và đăng ký tài khoản không | Chưa tìm được trang điều khoản; cần hỏi nhà cung cấp hoặc chủ dự án đánh giá |
+| Giấy phép dữ liệu | Có được hiển thị phiên âm và nghĩa cho người dùng; có ghi nguồn bắt buộc không | Phản hồi API ghi CC BY-SA 3.0 (Wiktionary): ghi nguồn bắt buộc; **share-alike cần pháp lý xem xét** |
 | Lưu đệm | Có được lưu kết quả trong database của Lingozi, và trong bao lâu | Chưa kiểm tra — **mặc định của thiết kế: không lưu đệm lâu dài**, chỉ dùng kết quả đã được người dùng chấp nhận (nằm trong `KnowledgeItems.Ipa`) |
-| Giới hạn gọi | Số request tối đa mỗi phút/ngày, có cần API key không | Chưa kiểm tra |
-| Độ sẵn sàng | Tài liệu thứ cấp và một dự án GitHub ghi nhận dịch vụ đôi khi không khả dụng hoặc bị giới hạn tốc độ | Cần đo trong staging; thiết kế đã xử lý bằng timeout 3 giây và trạng thái `sourceAvailable = false` |
-| Nội dung | Có phiên âm và nghĩa cho cụm từ/ngữ pháp không (chỉ cần cho Từ vựng ở Vòng 1) | Chưa kiểm tra |
+| Giới hạn gọi | Số request tối đa mỗi phút/ngày, có cần API key không | Header `x-ratelimit-limit: 450`, đơn vị thời gian chưa rõ; không cần key (quan sát) |
+| Độ sẵn sàng | Tài liệu thứ cấp ghi nhận dịch vụ đôi khi không khả dụng | Các lần thử từ máy cloud đều trả 200; cần đo trong staging. Thiết kế có timeout 3 giây và `sourceAvailable = false` |
+| Độ phủ Anh-Anh | Tỷ lệ từ vựng có phiên âm Anh-Anh | ~6/13 từ mẫu; cần đo trên bộ từ thật |
 
 Nếu điều khoản không cho phép một trong các điểm trên, quay lại chọn phương án A hoặc C.
 

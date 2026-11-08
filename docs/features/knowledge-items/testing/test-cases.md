@@ -45,7 +45,7 @@
 | `TC-LIB-035` | US-LIB-01 AC-03 | E2E | Chọn Ngữ pháp, để trống; nhập "Present perfect", Lưu | Lỗi "Vui lòng nhập điểm ngữ pháp" rồi lưu được với `kind=grammar` |
 | `TC-LIB-036` | US-LIB-01 AC-04 | INT + E2E | Mở form (chỉ 2 thẻ); POST với `kind=idiom` (mã ngoài Vòng 1) | UI không có loại thứ ba; API trả 400-01 ở trường `kind`; không tạo mục |
 | `TC-LIB-037` | US-LIB-01 AC-10 | INT | POST không có `kind`; `kind=99` | 400-01 ở trường `kind`; không tạo mục |
-| `TC-LIB-038` | US-LIB-08 AC-01 | INT + E2E | Provider giả trả `/ɡɪv ʌp/` cho "give up" → `GET /suggestions?kind=word` → UI | Ô phiên âm điền sẵn, nhãn "Tự động từ điển"; lưu được với `ipaSource=dictionary` |
+| `TC-LIB-038` | US-LIB-08 AC-01, AC-01a | INT + E2E | Provider giả trả `/ˈwɔːtə/` (nhãn `-uk.mp3`) cho "water"; thêm trường hợp chỉ có bản Anh-Mỹ → ô trống → `GET /suggestions?kind=word` → UI | Ô phiên âm điền sẵn, nhãn "Tự động từ điển"; lưu được với `ipaSource=dictionary` |
 | `TC-LIB-039` | US-LIB-08 AC-02 | INT + E2E | Sửa phiên âm do máy điền rồi lưu | `ipaSource=user`; nhãn "Bạn đã chỉnh sửa" |
 | `TC-LIB-040` | US-LIB-08 AC-03, 04 | INT + E2E | Provider không có phiên âm; người dùng nhập "/ˈzɪzli/" | Ô trống với gợi ý; lưu với `ipa="/ˈzɪzli/"`, `ipaSource=user` |
 | `TC-LIB-041` | US-LIB-08 AC-05 | INT + UNIT (.NET) | Gửi `ipa = "<b>give</b>"`; ký tự điều khiển; 201 ký tự | 400-02; danh sách ký tự hợp lệ được chấp nhận: `/ ˈ ˌ ː . ‿ [ ]` và chữ IPA |

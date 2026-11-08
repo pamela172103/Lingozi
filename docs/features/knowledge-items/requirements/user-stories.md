@@ -8,12 +8,12 @@
 
 Là người tự học, tôi muốn chọn loại kiến thức trước (từ vựng, ngữ pháp, cụm từ…) và chỉ phải nhập đúng phần bắt buộc của loại đó, để lưu nhanh.
 
-Quy ước (cập nhật 2026-11-08): loại không có mặc định; mỗi loại chỉ có một trường bắt buộc; nghĩa không bắt buộc và được gợi ý (US-LIB-09).
+Quy ước (cập nhật 2026-11-08): loại không có mặc định; Vòng 1 chỉ có hai loại là Từ vựng và Ngữ pháp; mỗi loại chỉ có một trường bắt buộc; nghĩa không bắt buộc và được gợi ý (US-LIB-09).
 
 ```gherkin
 Scenario: AC-01 Chọn loại trước khi nhập
   Given tôi mở "Lưu kiến thức"
-  Then tôi thấy lưới 9 loại: Từ vựng, Ngữ pháp, Cụm từ, Cụm động từ, Thành ngữ, Cấu trúc câu, Mẫu giao tiếp, Câu/đoạn trích, Ghi chú cách dùng
+  Then tôi thấy hai loại: "Từ vựng" và "Ngữ pháp"
   And chưa có ô nhập nào hiện ra cho tới khi tôi chọn một loại
 
 Scenario: AC-02 Từ vựng chỉ bắt buộc "Từ"
@@ -29,13 +29,13 @@ Scenario: AC-03 Ngữ pháp chỉ bắt buộc "Điểm ngữ pháp"
   When tôi nhập "Present perfect" và để trống nghĩa rồi bấm "Lưu"
   Then mục được lưu với loại "grammar"
 
-Scenario: AC-04 Các loại khác dùng nhãn "Nội dung"
-  Given tôi chọn "Thành ngữ"
-  When tôi để trống "Nội dung" và bấm "Lưu"
-  Then mục không được lưu và ô hiện "Vui lòng nhập nội dung"
+Scenario: AC-04 Chỉ có hai loại trong Vòng 1
+  Given tôi mở form tạo
+  Then không có loại nào khác "Từ vựng" và "Ngữ pháp" để chọn
+  And API từ chối "kind" nằm ngoài {word, grammar} với ERR-LIB-400-01
 
 Scenario: AC-05 Nghĩa không bắt buộc, khoảng trắng được coi là trống
-  Given tôi chọn "Cụm từ" và nhập nội dung "in a nutshell"
+  Given tôi chọn "Ngữ pháp" và nhập điểm ngữ pháp "Present perfect"
   When tôi nhập nghĩa chỉ gồm khoảng trắng rồi bấm "Lưu"
   Then mục được lưu và nghĩa được lưu là null
 
@@ -241,8 +241,8 @@ Scenario: AC-07 Xóa phiên âm
   When tôi xóa hết và lưu
   Then mục lưu Ipa = null và IpaSource = null
 
-Scenario: AC-08 Không có ô phiên âm cho loại khác
-  When tôi chọn "Cụm từ" hoặc "Ngữ pháp"
+Scenario: AC-08 Không có ô phiên âm cho Ngữ pháp
+  When tôi chọn "Ngữ pháp"
   Then không có ô phiên âm và không gọi nguồn phiên âm
 ```
 

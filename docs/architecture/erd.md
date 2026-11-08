@@ -223,7 +223,7 @@ Các cột Identity không dùng ở MVP (`PhoneNumber`, `TwoFactorEnabled`, …
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | Mã mục | `Id` | uniqueidentifier | — | Không | PK | Sequential GUID | — |
 | Chủ sở hữu | `UserId` | uniqueidentifier | — | Không | FK → `accounts.Users` | NO ACTION; UK (`Id`, `UserId`) phục vụ FK ghép | — |
-| Loại nội dung | `Kind` | tinyint | — | Không | — | CHECK 1–9: 1 Word, 2 Phrase, 3 PhrasalVerb, 4 Idiom, 5 Grammar, 6 SentencePattern, 7 Expression, 8 Quote, 9 UsageNote. **Không có mặc định**: người dùng phải chọn loại trước khi nhập (cập nhật 2026-11-08) | Một form chung kèm trường loại; trường bắt buộc và nhãn phụ thuộc loại (`BR-LIB-012`) |
+| Loại nội dung | `Kind` | tinyint | — | Không | — | Vòng 1: CHECK `Kind IN (1, 5)`: 1 Word (Từ vựng), 5 Grammar (Ngữ pháp). Các mã 2–4, 6–9 đã dự phòng trong danh mục nhưng **chưa mở** ở Vòng 1; mở thêm loại = đổi CHECK bằng migration. **Không có mặc định**: người dùng phải chọn loại trước khi nhập (cập nhật 2026-11-08) | Một form chung kèm trường loại; trường bắt buộc và nhãn phụ thuộc loại (`BR-LIB-012`) |
 | Nội dung tiếng Anh | `Term` | nvarchar | 1000 | Không | — | Sau khi trim phải có ít nhất 1 ký tự | "Từ" bắt buộc. Đủ dài cho câu hoặc đoạn trích |
 | Nội dung chuẩn hóa | `NormalizedTerm` | nvarchar | 1000 | Không | — | Ứng dụng tính: chữ thường, trim, gộp khoảng trắng | Dùng để gợi ý mục trùng (`Q-03`). **Không unique**, vì người dùng được phép tạo mục riêng |
 | Nghĩa | `Meaning` | nvarchar | 2000 | **Có** | — | Sau khi trim: null nếu rỗng; nếu có thì 1–2000 ký tự | Không bắt buộc cho mọi loại (cập nhật 2026-11-08). Có thể được điền từ gợi ý (`BR-LIB-014`) |

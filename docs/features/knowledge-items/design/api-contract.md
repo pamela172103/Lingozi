@@ -9,12 +9,12 @@
 
 ```jsonc
 // KnowledgeItemSummary — dùng trong danh sách
-{ "id": "uuid", "kind": "phrasalVerb", "term": "give up", "meaning": "từ bỏ", "ipa": null, "createdAt": "2026-11-08T07:00:00Z" }
+{ "id": "uuid", "kind": "word", "term": "give up", "meaning": "từ bỏ", "ipa": null, "createdAt": "2026-11-08T07:00:00Z" }
 
 // KnowledgeItemDetail
 {
   "id": "uuid",
-  "kind": "phrasalVerb",
+  "kind": "word",
   "term": "give up",
   "meaning": "từ bỏ",                         // null nếu không có
   "ipa": null,                                // chỉ có với "word"
@@ -29,7 +29,7 @@
 
 // KnowledgeItemInput — dùng cho POST và PUT
 {
-  "kind": "phrasalVerb",                      // bắt buộc, không có mặc định (BR-LIB-002)
+  "kind": "word",                              // bắt buộc: "word" hoặc "grammar" (BR-LIB-002)
   "term": "give up",                          // bắt buộc (BR-LIB-012)
   "meaning": null,                            // không bắt buộc; null hoặc chuỗi rỗng sau trim → null
   "ipa": null,                                // chỉ khi kind = "word"; còn lại phải null (BR-LIB-013)
@@ -44,7 +44,7 @@
 
 | Method và path | Body | Thành công | Lỗi |
 | --- | --- | --- | --- |
-| `GET /api/library/item-kinds` | — | `200 { kinds: [{ kind, label, termLabel, requiredField: "term", showsIpa, examplePlaceholder }] }` (9 loại theo BR-LIB-002/012) | — |
+| `GET /api/library/item-kinds` | — | `200 { kinds: [{ kind: "word", label: "Từ vựng", termLabel: "Từ", showsIpa: true }, { kind: "grammar", label: "Ngữ pháp", termLabel: "Điểm ngữ pháp", showsIpa: false }] }` (Vòng 1: hai loại theo BR-LIB-002/012) | — |
 | `GET /api/library/items?page=1&pageSize=20` | — | `200 { items: Summary[], page, pageSize, totalCount }` | 400-01 |
 | `GET /api/library/items/similar?term=` | — | `200 { items: Summary[] (tối đa 5), totalCount }`; `term` rỗng thì danh sách rỗng | 400-01 (`term` > 1000 ký tự) |
 | `GET /api/library/suggestions?term=&kind=` | — | `200 { ipa: { value, source: "dictionary" } \| null, sourceAvailable: bool, meanings: [{ text, source: "own" \| "dictionary" }] }` (tối đa 5 nghĩa; `ipa` chỉ khi `kind = word`) | 400-01 |
@@ -55,6 +55,7 @@
 
 **Quy tắc bổ sung:**
 
+- `kind` khác `word` và `grammar` trả 400-01 ở trường `kind` (Vòng 1).
 - `suggestions` không ghi gì vào database. Nguồn lỗi hoặc quá 3 giây trả `sourceAvailable = false`, `ipa = null`, `meanings = [own]`, status vẫn 200 (BR-LIB-015).
 - `POST`/`PUT` với `kind` khác `word` mà có `ipa` khác null → 400-01 ở trường `ipa`.
 - `ipaSource` do server xác định theo BR-LIB-013: khớp gợi ý đã nhận → `dictionary`, còn lại → `user`. Client không được tự đặt `dictionary` cho giá trị do người dùng sửa.

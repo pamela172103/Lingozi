@@ -2,7 +2,7 @@
 
 - Cập nhật: 2026-11-08.
 - Giai đoạn: **Vòng 1 — Lưu được kiến thức của riêng mình** (2026-11-08 → 2026-11-21), đang ở bước ② Thiết kế. Vòng 0 xong phần việc. Xem [lộ trình](../product/roadmap.md) §5.
-- Phiên gần nhất: [FEAT-02: chọn loại, phiên âm IPA, gợi ý nghĩa](sessions/2026-11-08-12-knowledge-type-forms.md).
+- Phiên gần nhất: [FEAT-02: hai loại và nguồn từ điển B](sessions/2026-11-08-13-two-kinds-dictionary-api.md).
 - Đã đọc và gộp 4 commit từ `origin/work` vào `main` theo fast-forward, tới `61514e0`. Bàn giao phiên 05 được lưu cùng commit tài liệu tiếp theo; tra bằng `git log -- docs/project/`.
 
 ## Đã hoàn thành
@@ -44,7 +44,7 @@ Không có công việc triển khai đang dở. Thứ tự dưới đây là đ
 | PLAN-02 | in-progress | Viết PRD và chốt phạm vi MVP (Draft xong, chờ duyệt) | `docs/product/prd.md`, `docs/product/mvp-scope.md`, có xác nhận phạm vi |
 | PLAN-03 | done | Xác minh phiên bản/tương thích và thiết kế chi tiết theo stack người dùng cung cấp (ADR Accepted; ghi nhận khi dựng khung trong ADR 0001–0003) | Bằng chứng kiểm tra và quyết định tại `docs/decisions/`; không tự thay đổi stack |
 | SKEL-01 | done | Walking skeleton + CI (Vòng 0) | Build/test/E2E đạt ở local; CI GitHub run #1 (commit `2c98e96`) có 4/4 job success |
-| ADR-07 | todo | Chủ dự án chọn nguồn phiên âm và gợi ý nghĩa (ADR 0007): bộ dữ liệu mở (đề xuất), API miễn phí hoặc API thương mại | Kiểm tra giấy phép trước khi chọn; trạng thái ADR `Accepted`; cần cho US-LIB-08/09 hoạt động thật |
+| ADR-07 | in-progress | Nguồn phiên âm và gợi ý nghĩa: đã chọn API từ điển miễn phí (phương án B, 2026-11-08) | Kiểm tra trực tiếp điều khoản, giấy phép, lưu đệm, giới hạn gọi (cổng trong ADR 0007); đổi ADR sang `Accepted`; US-LIB-08/09 chỉ được ghi là hoạt động khi đạt |
 | PLAN-04 | in-progress | Vòng 1: thiết kế FEAT-01 Tài khoản và FEAT-02 Mục kiến thức, rồi phát triển | Thiết kế xong ([accounts](../features/accounts/README.md), [knowledge-items](../features/knowledge-items/README.md)); **chờ chủ dự án duyệt DoR** rồi mới code |
 | ADR-01 | done | Chủ dự án duyệt ADR 0001–0006 | Accepted 2026-11-08; hosting: máy chủ riêng + SQL Server |
 | HOST-01 | todo | Chủ dự án cung cấp thông tin máy chủ `HOST-01`–`HOST-05` (OS/cấu hình, edition SQL Server, domain, nơi backup, staging) | Ghi vào ADR 0006; hạn cuối Vòng 1 |
@@ -72,6 +72,7 @@ Không có công việc triển khai đang dở. Thứ tự dưới đây là đ
   - Kiểm tra tay: tắt SQL Server thì `/api/system/status` trả `database: unavailable`, bật lại thì `ok`.
   - Script token: 0 lỗi tương phản; `tokens.css` khớp với nguồn.
   - CI GitHub Actions run #1 (Node 26, ubuntu-24.04): 4/4 job success.
+- Phiên 2026-11-08-13: chủ dự án chọn phương án B và chỉ mở 2 loại ở Vòng 1. Không truy cập được dictionaryapi.dev từ máy cloud nên chưa kiểm tra điều khoản. Script truy vết: 45/45 AC, 50 TC.
 - Phiên 2026-11-08-12: cập nhật FEAT-02 v0.2 và ERD (sửa đổi có ghi); ADR 0007 Proposed; script truy vết: 45/45 AC có test case, 50 TC.
 - Phiên 2026-11-08-11: script kiểm tra truy vết AC → TC: FEAT-01 có 37/37 AC có test case (38 TC), FEAT-02 có 28/28 AC (32 TC); kiểm tra liên kết trong `docs/`.
 - Phiên 2026-11-08-10: chỉ thay đổi tài liệu; kiểm tra liên kết trong `docs/`.

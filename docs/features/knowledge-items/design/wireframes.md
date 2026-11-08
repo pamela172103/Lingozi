@@ -12,7 +12,7 @@
 │ ▸ Luyện tập │ └────────────────────────────────────────────────────────────────┘│
 │             │ Thư viện                                       25 mục          h1 │
 │             │ ┌──────────────────────────┐ ┌──────────────────────────┐         │
-│             │ │ give up        Cụm động từ│ │ break the ice   Thành ngữ │         │
+│             │ │ give up        Từ vựng    │ │ Present perfect  Ngữ pháp  │         │
 │             │ │ từ bỏ                     │ │ phá vỡ sự ngại ngùng ban  │         │
 │             │ │                 08/11/2026│ │ đầu…            07/11/2026│         │
 │             │ └──────────────────────────┘ └──────────────────────────┘         │
@@ -33,19 +33,18 @@
 ## W-LIB-02a Chọn loại (`/library/items/new`, bước 1)
 
 ```text
-┌ Sidebar ┬──────────────────────────────────────────────────────────────────┐
-│         │ ← Thư viện    Lưu kiến thức mới                                 h1 │
-│         │ Bạn muốn lưu loại nào?                                           h2 │
-│         │ ┌ Từ vựng ─────┐ ┌ Ngữ pháp ────┐ ┌ Cụm từ ───────┐             │
-│         │ │ word, giải   │ │ grammar, mẫu │ │ phrase       │             │
-│         │ │ nghĩa, IPA   │ │ câu, cấu trúc│ │              │             │
-│         │ └──────────────┘ └──────────────┘ └──────────────┘             │
-│         │ ┌ Cụm động từ ┐ ┌ Thành ngữ ──┐ ┌ Cấu trúc câu ┐ ┌ Mẫu giao tiếp┐  │
-│         │ ┌ Câu/đoạn trích ┐ ┌ Ghi chú cách dùng ┐                       │
-└─────────┴──────────────────────────────────────────────────────────────────┘
+┌ Sidebar 240 ┬──────────────────────────────────────────────────────────────┐
+│ Lingozi     │ ← Thư viện    Lưu kiến thức mới                             h1 │
+│             │ Bạn muốn lưu loại nào?                                       h2 │
+│             │ ┌ Từ vựng ──────────────────┐ ┌ Ngữ pháp ─────────────────┐   │
+│             │ │ Một từ hoặc cụm từ ngắn,   │ │ Một điểm ngữ pháp hoặc    │   │
+│             │ │ có nghĩa và phiên âm IPA   │ │ mẫu câu, ví dụ đi kèm     │   │
+│             │ └────────────────────────────┘ └───────────────────────────┘   │
+│             │                                    [ Tiếp tục ] (disabled)     │
+└─────────────┴──────────────────────────────────────────────────────────────┘
 ```
 
-- Lưới thẻ, mỗi thẻ là một nút (`role="radio"` trong `radiogroup`, dùng phím mũi tên để chọn). Mỗi thẻ có tên loại và một dòng mô tả ngắn.
+- Hai thẻ là một `radiogroup`; chọn bằng phím mũi tên, Enter hoặc Space. Mỗi thẻ có tên loại và một dòng mô tả.
 - Chưa chọn thì không có ô nhập nào; nút "Tiếp tục" disabled.
 - Sau khi chọn, bấm "Tiếp tục" hoặc Enter để sang form. Nút "Đổi loại" có ở đầu form.
 
@@ -71,9 +70,9 @@
 └─────────┴───────────────────────────────────────────────────────────────────────┘
 ```
 
-Form của **Ngữ pháp** và các loại khác giống hệt, trừ:
+Form của **Ngữ pháp** giống form Từ vựng, trừ:
 
-- Nhãn trường bắt buộc: "Điểm ngữ pháp" hoặc "Nội dung".
+- Nhãn trường bắt buộc là "Điểm ngữ pháp".
 - Không có ô Phiên âm và không gọi nguồn phiên âm.
 
 | Trạng thái | Hiển thị |
@@ -84,8 +83,8 @@ Form của **Ngữ pháp** và các loại khác giống hệt, trừ:
 | Ô phiên âm sai ký tự | Lỗi dưới ô (ERR-LIB-400-02) |
 | Gợi ý nghĩa | Chip nhỏ dưới ô Nghĩa, nhãn nguồn bằng chữ; bấm để điền; không tự điền |
 | Không có gợi ý | Không hiện chip và không có thông báo |
-| Lỗi 400-01 (trường bắt buộc) | "Vui lòng nhập từ" / "Vui lòng nhập điểm ngữ pháp" / "Vui lòng nhập nội dung" dưới ô |
-| Đổi loại khi đã nhập | Hộp xác nhận nếu sẽ mất phiên âm; giữ các trường chung |
+| Lỗi 400-01 (trường bắt buộc) | "Vui lòng nhập từ" hoặc "Vui lòng nhập điểm ngữ pháp" dưới ô |
+| Đổi loại khi đã nhập | Hộp xác nhận nếu sẽ mất phiên âm (khi chuyển sang Ngữ pháp); giữ các trường chung |
 | Đang lưu, 409-01, 422-01, lỗi mạng, rời trang | Như bản trước (giữ nguyên) |
 
 ## W-LIB-03 Dialog mục tương tự
@@ -94,7 +93,7 @@ Form của **Ngữ pháp** và các loại khác giống hệt, trừ:
 ┌──────────── Dialog (role=dialog, aria-modal) ─────────────────┐
 │ Bạn đã lưu nội dung tương tự                               h2 │
 │ ┌──────────────────────────────────────────────────────────┐  │
-│ │ Give up · Cụm động từ · từ bỏ · 02/11/2026          [Mở] │  │
+│ │ Give up · Từ vựng · từ bỏ · 02/11/2026          [Mở] │  │
 │ └──────────────────────────────────────────────────────────┘  │
 │ và 2 mục khác                                                 │
 │ Bạn muốn bổ sung vào mục cũ hay tạo mục riêng?                │
@@ -110,7 +109,7 @@ Form của **Ngữ pháp** và các loại khác giống hệt, trừ:
 ```text
 │ ← Thư viện                                      [ Sửa ]  [ ⚠ Xóa ] (kiểu viền) │
 │ give up                                         text.term (font display)      │
-│ Cụm động từ                                                         Badge     │
+│ Từ vựng                                                             Badge     │
 │ Nghĩa                                                                     h2  │
 │ từ bỏ                                                           text.body-lg  │
 │ Ví dụ                                                                     h2  │

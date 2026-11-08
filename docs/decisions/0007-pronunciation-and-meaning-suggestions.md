@@ -1,6 +1,6 @@
 # ADR 0007 — Nguồn phiên âm IPA và gợi ý nghĩa
 
-- **Trạng thái:** Proposed. **Chưa chọn nguồn.** Chủ dự án cần quyết định trước khi làm US-LIB-08 và US-LIB-09 (FEAT-02).
+- **Trạng thái:** Proposed. **Chủ dự án chọn phương án B (API từ điển miễn phí).** Chưa được chuyển sang Accepted: phải kiểm tra điều khoản sử dụng và giới hạn gọi của nhà cung cấp, xem mục "Cổng kiểm tra trước khi Accepted".
 - **Ngày:** 2026-11-08.
 - **Liên quan:** [FEAT-02](../features/knowledge-items/README.md), `BR-LIB-013`, `BR-LIB-014`, `BR-LIB-015`, [ERD](../architecture/erd.md) (cột `Ipa`, `IpaSource`).
 
@@ -31,10 +31,27 @@ Repository chưa có nguồn dữ liệu từ điển nào. Chưa kiểm tra đi
 
 **Đề xuất của tôi:** phương án A cho MVP, vì lưu được lâu dài và không gửi dữ liệu người dùng ra ngoài. Cần chủ dự án xác nhận. Trong thời gian chờ, mọi phần khác của FEAT-02 vẫn làm được, và phiên âm được nhập tay.
 
-## Quyết định (chờ)
+## Quyết định
 
-- Nguồn được chọn: **chưa quyết định**.
-- Giọng: **chưa quyết định** (Anh-Anh hoặc Anh-Mỹ).
+- **Đã chọn (chủ dự án, 2026-11-08):** phương án B, API từ điển miễn phí, gọi lúc người dùng nhập từ. Lý do: triển khai nhanh.
+- **Nhà cung cấp:** dictionaryapi.dev (endpoint `https://api.dictionaryapi.dev/api/v2/entries/en/{từ}`, theo tài liệu thứ cấp; chưa xác nhận trực tiếp).
+- **Giọng:** chưa quyết định (Anh-Anh hoặc Anh-Mỹ). API trả nhiều phiên âm; ưu tiên giọng đầu tiên có giá trị, và ghi rõ giọng khi hiển thị nếu xác định được.
+- **Chỉ gửi từ cần tra** tới nhà cung cấp. Không gửi `UserId`, email, IP người dùng do server gọi, hay ngữ cảnh khác.
+
+## Cổng kiểm tra trước khi Accepted
+
+Chưa được xác minh (môi trường cloud của phiên này không truy cập được `dictionaryapi.dev`; kết quả tìm kiếm chỉ là thông tin thứ cấp). Trước khi Accepted, chủ dự án hoặc nhóm phải ghi kết quả kiểm tra trực tiếp:
+
+| Mục | Cần xác nhận | Kết quả |
+| --- | --- | --- |
+| Điều khoản sử dụng | Có cho phép dùng trong sản phẩm thương mại và đăng ký tài khoản không | Chưa kiểm tra |
+| Giấy phép dữ liệu | Có được hiển thị phiên âm và nghĩa cho người dùng; có ghi nguồn bắt buộc không | Chưa kiểm tra |
+| Lưu đệm | Có được lưu kết quả trong database của Lingozi, và trong bao lâu | Chưa kiểm tra — **mặc định của thiết kế: không lưu đệm lâu dài**, chỉ dùng kết quả đã được người dùng chấp nhận (nằm trong `KnowledgeItems.Ipa`) |
+| Giới hạn gọi | Số request tối đa mỗi phút/ngày, có cần API key không | Chưa kiểm tra |
+| Độ sẵn sàng | Tài liệu thứ cấp và một dự án GitHub ghi nhận dịch vụ đôi khi không khả dụng hoặc bị giới hạn tốc độ | Cần đo trong staging; thiết kế đã xử lý bằng timeout 3 giây và trạng thái `sourceAvailable = false` |
+| Nội dung | Có phiên âm và nghĩa cho cụm từ/ngữ pháp không (chỉ cần cho Từ vựng ở Vòng 1) | Chưa kiểm tra |
+
+Nếu điều khoản không cho phép một trong các điểm trên, quay lại chọn phương án A hoặc C.
 
 ## Ràng buộc kỹ thuật (áp dụng mọi phương án)
 
@@ -44,6 +61,6 @@ Repository chưa có nguồn dữ liệu từ điển nào. Chưa kiểm tra đi
 - Log không ghi nội dung tra cứu gắn với người dùng.
 - Test tự động dùng provider giả, chỉ có trong project test. Không dùng dữ liệu giả trong môi trường production.
 
-## Trạng thái khi chưa có quyết định
+## Trạng thái hiện tại
 
-Theo `AGENTS.md` §6: US-LIB-08 và US-LIB-09 có trạng thái **integration ready** (đã viết code abstraction và test với provider giả), **không** được ghi là hoạt động. Form vẫn hoạt động đầy đủ với phiên âm nhập tay.
+Theo `AGENTS.md` §6: US-LIB-08 và US-LIB-09 có trạng thái **integration ready** khi đã code abstraction và test với provider giả; **không** được ghi là hoạt động cho tới khi cổng kiểm tra ở trên đạt và provider thật được cấu hình. Form vẫn dùng được đầy đủ với phiên âm nhập tay.

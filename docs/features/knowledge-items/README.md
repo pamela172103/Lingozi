@@ -15,8 +15,8 @@
 
 **Có trong vòng này:**
 
-- Chọn loại trước (9 loại), rồi form theo loại. Mỗi loại chỉ bắt buộc một trường: "Từ" (từ vựng), "Điểm ngữ pháp" (ngữ pháp), "Nội dung" (các loại khác). Nghĩa, ví dụ, ghi chú, nguồn đều không bắt buộc.
-- Từ vựng: phiên âm IPA tự điền từ nguồn từ điển; người dùng sửa hoặc tự nhập. **Phụ thuộc ADR 0007 (nguồn chưa chọn).**
+- Chọn loại trước, rồi form theo loại. Vòng 1 chỉ có hai loại: **Từ vựng** (bắt buộc "Từ") và **Ngữ pháp** (bắt buộc "Điểm ngữ pháp"). Nghĩa, ví dụ, ghi chú, nguồn đều không bắt buộc.
+- Từ vựng: phiên âm IPA tự điền từ API từ điển miễn phí (ADR 0007, phương án B đã chọn); người dùng sửa hoặc tự nhập. **Chưa được ghi là hoạt động** cho tới khi kiểm tra điều khoản và giới hạn gọi của nhà cung cấp.
 - Gợi ý nghĩa khi nhập: từ mục của chính người dùng và nguồn từ điển; không lấy dữ liệu người khác. Gợi ý không tự điền, phải bấm.
 - Gợi ý mục trùng khi tạo; người dùng tự quyết bổ sung vào mục cũ hay tạo mục riêng.
 - Danh sách mục, mới nhất trước, có phân trang.
@@ -54,10 +54,11 @@
 | User story có ID, AC dạng Gherkin | Có, chờ duyệt |
 | Business rules và mã lỗi | Có (BR-LIB-001 → 015), chờ duyệt |
 | Màn hình đã duyệt, đủ trạng thái | Wireframe ASCII (W-LIB-02a chọn loại, W-LIB-02 form theo loại); Figma BLOCKED (`DES-01`), chờ duyệt |
-| Nguồn phiên âm và gợi ý nghĩa | **Chưa có** — [ADR 0007](../../decisions/0007-pronunciation-and-meaning-suggestions.md) Proposed. US-LIB-08 và US-LIB-09 vẫn đạt DoR được (có abstraction, provider giả trong test), nhưng không được ghi là hoạt động cho tới khi chọn nguồn |
+| Nguồn phiên âm và gợi ý nghĩa | [ADR 0007](../../decisions/0007-pronunciation-and-meaning-suggestions.md): đã chọn API từ điển miễn phí (phương án B). **Cổng chưa đạt:** điều khoản, giấy phép, giới hạn gọi chưa kiểm tra trực tiếp. US-LIB-08/09 đạt DoR ở mức thiết kế; không ghi là hoạt động |
 | API contract và ERD liên quan | Có; ERD §3.2 đã duyệt (chưa dùng cột `SearchText` cho tới Vòng 2) |
 | Test case truy vết về AC | Có |
 
 ## Lịch sử thay đổi
 
 - **v0.2 (2026-11-08):** theo yêu cầu chủ dự án: chọn loại trước, form và nhãn bắt buộc theo loại, nghĩa không bắt buộc và gợi ý, phiên âm IPA cho từ vựng. Thêm US-LIB-08, US-LIB-09, FR-LIB-ITEM-007 → 009, BR-LIB-012 → 015, ERR-LIB-400-02; sửa ERD (`Meaning` null, thêm `Ipa`, `IpaSource`).
+- **v0.3 (2026-11-08):** chủ dự án chọn phương án B (API từ điển miễn phí) và chỉ mở hai loại ở Vòng 1: Từ vựng và Ngữ pháp. Sửa US-LIB-01 (AC-01, 04, 05, 08), BR-LIB-002, BR-LIB-012, BR-LIB-013, API item-kinds, luồng, wireframe W-LIB-02a, test case TC-LIB-002, 003, 033, 036, 044, 050; ERD `Kind IN (1, 5)`.

@@ -114,7 +114,7 @@ Mỗi tính năng nằm trên một nhánh, review qua PR, CI phải xanh trư�
 | Design system nền | done (Draft, chờ duyệt); Figma BLOCKED (DES-01) | [design-system.md](../architecture/design-system.md), [design-tokens.json](../architecture/design-tokens.json) |
 | ADR stack, xác thực, email, hosting, CI | done (Accepted 2026-11-08; máy chủ riêng + SQL Server; còn HOST-01–05 và nhà cung cấp email) | [ADR 0001–0006](../decisions/README.md) |
 | ERD phác thảo tổng thể | done (duyệt 2026-11-08) | [erd.md](../architecture/erd.md) |
-| Walking skeleton + CI | done (local: build/test/E2E đạt; CI GitHub xem STATUS) | `apps/api`, `apps/web`, `tests/e2e`, `compose.yaml`, `.github/workflows/ci.yml`, [hướng dẫn chạy](../guides/local-development.md) |
+| Walking skeleton + CI | done (local và CI GitHub đều đạt, 4/4 job) | `apps/api`, `apps/web`, `tests/e2e`, `compose.yaml`, `.github/workflows/ci.yml`, [hướng dẫn chạy](../guides/local-development.md) |
 
 ### Vòng 1 — Lưu được kiến thức của riêng mình
 

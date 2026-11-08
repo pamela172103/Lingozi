@@ -42,7 +42,7 @@ Không có công việc triển khai đang dở. Thứ tự dưới đây là đ
 | ROAD-01 | done | Chủ dự án duyệt lộ trình | `docs/product/roadmap.md` chuyển trạng thái đã duyệt; nhóm tính năng theo vòng và độ dài vòng được xác nhận |
 | PLAN-02 | in-progress | Viết PRD và chốt phạm vi MVP (Draft xong, chờ duyệt) | `docs/product/prd.md`, `docs/product/mvp-scope.md`, có xác nhận phạm vi |
 | PLAN-03 | done | Xác minh phiên bản/tương thích và thiết kế chi tiết theo stack người dùng cung cấp (ADR Accepted; ghi nhận khi dựng khung trong ADR 0001–0003) | Bằng chứng kiểm tra và quyết định tại `docs/decisions/`; không tự thay đổi stack |
-| SKEL-01 | done | Walking skeleton + CI (Vòng 0) | Build/test/E2E đạt local; xem bằng chứng phiên 09. Kết quả CI trên GitHub ghi trong nhật ký phiên |
+| SKEL-01 | done | Walking skeleton + CI (Vòng 0) | Build/test/E2E đạt ở local; CI GitHub run #1 (commit `2c98e96`) có 4/4 job success |
 | PLAN-04 | todo | Vòng 1: thiết kế (D2–D5) FEAT-01 Tài khoản và FEAT-02 Mục kiến thức, rồi phát triển | Hồ sơ trong `docs/features/`, đạt DoR rồi DoD |
 | ADR-01 | done | Chủ dự án duyệt ADR 0001–0006 | Accepted 2026-11-08; hosting: máy chủ riêng + SQL Server |
 | HOST-01 | todo | Chủ dự án cung cấp thông tin máy chủ `HOST-01`–`HOST-05` (OS/cấu hình, edition SQL Server, domain, nơi backup, staging) | Ghi vào ADR 0006; hạn cuối Vòng 1 |
@@ -68,6 +68,7 @@ Không có công việc triển khai đang dở. Thứ tự dưới đây là đ
   - E2E Playwright 8/8 đạt (desktop 1440 px và Pixel 7; axe không có vi phạm serious/critical; không cuộn ngang).
   - Kiểm tra tay: tắt SQL Server thì `/api/system/status` trả `database: unavailable`, bật lại thì `ok`.
   - Script token: 0 lỗi tương phản; `tokens.css` khớp với nguồn.
+  - CI GitHub Actions run #1 (Node 26, ubuntu-24.04): 4/4 job success.
 - Phiên 2026-11-08-08: `dotnet --list-sdks` → 10.0.114; `docker info` → 29.9.2; chạy container SQL Server 2025 Express và truy vấn `SERVERPROPERTY` thành công, sau đó đã xóa container.
 - Phiên 2026-11-08-07 (bổ sung): đổi theme Garden sang Coquette; script tương phản vẫn 0 failure.
 - Phiên 2026-11-08-07: `python3 tools/design-tokens/check_contrast.py docs/architecture/design-tokens.json` cho 0 failure (19 cặp × 2 theme); đã kiểm tra liên kết trong `docs/`.

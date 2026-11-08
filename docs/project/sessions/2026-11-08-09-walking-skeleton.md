@@ -3,7 +3,7 @@
 - Ngày / múi giờ: 2026-11-08, UTC.
 - Mục tiêu do người dùng yêu cầu: dựng khung ứng dụng (việc cuối của Vòng 0 trong lộ trình §5).
 - Nhánh và commit nền đã kiểm tra: `claude/friendly-brahmagupta-yzqxik` tại `42e94c9`.
-- Status: PASS ở local. CI trên GitHub: xem mục Kiểm tra.
+- Status: PASS. Đạt cả ở local và CI GitHub.
 
 ## Kết quả và file liên quan
 
@@ -61,9 +61,15 @@
 - Phụ thuộc peer giữa TypeScript 7 và ESLint 10.
 - File `.env` có `;` cần đặt trong ngoặc kép.
 
+**CI GitHub** run #1 (id 42459798144) cho commit `2c98e96`, chạy trên runner `ubuntu-24.04` với Node 26: cả 4 job **success**:
+
+- Design tokens.
+- Web (lint, typecheck, format, test, build).
+- API (build, kiểm tra migration, integration test SQL Server 2025).
+- E2E (web → API → SQL Server, Playwright).
+
 **Chưa kiểm chứng:**
 
-- Chạy trên Node 26 (chờ CI).
 - Font Playfair Display trên trang thật.
 - Triển khai lên máy chủ.
 

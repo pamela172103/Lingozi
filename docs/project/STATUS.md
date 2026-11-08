@@ -1,8 +1,8 @@
 # Trạng thái dự án Lingozi
 
 - Cập nhật: 2026-11-08.
-- Giai đoạn: chuẩn bị nền dự án và quy trình tài liệu.
-- Phiên gần nhất: [Lộ trình Agile theo vòng](sessions/2026-11-08-03-agile-roadmap.md).
+- Giai đoạn: **Vòng 0 — Nền dự án** (Agile, vòng 2 tuần, bắt đầu 2026-11-08). Xem [lộ trình](../product/roadmap.md) §5.
+- Phiên gần nhất: [Bắt đầu Vòng 0: brainstorm, discovery, PRD](sessions/2026-11-08-04-round-0-prd.md).
 - Đã đọc và gộp 4 commit từ `origin/work` vào `main` theo fast-forward, tới `61514e0`. Bàn giao phiên 05 được lưu cùng commit tài liệu tiếp theo; tra bằng `git log -- docs/project/`.
 
 ## Đã hoàn thành
@@ -13,13 +13,14 @@
 - Bổ sung nơi lưu trạng thái và nhật ký phiên; quy định đọc lúc bắt đầu và cập nhật khi kết thúc trong `AGENTS.md`.
 - Tích hợp quy tắc người dùng về chất lượng production, bảo mật, kiểm thử, báo cáo và định hướng stack; giữ các quy ước OpenBA. Dùng `docs/project/STATUS.md` làm nguồn trạng thái chính; chỉ đọc thêm `STATUS_STATUS.md` nếu sau này tồn tại.
 - Thêm [tổng quan sản phẩm](../product/overview.md) đã được chủ dự án duyệt ngày 2026-10-26 (phiên 2026-11-08-01, đã gộp vào `main`). Chưa phải PRD/MVP.
-- Soạn [lộ trình phát triển](../product/roadmap.md) theo cách làm Agile chủ dự án chọn (2026-11-08): mỗi vòng thiết kế → phát triển → demo một vài tính năng; Vòng 0 nền, Vòng 1–3 = MVP đề xuất, Vòng 4–5 mở rộng; cổng DoR/DoD. Chờ duyệt nhóm tính năng và độ dài vòng.
+- Soạn [lộ trình phát triển](../product/roadmap.md) theo cách làm Agile chủ dự án chọn (2026-11-08): mỗi vòng thiết kế → phát triển → demo một vài tính năng; Vòng 0 nền, Vòng 1–3 = MVP đề xuất, Vòng 4–5 mở rộng; cổng DoR/DoD. Đã duyệt 2026-11-08 (vòng 2 tuần).
+- Vòng 0: tái lập brainstorm và discovery từ tổng quan; viết Lean PRD và phạm vi MVP (Draft). Quyết định: desktop-first; đăng nhập email + mật khẩu và Google.
 
 ## Hiện trạng các phần
 
 | Phần | Trạng thái thực tế |
 | --- | --- |
-| Tài liệu sản phẩm | Có tổng quan đã duyệt (`docs/product/overview.md`); chưa có PRD hoặc phạm vi MVP được duyệt; thiếu file brainstorm và discovery mà tổng quan liên kết tới |
+| Tài liệu sản phẩm | Có tổng quan đã duyệt (`docs/product/overview.md`); có brainstorm/discovery tái lập; PRD và MVP ở trạng thái Draft chờ duyệt; discovery chưa có bằng chứng người dùng |
 | Nội dung học | Có cấu trúc; chưa có giáo trình, bài học hoặc bài tập |
 | Website | Định hướng Next.js App Router/React/TypeScript strict; chưa khởi tạo ứng dụng |
 | Backend/database | Định hướng ASP.NET Core Web API, .NET 10 LTS, SQL Server/EF Core, ưu tiên Modular Monolith; chưa cài đặt hoặc xác minh tương thích |
@@ -33,22 +34,23 @@ Không có công việc triển khai đang dở. Thứ tự dưới đây là đ
 
 | ID | Trạng thái | Công việc | Đầu ra / điều kiện hoàn thành |
 | --- | --- | --- | --- |
-| PLAN-01 | in-progress | Làm rõ người học mục tiêu và mục tiêu học tiếng Anh | Bối cảnh, nhu cầu và giả định được ghi trong `docs/product/` |
-| DOC-01 | todo | Bổ sung brainstorm và discovery được tổng quan liên kết | `docs/product/brainstorms/personal-english-knowledge.md`, `docs/product/03-discovery-report.md` từ nguồn của chủ dự án |
-| ROAD-01 | todo | Chủ dự án duyệt lộ trình | `docs/product/roadmap.md` chuyển trạng thái đã duyệt; nhóm tính năng theo vòng và độ dài vòng được xác nhận |
-| PLAN-02 | todo | Viết PRD và chốt phạm vi MVP | `docs/product/prd.md`, `docs/product/mvp-scope.md`, có xác nhận phạm vi |
+| PLAN-01 | in-progress | Làm rõ người học mục tiêu và mục tiêu học tiếng Anh | Persona giả định trong PRD; chờ trả lời `Q-01` và phỏng vấn 3–5 người (H-01, H-02) |
+| DOC-01 | done | Bổ sung brainstorm và discovery được tổng quan liên kết | Đã tái lập từ tổng quan theo yêu cầu chủ dự án |
+| ROAD-01 | done | Chủ dự án duyệt lộ trình | `docs/product/roadmap.md` chuyển trạng thái đã duyệt; nhóm tính năng theo vòng và độ dài vòng được xác nhận |
+| PLAN-02 | in-progress | Viết PRD và chốt phạm vi MVP (Draft xong, chờ duyệt) | `docs/product/prd.md`, `docs/product/mvp-scope.md`, có xác nhận phạm vi |
 | PLAN-03 | todo | Xác minh phiên bản/tương thích và thiết kế chi tiết theo stack người dùng cung cấp | Bằng chứng kiểm tra và quyết định tại `docs/decisions/`; không tự thay đổi stack |
 | PLAN-04 | todo | Đặc tả tính năng đầu tiên rồi khởi tạo web | Hồ sơ trong `docs/features/`, ứng dụng và hướng dẫn chạy đã kiểm chứng (Vòng 0–1 trong lộ trình) |
 | DES-01 | blocked | Vẽ giao diện Figma | Chờ quyền truy cập Figma hoặc người thiết kế tự vẽ từ wireframe; đặc tả theo `figma-spec.md` |
 
 ## Vướng mắc và quyết định còn thiếu
 
-- Chưa xác định người học, mục tiêu học và phạm vi MVP; cần làm rõ trước khi chọn kiến trúc hoặc triển khai tính năng.
-- Đã ghi định hướng Next.js, ASP.NET Core, .NET 10 LTS, SQL Server/EF Core từ người dùng; chưa xác minh phiên bản/tương thích và thiết kế chi tiết. Chưa chọn xác thực, hạ tầng hoặc giấy phép cho mã Lingozi.
-- Chưa có yêu cầu credential ứng dụng được xác định; không cần xin secret ở giai đoạn này.
+- PRD/MVP chờ duyệt. Câu hỏi mở cần cho Vòng 0–1: `Q-01`, `Q-02`, `Q-04`, `Q-09`, `Q-11` trong [brainstorm](../product/brainstorms/personal-english-knowledge.md).
+- Đã ghi định hướng Next.js, ASP.NET Core, .NET 10 LTS, SQL Server/EF Core từ người dùng; chưa xác minh phiên bản/tương thích và thiết kế chi tiết. Phương thức đăng nhập đã chốt (email + mật khẩu, Google); chưa chọn thư viện xác thực, dịch vụ email, hạ tầng hoặc giấy phép cho mã Lingozi.
+- Credential sẽ cần (chưa xin): Google OAuth client cho FEAT-01, tài khoản dịch vụ gửi email. Chưa cần ở bước tài liệu.
 
 ## Bằng chứng kiểm tra
 
+- Phiên 2026-11-08-04: kiểm tra mọi liên kết tương đối trong `docs/product/`; chỉ thay đổi tài liệu.
 - Phiên 2026-11-08-03: kiểm tra liên kết tương đối trong `docs/product/roadmap.md` sau khi viết lại; chỉ thay đổi tài liệu.
 - Phiên 2026-11-08-02: kiểm tra liên kết tương đối trong `docs/product/roadmap.md`; chỉ thay đổi tài liệu.
 
@@ -60,4 +62,4 @@ Không có công việc triển khai đang dở. Thứ tự dưới đây là đ
 
 ## Cách tiếp tục
 
-Đọc [quy trình bàn giao](README.md), kiểm tra nhánh và lịch sử Git thực tế, rồi bắt đầu PLAN-01 nếu người dùng chưa có ưu tiên khác. Trạng thái này đi cùng repository; không phụ thuộc lịch sử chat hoặc các tiến trình đang chạy.
+Đọc [quy trình bàn giao](README.md), kiểm tra nhánh và lịch sử Git thực tế, rồi tiếp tục Vòng 0 theo bảng tiến độ trong lộ trình §5 nếu người dùng chưa có ưu tiên khác. Trạng thái này đi cùng repository; không phụ thuộc lịch sử chat hoặc các tiến trình đang chạy.

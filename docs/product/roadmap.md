@@ -1,7 +1,8 @@
 # Lộ trình phát triển sản phẩm Lingozi
 
 - Cập nhật: 2026-11-08.
-- Trạng thái: **bản đề xuất, chờ chủ dự án duyệt**. Chủ dự án đã chọn cách làm Agile theo vòng lặp (2026-11-08). Phạm vi MVP, thứ tự tính năng trong từng vòng và độ dài vòng vẫn là đề xuất.
+- Trạng thái: **đã duyệt** ngày 2026-11-08. Chủ dự án đồng ý cách làm Agile theo vòng lặp, cách nhóm tính năng theo vòng và mỗi vòng dài **2 tuần**. Nội dung từng vòng vẫn được sắp lại ở bước review cuối mỗi vòng.
+- Đang làm: **Vòng 0** (xem §5).
 - Nguồn: [Tổng quan website](overview.md) (đã duyệt 2026-10-26), [trạng thái dự án](../project/STATUS.md), bộ OpenBA trong `tools/openba-kit/`.
 - Hiện trạng: repository mới có tài liệu. Chưa có ứng dụng, database hay bản thiết kế giao diện.
 
@@ -26,7 +27,7 @@ Bên trong mỗi vòng:
 | ④ Kiểm thử + Demo | Chạy test case, E2E, accessibility; demo cho chủ dự án trên môi trường chạy thật | Biên bản demo, danh sách lỗi |
 | ⑤ Review + Retro | Chủ dự án nghiệm thu; rút kinh nghiệm quy trình; sắp lại backlog | Nhật ký phiên, cập nhật file này |
 
-**Độ dài vòng:** chưa chốt. Đề xuất mỗi vòng kéo dài cố định 2–4 tuần (time-box) và chốt ở Vòng 0 theo nguồn lực thực tế. Tính năng nào chưa đạt DoD khi hết vòng thì chuyển sang vòng sau, không tính là xong.
+**Độ dài vòng:** cố định **2 tuần** (time-box), chủ dự án chốt ngày 2026-11-08. Tính năng nào chưa đạt DoD khi hết vòng thì chuyển sang vòng sau, không tính là xong.
 
 **Hai cổng chất lượng** áp dụng cho mọi vòng:
 
@@ -48,7 +49,7 @@ Bên trong mỗi vòng:
 
 | Feature ID | Mã module | Tính năng | Không gian | Đề xuất vòng |
 | --- | --- | --- | --- | --- |
-| `FEAT-01` | `AUTH` | Tài khoản, đăng nhập, thư viện riêng tư theo chủ sở hữu | Chung | Vòng 1 |
+| `FEAT-01` | `AUTH` | Tài khoản, đăng nhập email + mật khẩu và Google, thư viện riêng tư theo chủ sở hữu | Chung | Vòng 1 |
 | `FEAT-02` | `LIB` | Lưu, xem, sửa, xóa mục kiến thức (bắt buộc từ + nghĩa) và gợi ý mục trùng | Library | Vòng 1 |
 | `FEAT-03` | `ORG` | Bộ sưu tập, thẻ, xem theo dòng thời gian | Library | Vòng 2 |
 | `FEAT-04` | `SRCH` | Tìm kiếm kết hợp lọc theo bộ sưu tập, thẻ, thời gian | Library | Vòng 2 |
@@ -102,7 +103,18 @@ Mỗi tính năng nằm trên một nhánh, review qua PR, CI phải xanh trư�
   - ADR xác minh phiên bản ổn định và tương thích của Next.js App Router, .NET 10 LTS, ASP.NET Core, SQL Server và EF Core; chọn xác thực, hosting, CI, cấu trúc repo, backup.
   - Walking skeleton (khung chạy được end-to-end tối thiểu): Next.js (TS strict) + ASP.NET Core Web API (Modular Monolith) + SQL Server qua Docker Compose, migration đầu tiên, OpenAPI, health check, logging an toàn, `.env.example`, CI.
 - **Kết quả demo:** một request thật đi từ frontend → API → DB; CI xanh.
-- **Mốc M0:** chủ dự án duyệt PRD, MVP, lộ trình và độ dài vòng.
+- **Mốc M0:** chủ dự án duyệt PRD và MVP. Lộ trình và độ dài vòng đã được duyệt.
+- **Tiến độ Vòng 0** (bắt đầu 2026-11-08):
+
+| Việc | Trạng thái | Đầu ra |
+| --- | --- | --- |
+| Brainstorm, discovery (tái lập từ tổng quan) | done (chờ xác nhận câu hỏi mở) | [brainstorm](brainstorms/personal-english-knowledge.md), [discovery](03-discovery-report.md) |
+| Lean PRD và phạm vi MVP | done (Draft, chờ duyệt) | [prd.md](prd.md), [mvp-scope.md](mvp-scope.md) |
+| Phỏng vấn 3–5 người dùng (H-01, H-02) | todo | Cập nhật discovery |
+| Design system nền | todo | `docs/architecture/design-system.md` + Figma (DES-01) |
+| ADR stack, xác thực, email, hosting, CI | todo | `docs/decisions/` |
+| ERD phác thảo tổng thể | todo | `docs/architecture/` |
+| Walking skeleton + CI | todo | `apps/` hoặc cấu trúc được chốt ở ADR |
 
 ### Vòng 1 — Lưu được kiến thức của riêng mình
 
@@ -166,5 +178,5 @@ Chọn từ mục "sau Vòng 5" của backlog dựa trên kết quả review và
 
 ## 7. Bước tiếp theo ngay
 
-1. Chủ dự án duyệt hoặc chỉnh cách nhóm tính năng theo vòng và độ dài vòng.
-2. Bắt đầu Vòng 0: brainstorm/discovery → Lean PRD → design system nền → ADR → walking skeleton.
+1. Chủ dự án duyệt PRD và MVP; trả lời các câu hỏi mở cần cho Vòng 0–1 (`Q-01`, `Q-02`, `Q-04`, `Q-09`, `Q-11` trong brainstorm).
+2. Tiếp tục Vòng 0: ADR → ERD phác thảo → design system nền → walking skeleton.

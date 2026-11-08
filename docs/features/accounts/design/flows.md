@@ -87,3 +87,87 @@ sequenceDiagram
         end
     end
 ```
+
+## 5. Theo từng user story (bổ sung 2026-11-08)
+
+### US-AUTH-06 — Liên kết Google hoặc Facebook vào tài khoản đang đăng nhập
+
+```mermaid
+flowchart TD
+    S[Cài đặt tài khoản: Liên kết Facebook] --> A[GET /api/auth/external/facebook/link]
+    A --> P[Nhà cung cấp] --> CB[Callback liên kết]
+    CB --> X{Lỗi hoặc hủy?}
+    X -- Có --> E1[/settings/account?error=502-01/]
+    X -- Không --> L{UserLogins đã thuộc user khác?}
+    L -- Có --> E2[/settings/account?error=409-01<br/>không liên kết/]
+    L -- Không --> OK[Lưu UserLogins cho user hiện tại] --> T[/settings/account?linked=facebook + Toast/]
+```
+
+### US-AUTH-07 — Quên và đặt lại mật khẩu
+
+```mermaid
+sequenceDiagram
+    actor U as Người dùng
+    participant W as Web
+    participant A as API (Accounts)
+    participant DB as SQL Server
+    U->>W: /auth/forgot-password, nhập email
+    W->>A: POST /api/auth/forgot-password
+    A->>DB: Tìm user; nếu có, ghi thư đặt lại vào outbox (BR-AUTH-009 giới hạn tần suất)
+    A-->>W: 202 (luôn giống nhau, BR-AUTH-007)
+    W-->>U: "Nếu email có tài khoản, chúng tôi đã gửi hướng dẫn"
+    U->>W: Mở link trong thư (userId, token)
+    W->>A: POST /api/auth/reset-password {userId, token, newPassword}
+    A->>DB: Kiểm tra token (60 phút, dùng một lần); kiểm tra BR-AUTH-001
+    alt Token hợp lệ
+        A->>DB: Đổi mật khẩu, đổi SecurityStamp (BR-AUTH-010)
+        A-->>W: 204
+        W-->>U: "Đã đặt lại mật khẩu" + nút Đăng nhập
+    else Hết hạn hoặc đã dùng
+        A-->>W: 400 ERR-AUTH-400-03
+        W-->>U: Nút "Gửi lại hướng dẫn"
+    end
+```
+
+### US-AUTH-08 — Đăng xuất
+
+```mermaid
+sequenceDiagram
+    actor U as Người dùng
+    participant W as Web
+    participant A as API (Accounts)
+    U->>W: Chọn Đăng xuất
+    W->>A: POST /api/auth/logout (có X-XSRF-TOKEN)
+    A-->>W: 204, xóa cookie phiên
+    W-->>U: Chuyển tới /auth/login
+    Note over U,W: Quay lại bằng nút Back: trang thư viện gọi /api/auth/me, nhận 401, chuyển tới login
+```
+
+### US-AUTH-09 — Bảo vệ thư viện riêng tư
+
+```mermaid
+flowchart TD
+    R[Mở /library/...] --> C{Có cookie phiên?}
+    C -- Không --> L1[/auth/login?returnUrl=path/]
+    C -- Có --> M[API /api/auth/me]
+    M --> Q{200?}
+    Q -- 401 --> L1
+    Q -- 200 --> V{emailConfirmed?}
+    V -- Không --> G[/Thông báo ERR-AUTH-403-01/]
+    V -- Có --> P[Hiển thị trang]
+    L1 --> LG[Đăng nhập thành công] --> RU{returnUrl hợp lệ?<br/>BR-AUTH-011}
+    RU -- Có --> P2[Về returnUrl]
+    RU -- Không --> P3[Về /library]
+```
+
+### US-AUTH-10 — Chính sách quyền riêng tư và hướng dẫn xóa dữ liệu
+
+```mermaid
+flowchart LR
+    U[Người dùng, chưa đăng nhập] --> F[Chân trang của /auth/login hoặc /auth/register]
+    F --> P[/privacy]
+    F --> D[/data-deletion]
+    D --> M[Gửi email yêu cầu xóa dữ liệu<br/>xử lý thủ công trong 30 ngày, Q-12]
+```
+
+

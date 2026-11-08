@@ -81,3 +81,73 @@ flowchart TD
 - Gợi ý chỉ gọi khi có term; với Ngữ pháp không gọi nguồn phiên âm (AC-08 US-LIB-08).
 - Đổi loại khi đã nhập dữ liệu: giữ các trường chung (nội dung, nghĩa, ví dụ, ghi chú, nguồn); phiên âm bị xóa khi chuyển sang Ngữ pháp, có hộp xác nhận trước khi xóa.
 
+## 4. Theo từng user story (bổ sung 2026-11-08)
+
+### US-LIB-03 — Xem danh sách thư viện
+
+```mermaid
+flowchart TD
+    R[Mở /library?page=n] --> G[GET /api/library/items?page&pageSize]
+    G --> RS{Kết quả}
+    RS -- Lỗi --> E[InlineAlert + Thử lại]
+    RS -- Không có mục --> EM[EmptyState: Lưu kiến thức đầu tiên]
+    RS -- Có mục --> L[Lưới thẻ, phân trang]
+    L -- Trang ngoài phạm vi --> EM2[Trang này không có mục nào + Về trang 1]
+```
+
+### US-LIB-04 — Xem chi tiết một mục
+
+```mermaid
+sequenceDiagram
+    actor U as Người dùng
+    participant W as Web
+    participant A as API (Library)
+    U->>W: Mở /library/items/{id}
+    W->>A: GET /api/library/items/{id}
+    alt 200
+        A-->>W: Detail
+        W-->>U: Term, loại, IPA (nếu có), nghĩa, ví dụ, ghi chú, nguồn
+    else 404 (không tồn tại hoặc của người khác)
+        A-->>W: 404 ERR-LIB-404-01
+        W-->>U: "Không tìm thấy mục này"
+    end
+```
+
+### US-LIB-06 — Xóa mục
+
+```mermaid
+sequenceDiagram
+    actor U as Người dùng
+    participant W as Web
+    participant A as API (Library)
+    participant DB as SQL Server
+    U->>W: Bấm Xóa
+    W-->>U: Hộp thoại xác nhận, focus ở Hủy
+    alt Hủy hoặc Esc
+        W-->>U: Đóng, focus về nút Xóa
+    else Xác nhận Xóa
+        W->>A: DELETE /api/library/items/{id} (có X-XSRF-TOKEN)
+        A->>DB: DELETE mục và ví dụ (một transaction)
+        alt Thành công
+            A-->>W: 204
+            W-->>U: Về Thư viện + "Đã xóa"
+        else Đã bị xóa ở nơi khác
+            A-->>W: 404 ERR-LIB-404-01
+            W-->>U: "Mục này không còn tồn tại", về Thư viện
+        end
+    end
+```
+
+### US-LIB-07 — Thư viện riêng tư
+
+```mermaid
+flowchart TD
+    REQ[Request đến API library] --> AU{Có phiên hợp lệ?}
+    AU -- Không --> E401[401 ERR-AUTH-401-02]
+    AU -- Có --> ID[Lấy UserId từ phiên;<br/>bỏ qua userId trong body]
+    ID --> Q[Truy vấn có điều kiện UserId = phiên]
+    Q --> F{Tìm thấy?}
+    F -- Không --> E404[404 ERR-LIB-404-01<br/>giống hệt trường hợp không tồn tại]
+    F -- Có --> OK[Trả dữ liệu hoặc thực hiện thao tác]
+```
+

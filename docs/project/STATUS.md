@@ -12,6 +12,8 @@
 - Thêm 56 symlink skill cho Codex, hướng dẫn phân giải đường dẫn, quy trình Git, mẫu issue/PR và `.gitignore`.
 - Bổ sung nơi lưu trạng thái và nhật ký phiên; quy định đọc lúc bắt đầu và cập nhật khi kết thúc trong `AGENTS.md`.
 - Tích hợp quy tắc người dùng về chất lượng production, bảo mật, kiểm thử, báo cáo và định hướng stack; giữ các quy ước OpenBA. Dùng `docs/project/STATUS.md` làm nguồn trạng thái chính; chỉ đọc thêm `STATUS_STATUS.md` nếu sau này tồn tại.
+- Thêm [tổng quan sản phẩm](../product/overview.md) đã được chủ dự án duyệt ngày 2026-10-26 (phiên 2026-11-08-01, đã gộp vào `main`). Chưa phải PRD/MVP.
+- Soạn [lộ trình phát triển](../product/roadmap.md) dạng đề xuất: hai quy trình Thiết kế (D0–D5) và Phát triển (V0–V10), cổng DoR/DoD, mốc M0–M4. Chờ chủ dự án duyệt.
 
 ## Hiện trạng các phần
 
@@ -33,9 +35,11 @@ Không có công việc triển khai đang dở. Thứ tự dưới đây là đ
 | --- | --- | --- | --- |
 | PLAN-01 | in-progress | Làm rõ người học mục tiêu và mục tiêu học tiếng Anh | Bối cảnh, nhu cầu và giả định được ghi trong `docs/product/` |
 | DOC-01 | todo | Bổ sung brainstorm và discovery được tổng quan liên kết | `docs/product/brainstorms/personal-english-knowledge.md`, `docs/product/03-discovery-report.md` từ nguồn của chủ dự án |
+| ROAD-01 | todo | Chủ dự án duyệt lộ trình | `docs/product/roadmap.md` chuyển trạng thái đã duyệt, danh sách Now được xác nhận |
 | PLAN-02 | todo | Viết PRD và chốt phạm vi MVP | `docs/product/prd.md`, `docs/product/mvp-scope.md`, có xác nhận phạm vi |
 | PLAN-03 | todo | Xác minh phiên bản/tương thích và thiết kế chi tiết theo stack người dùng cung cấp | Bằng chứng kiểm tra và quyết định tại `docs/decisions/`; không tự thay đổi stack |
-| PLAN-04 | todo | Đặc tả tính năng đầu tiên rồi khởi tạo web | Hồ sơ trong `docs/features/`, ứng dụng và hướng dẫn chạy đã kiểm chứng |
+| PLAN-04 | todo | Đặc tả tính năng đầu tiên rồi khởi tạo web | Hồ sơ trong `docs/features/`, ứng dụng và hướng dẫn chạy đã kiểm chứng (D2–D5, V1 trong lộ trình) |
+| DES-01 | blocked | Vẽ giao diện Figma | Chờ quyền truy cập Figma hoặc người thiết kế tự vẽ từ wireframe; đặc tả theo `figma-spec.md` |
 
 ## Vướng mắc và quyết định còn thiếu
 
@@ -44,6 +48,8 @@ Không có công việc triển khai đang dở. Thứ tự dưới đây là đ
 - Chưa có yêu cầu credential ứng dụng được xác định; không cần xin secret ở giai đoạn này.
 
 ## Bằng chứng kiểm tra
+
+- Phiên 2026-11-08-02: kiểm tra liên kết tương đối trong `docs/product/roadmap.md`; chỉ thay đổi tài liệu.
 
 - Phiên 2026-11-08-01: file tổng quan khớp từng byte với bản người dùng gửi; liên kết `../project/STATUS.md` hợp lệ, hai liên kết brainstorm/discovery chưa có đích.
 

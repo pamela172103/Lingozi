@@ -1,0 +1,118 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  design-tokens:
+    name: Design tokens
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - name: WCAG contrast for every theme
+        run: python3 tools/design-tokens/check_contrast.py docs/architecture/design-tokens.json
+      - name: Generated tokens.css is up to date
+        run: python3 tools/design-tokens/build_css.py --check
+
+  web:
+    name: Web (lint, typecheck, unit tests, build)
+    runs-on: ubuntu-24.04
+    env:
+      API_ORIGIN: http://localhost:5080
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @lingozi/web lint
+      - run: pnpm --filter @lingozi/web typecheck
+      - run: pnpm --filter @lingozi/web format:check
+      - run: pnpm --filter @lingozi/web test
+      - run: pnpm --filter @lingozi/web build
+      - run: pnpm --filter @lingozi/e2e typecheck
+
+  api:
+    name: API (build, migrations, integration tests on SQL Server)
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: apps/api
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-dotnet@v5
+        with:
+          global-json-file: apps/api/global.json
+      - run: dotnet tool restore
+      - run: dotnet build -warnaserror
+      - name: No model changes without a migration
+        run: >-
+          dotnet ef migrations has-pending-model-changes --no-build
+          --project src/Modules/Accounts/Lingozi.Accounts --startup-project src/Modules/Accounts/Lingozi.Accounts
+          --context AccountsDbContext
+      - name: Integration tests (Testcontainers SQL Server 2025)
+        run: dotnet test --no-build
+
+  e2e:
+    name: E2E (web → API → SQL Server)
+    needs: [web, api]
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - uses: actions/setup-dotnet@v5
+        with:
+          global-json-file: apps/api/global.json
+      - name: Create throwaway local .env
+        run: |
+          PW="Ci-$(openssl rand -hex 12)-A1!"
+          echo "::add-mask::$PW"
+          {
+            echo "MSSQL_SA_PASSWORD=$PW"
+            echo "ConnectionStrings__Lingozi=\"Server=localhost,1433;Database=Lingozi;User Id=sa;Password=$PW;TrustServerCertificate=true;Encrypt=true\""
+            echo "ASPNETCORE_ENVIRONMENT=Development"
+            echo "API_ORIGIN=http://localhost:5080"
+          } > .env
+      - run: docker compose up -d --wait sqlserver
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @lingozi/web build
+        env:
+          API_ORIGIN: http://localhost:5080
+      - name: Start API and web
+        run: |
+          set -a; . ./.env; set +a
+          (cd apps/api && nohup dotnet run --project src/Lingozi.Api --launch-profile http > ../../api.log 2>&1 &)
+          (cd apps/web && nohup pnpm start > ../../web.log 2>&1 &)
+          for i in $(seq 1 90); do
+            curl -sf http://localhost:5080/health/ready > /dev/null && curl -sf http://localhost:3000/ > /dev/null && exit 0
+            sleep 2
+          done
+          echo "Services did not become ready"; tail -50 api.log web.log; exit 1
+      - run: pnpm --filter @lingozi/e2e exec playwright install --with-deps chromium
+      - run: pnpm --filter @lingozi/e2e test
+        env:
+          CI: "true"
+      - if: failure()
+        uses: actions/upload-artifact@v5
+        with:
+          name: e2e-report
+          path: |
+            tests/e2e/playwright-report
+            api.log
+            web.log
+          retention-days: 7

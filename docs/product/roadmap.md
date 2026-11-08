@@ -114,7 +114,7 @@ Mỗi tính năng nằm trên một nhánh, review qua PR, CI phải xanh trư�
 | Design system nền | done (Draft, chờ duyệt); Figma BLOCKED (DES-01) | [design-system.md](../architecture/design-system.md), [design-tokens.json](../architecture/design-tokens.json) |
 | ADR stack, xác thực, email, hosting, CI | done (Accepted 2026-11-08; máy chủ riêng + SQL Server; còn HOST-01–05 và nhà cung cấp email) | [ADR 0001–0006](../decisions/README.md) |
 | ERD phác thảo tổng thể | done (duyệt 2026-11-08) | [erd.md](../architecture/erd.md) |
-| Walking skeleton + CI | todo | `apps/` hoặc cấu trúc được chốt ở ADR |
+| Walking skeleton + CI | done (local: build/test/E2E đạt; CI GitHub xem STATUS) | `apps/api`, `apps/web`, `tests/e2e`, `compose.yaml`, `.github/workflows/ci.yml`, [hướng dẫn chạy](../guides/local-development.md) |
 
 ### Vòng 1 — Lưu được kiến thức của riêng mình
 
@@ -178,6 +178,6 @@ Chọn từ mục "sau Vòng 5" của backlog dựa trên kết quả review và
 
 ## 7. Bước tiếp theo ngay
 
-1. Chủ dự án duyệt PRD và MVP; trả lời các câu hỏi mở cần cho Vòng 0–1 (`Q-01`, `Q-02`, `Q-04`, `Q-09`, `Q-11` trong brainstorm).
-2. Chủ dự án duyệt design system, chọn theme thứ hai (`DS-01`) và cung cấp thông tin máy chủ `HOST-01`–`HOST-05` (ADR 0006).
-3. Hoàn tất Vòng 0: walking skeleton + CI (cần gỡ `ENV-01`).
+1. Chủ dự án duyệt PRD/MVP và design system (theme thứ hai đã chọn: Coquette); trả lời câu hỏi mở cho Vòng 1 (`Q-01`, `Q-02`, `Q-11` trong brainstorm; `Q-04` đã theo ADR 0004).
+2. Chủ dự án cung cấp thông tin máy chủ `HOST-01`–`HOST-05` (ADR 0006) trước cuối Vòng 1.
+3. Đóng Vòng 0 (demo + review), rồi bắt đầu Vòng 1: thiết kế FEAT-01 và FEAT-02.

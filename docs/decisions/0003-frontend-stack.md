@@ -50,3 +50,11 @@
 
 - Phải xác minh khả năng tương thích TypeScript 7 ngay ở bước dựng khung.
 - Client typed sinh từ OpenAPI nên chạy trong CI để phát hiện contract bị lệch.
+
+## Ghi nhận khi dựng walking skeleton (2026-11-08)
+
+- **TypeScript dùng 6.0.3, không dùng 7.0.2.** `typescript-eslint` (do `eslint-config-next` 16.4.5 kéo theo) yêu cầu `typescript >=4.8.4 <6.1.0`. Sẽ nâng lên 7.x khi `typescript-eslint` hỗ trợ.
+- **ESLint dùng 9.39.5, không dùng 10.14.0.** Các plugin `eslint-plugin-react`, `jsx-a11y`, `import` chưa hỗ trợ ESLint 10.
+- **Node.js:** CI dùng Node 26, là bản LTS Active (`.nvmrc`; nodejs.org ghi Node 26.13.0 có nhãn LTS "Lithium"). `engines` cho phép từ 22.12, vì phiên cloud chỉ có Node 22.23.4: build, test và E2E local đã chạy trên Node 22, còn trên Node 26 chỉ được kiểm chứng qua CI.
+- Font: `next/font/google` tự host Be Vietnam Pro và Playfair Display (subset `latin`, `vietnamese`) lúc build. Build cần truy cập Google Fonts. Ảnh chụp trang kiểm tra cho thấy đủ dấu tiếng Việt (`DS-04` đạt cho Be Vietnam Pro; Playfair Display chưa được dùng trên trang nào).
+- **Client typed sinh từ OpenAPI chưa tạo**, vì chưa có endpoint nghiệp vụ. Sẽ thêm ở Vòng 1 cùng FEAT-01.

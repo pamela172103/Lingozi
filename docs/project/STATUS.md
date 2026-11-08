@@ -2,7 +2,7 @@
 
 - Cập nhật: 2026-11-08.
 - Giai đoạn: **Vòng 0 — Nền dự án** (Agile, vòng 2 tuần, bắt đầu 2026-11-08). Xem [lộ trình](../product/roadmap.md) §5.
-- Phiên gần nhất: [Cài .NET SDK và Docker cho phiên cloud](sessions/2026-11-08-08-dev-environment.md).
+- Phiên gần nhất: [Vòng 0: walking skeleton và CI](sessions/2026-11-08-09-walking-skeleton.md).
 - Đã đọc và gộp 4 commit từ `origin/work` vào `main` theo fast-forward, tới `61514e0`. Bàn giao phiên 05 được lưu cùng commit tài liệu tiếp theo; tra bằng `git log -- docs/project/`.
 
 ## Đã hoàn thành
@@ -25,9 +25,9 @@
 | --- | --- |
 | Tài liệu sản phẩm | Có tổng quan đã duyệt (`docs/product/overview.md`); có brainstorm/discovery tái lập; PRD và MVP ở trạng thái Draft chờ duyệt; discovery chưa có bằng chứng người dùng |
 | Nội dung học | Có cấu trúc; chưa có giáo trình, bài học hoặc bài tập |
-| Website | Định hướng Next.js App Router/React/TypeScript strict; chưa khởi tạo ứng dụng |
-| Backend/database | Định hướng ASP.NET Core Web API, .NET 10 LTS, SQL Server/EF Core, ưu tiên Modular Monolith; chưa cài đặt hoặc xác minh tương thích |
-| Kiểm thử ứng dụng | Chưa có runner hoặc bài kiểm thử |
+| Website | Khung Next.js 16.4.5, TS 6.0.3 strict, Tailwind 4, next-intl; trang "Trạng thái hệ thống" gọi API thật. Chưa có tính năng nghiệp vụ |
+| Backend/database | ASP.NET Core Minimal APIs .NET 10.0.14, EF Core 10.0.14, SQL Server 2025; module Accounts với migration `InitialDataProtectionKeys`; endpoint health và `/api/system/status`. Chưa có tính năng nghiệp vụ |
+| Kiểm thử ứng dụng | xUnit v3 + Testcontainers (3 test), Vitest (6 test), Playwright + axe (8 test, desktop và mobile); CI GitHub Actions `.github/workflows/ci.yml` |
 | OpenBA | Đã nhập và kiểm tra tính toàn vẹn, đường dẫn; chưa xác minh toàn bộ khả năng thực thi của 56 skill |
 | Đồng bộ GitHub | Đã gộp `origin/work` (`61514e0`) vào `main` cục bộ; phiên 05 sẽ push cùng bàn giao và đối chiếu GitHub sau push |
 
@@ -41,8 +41,9 @@ Không có công việc triển khai đang dở. Thứ tự dưới đây là đ
 | DOC-01 | done | Bổ sung brainstorm và discovery được tổng quan liên kết | Đã tái lập từ tổng quan theo yêu cầu chủ dự án |
 | ROAD-01 | done | Chủ dự án duyệt lộ trình | `docs/product/roadmap.md` chuyển trạng thái đã duyệt; nhóm tính năng theo vòng và độ dài vòng được xác nhận |
 | PLAN-02 | in-progress | Viết PRD và chốt phạm vi MVP (Draft xong, chờ duyệt) | `docs/product/prd.md`, `docs/product/mvp-scope.md`, có xác nhận phạm vi |
-| PLAN-03 | in-progress | Xác minh phiên bản/tương thích và thiết kế chi tiết theo stack người dùng cung cấp (ADR đã viết, chờ duyệt) | Bằng chứng kiểm tra và quyết định tại `docs/decisions/`; không tự thay đổi stack |
-| PLAN-04 | todo | Đặc tả tính năng đầu tiên rồi khởi tạo web | Hồ sơ trong `docs/features/`, ứng dụng và hướng dẫn chạy đã kiểm chứng (Vòng 0–1 trong lộ trình) |
+| PLAN-03 | done | Xác minh phiên bản/tương thích và thiết kế chi tiết theo stack người dùng cung cấp (ADR Accepted; ghi nhận khi dựng khung trong ADR 0001–0003) | Bằng chứng kiểm tra và quyết định tại `docs/decisions/`; không tự thay đổi stack |
+| SKEL-01 | done | Walking skeleton + CI (Vòng 0) | Build/test/E2E đạt local; xem bằng chứng phiên 09. Kết quả CI trên GitHub ghi trong nhật ký phiên |
+| PLAN-04 | todo | Vòng 1: thiết kế (D2–D5) FEAT-01 Tài khoản và FEAT-02 Mục kiến thức, rồi phát triển | Hồ sơ trong `docs/features/`, đạt DoR rồi DoD |
 | ADR-01 | done | Chủ dự án duyệt ADR 0001–0006 | Accepted 2026-11-08; hosting: máy chủ riêng + SQL Server |
 | HOST-01 | todo | Chủ dự án cung cấp thông tin máy chủ `HOST-01`–`HOST-05` (OS/cấu hình, edition SQL Server, domain, nơi backup, staging) | Ghi vào ADR 0006; hạn cuối Vòng 1 |
 | MAIL-01 | todo | Chọn nhà cung cấp email production | ADR 0005 cập nhật; hạn trước khi phát hành staging |
@@ -59,6 +60,14 @@ Không có công việc triển khai đang dở. Thứ tự dưới đây là đ
 
 ## Bằng chứng kiểm tra
 
+- Phiên 2026-11-08-09 (walking skeleton), chạy trên Node 22.23.4, .NET SDK 10.0.114, Docker 29.9.2:
+  - `dotnet build -warnaserror` đạt.
+  - `dotnet ef migrations has-pending-model-changes` báo không có thay đổi.
+  - `dotnet test` 3/3 đạt trên SQL Server 2025 qua Testcontainers.
+  - Web: `pnpm lint` (0 cảnh báo), `typecheck`, `format:check` đạt; `pnpm test` 6/6; `pnpm build` đạt.
+  - E2E Playwright 8/8 đạt (desktop 1440 px và Pixel 7; axe không có vi phạm serious/critical; không cuộn ngang).
+  - Kiểm tra tay: tắt SQL Server thì `/api/system/status` trả `database: unavailable`, bật lại thì `ok`.
+  - Script token: 0 lỗi tương phản; `tokens.css` khớp với nguồn.
 - Phiên 2026-11-08-08: `dotnet --list-sdks` → 10.0.114; `docker info` → 29.9.2; chạy container SQL Server 2025 Express và truy vấn `SERVERPROPERTY` thành công, sau đó đã xóa container.
 - Phiên 2026-11-08-07 (bổ sung): đổi theme Garden sang Coquette; script tương phản vẫn 0 failure.
 - Phiên 2026-11-08-07: `python3 tools/design-tokens/check_contrast.py docs/architecture/design-tokens.json` cho 0 failure (19 cặp × 2 theme); đã kiểm tra liên kết trong `docs/`.

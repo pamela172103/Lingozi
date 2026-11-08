@@ -56,3 +56,11 @@ Phiên bản cụ thể được pin trong `Directory.Packages.props` khi dựng
 
 - Cần Docker trên máy dev và CI để chạy integration test. GitHub Actions có sẵn Docker trên runner Ubuntu.
 - Phiên cloud hiện tại không tải được .NET SDK (host `dot.net` và `builds.dotnet.microsoft.com` bị chặn) và không có Docker daemon. Muốn dựng khung tại đây phải mở các host đó hoặc dựng trên máy local.
+
+## Ghi nhận khi dựng walking skeleton (2026-11-08)
+
+- .NET SDK 10.0.114 (runtime 10.0.14) cài từ kho Ubuntu 24.04. `global.json` cho phép mọi SDK 10.0.x (`rollForward: latestFeature`).
+- `dotnet test` dùng **Microsoft.Testing.Platform** (`global.json` → `test.runner`), vì .NET 10 SDK không còn hỗ trợ VSTest cho xUnit v3. Test dùng xUnit v3 4.0.2 và Testcontainers.MsSql 4.16.0.
+- `Microsoft.Data.SqlClient` 6.1.7 (kéo theo từ EF Core 10.0.14) phụ thuộc `System.Security.Cryptography.Pkcs` 9.0.11, có lỗ hổng GHSA-846f-f764-76mx (high) và GHSA-2fmv-rv2c-59x7 (moderate). Đã ghim gói này lên **10.0.14** bằng `CentralPackageTransitivePinningEnabled`. Build bật `-warnaserror`, nên lỗ hổng mới trong NuGet audit sẽ làm build fail.
+- Migration đầu tiên: `InitialDataProtectionKeys` (schema `accounts`). Factory dùng lúc thiết kế (`AccountsDbContextDesignTimeFactory`) giúp lệnh `dotnet ef` không cần biến môi trường và không mở kết nối.
+- Phiên cloud: đã cài .NET SDK và chạy được Docker (môi trường "Lingozi"). Mục Hệ quả ở trên về host bị chặn không còn là vướng mắc.

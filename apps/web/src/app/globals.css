@@ -1,0 +1,41 @@
+@import "tailwindcss";
+@import "../styles/tokens.css";
+
+/* Tailwind utilities read the theme tokens, so classes follow data-theme (ADR 0003, design-system §2). */
+@theme inline {
+  --color-canvas: var(--lz-color-bg-canvas);
+  --color-surface: var(--lz-color-bg-surface);
+  --color-subtle: var(--lz-color-bg-subtle);
+  --color-primary: var(--lz-color-text-primary);
+  --color-secondary: var(--lz-color-text-secondary);
+  --color-muted: var(--lz-color-text-muted);
+  --color-border: var(--lz-color-border-default);
+  --color-border-strong: var(--lz-color-border-strong);
+  --color-accent: var(--lz-color-accent-default);
+  --color-accent-text: var(--lz-color-accent-text);
+  --color-on-accent: var(--lz-color-accent-on);
+  --color-accent-subtle: var(--lz-color-accent-subtle);
+  --color-success: var(--lz-color-status-success);
+  --color-warning: var(--lz-color-status-warning);
+  --color-danger: var(--lz-color-status-danger);
+  --color-info: var(--lz-color-status-info);
+  --radius-control: var(--lz-radius-control);
+  --radius-card: var(--lz-radius-card);
+  --shadow-card: var(--lz-shadow-card);
+  --shadow-overlay: var(--lz-shadow-overlay);
+  --font-sans: var(--lz-font-ui), system-ui, sans-serif;
+  --font-display: var(--lz-font-display), Georgia, serif;
+}
+
+html {
+  background-color: var(--lz-color-bg-canvas);
+  color: var(--lz-color-text-primary);
+  font-family: var(--font-sans);
+  font-size: 100%;
+  line-height: var(--lz-lineHeight-normal);
+}
+
+:focus-visible {
+  outline: 2px solid var(--lz-color-focus-ring);
+  outline-offset: 2px;
+}

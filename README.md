@@ -9,7 +9,7 @@ Trước mỗi phiên, đọc [trạng thái dự án](docs/project/STATUS.md) v
 1. Đọc [mục lục tài liệu](docs/README.md) để nắm quy trình xây sản phẩm.
 2. Dùng [hướng dẫn OpenBA](docs/guides/using-openba.md) khi viết tài liệu với AI.
 3. Đọc [quy trình đóng góp](CONTRIBUTING.md) trước khi tạo thay đổi.
-4. Đọc [định hướng kiến trúc](docs/architecture/README.md), xác minh phiên bản và phạm vi MVP trước khi khởi tạo [website](apps/web/README.md).
+4. Đọc [kiến trúc](docs/architecture/README.md), sau đó chạy ứng dụng theo [hướng dẫn chạy local](docs/guides/local-development.md).
 
 ## Cấu trúc
 
@@ -17,8 +17,10 @@ Trước mỗi phiên, đọc [trạng thái dự án](docs/project/STATUS.md) v
 | --- | --- |
 | `docs/` | Nghiên cứu, yêu cầu, thiết kế và hướng dẫn kỹ thuật |
 | `content/` | Chương trình, bài học và bài tập tiếng Anh |
-| `apps/web/` | Vị trí dành cho mã nguồn website |
-| `tests/e2e/` | Vị trí dành cho kiểm thử hành trình người dùng |
+| `apps/web/` | Website Next.js ([README](apps/web/README.md)) |
+| `apps/api/` | API ASP.NET Core và test với SQL Server ([README](apps/api/README.md)) |
+| `tests/e2e/` | Kiểm thử E2E Playwright ([README](tests/e2e/README.md)) |
+| `compose.yaml` | SQL Server 2025 và Mailpit cho môi trường local |
 | `tools/openba-kit/` | Bản gốc bộ OpenBA, templates, rules và scripts |
 | `.agents/skills/` | 56 liên kết tới skill OpenBA cho Codex |
 

@@ -1,0 +1,12 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Lingozi.Api/Lingozi.Api.csproj" />
+  </Folder>
+  <Folder Name="/src/Modules/" />
+  <Folder Name="/src/Modules/Accounts/">
+    <Project Path="src/Modules/Accounts/Lingozi.Accounts/Lingozi.Accounts.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Lingozi.Api.IntegrationTests/Lingozi.Api.IntegrationTests.csproj" />
+  </Folder>
+</Solution>

@@ -1,7 +1,16 @@
 # Ứng dụng web Lingozi
 
-Định hướng người dùng đã cung cấp: Next.js App Router, React và TypeScript strict mode; hỗ trợ UI tiếng Việt và tiếng Anh. Frontend gọi ASP.NET Core Web API qua HTTP, dùng SignalR khi có nhu cầu, không kết nối SQL Server trực tiếp.
+Next.js 16.4.5 (App Router), React 19.3.1, TypeScript 6.0.3 strict, Tailwind CSS 4.3.5, next-intl 4.14.9 ([ADR 0003](../../docs/decisions/0003-frontend-stack.md)).
 
-Hiện chưa có ứng dụng, dependencies hoặc lệnh chạy/build/test. Trước khi khởi tạo: làm rõ MVP, xác minh phiên bản ổn định và tương thích, ghi thiết kế tại `docs/architecture/` và quyết định chi tiết tại `docs/decisions/`. Không tự thay đổi stack đã định hướng khi chưa được xác nhận.
+Hiện có: khung ứng dụng (Vòng 0) với trang "Trạng thái hệ thống" gọi API thật. Chưa có tính năng nghiệp vụ.
 
-Sau khi khởi tạo, cập nhật README này với phiên bản runtime, cách cài theo lockfile, biến môi trường, lệnh chạy và kiểm thử đã được xác minh. Unit/integration tests đặt theo quy ước stack. Kiểm tra loading, empty, error, success, disabled, responsive và accessibility; UI tĩnh chưa chứng minh chức năng nghiệp vụ hoạt động.
+| Đường dẫn               | Nội dung                                                                  |
+| ----------------------- | ------------------------------------------------------------------------- |
+| `src/app/`              | Route App Router; `layout.tsx` đặt font, `data-theme`, `data-decor`       |
+| `src/components/`       | Component và unit test (`*.test.tsx`)                                     |
+| `src/lib/`              | Gọi API phía server; `API_ORIGIN` đọc từ môi trường                       |
+| `src/styles/tokens.css` | **Sinh tự động** từ `docs/architecture/design-tokens.json`; không sửa tay |
+| `messages/vi.json`      | Chuỗi giao diện tiếng Việt                                                |
+
+- Biến môi trường: `API_ORIGIN`, là origin của API mà server Next.js gọi tới. Next.js rewrite `/api/*` sang origin này, nên trình duyệt không bao giờ gọi API trực tiếp.
+- Lệnh chạy và kiểm tra: xem [hướng dẫn chạy local](../../docs/guides/local-development.md).

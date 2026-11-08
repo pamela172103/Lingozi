@@ -1,0 +1,18 @@
+{
+  "App": {
+    "title": "Lingozi",
+    "description": "Thư viện tiếng Anh riêng của bạn"
+  },
+  "SystemStatus": {
+    "heading": "Trạng thái hệ thống",
+    "intro": "Trang kiểm tra của khung ứng dụng: website gọi API, API truy vấn database.",
+    "api": "API",
+    "database": "Database",
+    "migrations": "Migration chưa áp dụng",
+    "checkedAt": "Kiểm tra lúc",
+    "ok": "Hoạt động",
+    "unavailable": "Không kết nối được",
+    "apiUnreachable": "Website không gọi được API. Kiểm tra API đã chạy và biến API_ORIGIN.",
+    "unknown": "Không xác định"
+  }
+}

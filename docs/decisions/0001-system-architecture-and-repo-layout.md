@@ -71,3 +71,8 @@ Mỗi module là **một project** chứa đủ domain, application, persistence
 - Ranh giới module được kiểm tra bằng test kiến trúc trong CI, không chỉ dựa vào quy ước.
 - Có thể tách một module thành service riêng sau này, vì dữ liệu đã nằm theo schema.
 - Chạy local cần Docker để có SQL Server. Riêng phiên làm việc cloud hiện tại chưa có Docker daemon và .NET SDK, nên chưa dựng được khung ứng dụng end-to-end trong môi trường này (xem [STATUS](../project/STATUS.md)).
+
+## Ghi nhận khi dựng walking skeleton (2026-11-08)
+
+- Đã tạo: `Lingozi.Api`, module `Lingozi.Accounts` (`AccountsDbContext`, schema `accounts`), `tests/Lingozi.Api.IntegrationTests`. Frontend và E2E dùng pnpm workspace (`pnpm-workspace.yaml` ở gốc repo).
+- **Chưa tạo**: `Lingozi.SharedKernel`, các project `*.Contracts`, `Lingozi.Architecture.Tests`, các module `Library`, `Practice`, `Personalization`. Chúng sẽ được tạo khi có code thật cần đến (Vòng 1 trở đi), để không sinh project rỗng. Test kiến trúc được thêm khi có từ hai module trở lên. Cấu trúc trong ADR này không thay đổi.

@@ -17,7 +17,7 @@
 - Vòng 0: tái lập brainstorm và discovery từ tổng quan; viết Lean PRD và phạm vi MVP (Draft). Quyết định: desktop-first; đăng nhập email + mật khẩu và Google.
 - Vòng 0: viết [ADR 0001–0006](../decisions/README.md) (Proposed), đã xác minh phiên bản ngày 2026-11-08: .NET 10.0.14 LTS, EF Core/Identity 10.0.14, SQL Server 2025, Next.js 16.4.5, React 19.3.1.
 - Vòng 0: chủ dự án duyệt ADR 0001–0006 (2026-11-08), chọn máy chủ riêng + SQL Server. Viết [ERD tổng thể](../architecture/erd.md); duyệt 2026-11-08.
-- Vòng 0: viết [design system nền](../architecture/design-system.md) với token trong `design-tokens.json`, gồm 2 theme (default, garden) đạt WCAG AA cho 19/19 cặp màu mỗi theme; script `tools/design-tokens/check_contrast.py` (Draft).
+- Vòng 0: viết [design system nền](../architecture/design-system.md) với token trong `design-tokens.json`, gồm 2 theme (default, coquette; chủ dự án chọn Coquette 2026-11-08) đạt WCAG AA cho 19/19 cặp màu mỗi theme; script `tools/design-tokens/check_contrast.py` (Draft).
 
 ## Hiện trạng các phần
 
@@ -47,7 +47,7 @@ Không có công việc triển khai đang dở. Thứ tự dưới đây là đ
 | HOST-01 | todo | Chủ dự án cung cấp thông tin máy chủ `HOST-01`–`HOST-05` (OS/cấu hình, edition SQL Server, domain, nơi backup, staging) | Ghi vào ADR 0006; hạn cuối Vòng 1 |
 | MAIL-01 | todo | Chọn nhà cung cấp email production | ADR 0005 cập nhật; hạn trước khi phát hành staging |
 | ERD-01 | done | Chủ dự án duyệt ERD tổng thể | Duyệt 2026-11-08 |
-| DS-01 | todo | Chủ dự án duyệt design system và chọn theme thứ hai (Garden hay khác) | `docs/architecture/design-system.md` chuyển trạng thái đã duyệt |
+| DS-01 | todo | Chủ dự án duyệt design system (theme thứ hai đã chọn: Coquette) | `docs/architecture/design-system.md` chuyển trạng thái đã duyệt |
 | ENV-01 | blocked | Môi trường để dựng walking skeleton | Phiên cloud thiếu .NET SDK (host `dot.net`, `builds.dotnet.microsoft.com` bị chặn) và Docker daemon. Gỡ chặn: mở các host đó trong cài đặt network của môi trường, hoặc dựng trên máy local |
 | DES-01 | blocked | Vẽ giao diện Figma | Chờ quyền truy cập Figma hoặc người thiết kế tự vẽ từ wireframe; đặc tả theo `figma-spec.md` |
 
@@ -59,6 +59,7 @@ Không có công việc triển khai đang dở. Thứ tự dưới đây là đ
 
 ## Bằng chứng kiểm tra
 
+- Phiên 2026-11-08-07 (bổ sung): đổi theme Garden sang Coquette; script tương phản vẫn 0 failure.
 - Phiên 2026-11-08-07: `python3 tools/design-tokens/check_contrast.py docs/architecture/design-tokens.json` cho 0 failure (19 cặp × 2 theme); đã kiểm tra liên kết trong `docs/`.
 - Phiên 2026-11-08-06: kiểm tra cú pháp sơ đồ Mermaid trong ERD bằng script (12 entity, 14 quan hệ, không có tham chiếu thiếu). Chưa render được hình, vì lệnh cài mermaid-cli bị chặn quyền. Đã kiểm tra liên kết trong `docs/`.
 - Phiên 2026-11-08-05: tra cứu phiên bản qua trang chính sách hỗ trợ .NET, npm registry, NuGet, trang vòng đời SQL Server 2025; kiểm tra liên kết trong `docs/`. Không có build/test ứng dụng.

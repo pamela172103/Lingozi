@@ -39,8 +39,8 @@ Lớp 3 — Component    button.primary.bg = color.accent.default               
   --lz-color-text-primary: #1B1B22;
   --lz-radius-card: var(--lz-radius-lg);
 }
-[data-theme="garden"] {
-  --lz-color-bg-canvas: #F4F1E8;
+[data-theme="coquette"] {
+  --lz-color-bg-canvas: #FBF1F3;
   --lz-radius-card: var(--lz-radius-xl);
 }
 [data-decor="reduced"] .lz-decor { display: none; }
@@ -57,25 +57,27 @@ Lớp 3 — Component    button.primary.bg = color.accent.default               
 
 ### 3.1 Màu ngữ nghĩa (semantic)
 
-| Token | Dùng cho | Default | Garden |
+| Token | Dùng cho | Default | Coquette |
 | --- | --- | --- | --- |
-| `bg.canvas` | Nền trang | `#F7F7F8` | `#F4F1E8` |
-| `bg.surface` | Card, panel, form | `#FFFFFF` | `#FFFDF7` |
-| `bg.subtle` | Vùng phụ, hàng hover, skeleton | `#EEEEF2` | `#EAE6D8` |
-| `text.primary` | Nội dung chính, thuật ngữ tiếng Anh | `#1B1B22` | `#1F2A1F` |
-| `text.secondary` | Nghĩa, mô tả | `#4A4A57` | `#3F4F3F` |
-| `text.muted` | Ghi chú, thời gian, placeholder | `#62626F` | `#58664F` |
-| `border.default` | Đường chia trang trí (không mang thông tin) | `#DCDCE3` | `#DAD5C4` |
-| `border.strong` | Viền input, checkbox, điều khiển (WCAG 1.4.11) | `#7E7E8C` | `#78866F` |
-| `accent.default` | Nền nút chính, mục đang chọn | `#4F46E5` | `#2F6B3A` |
-| `accent.text` | Link, chữ nhấn trên nền sáng | `#4338CA` | `#285C32` |
+| `bg.canvas` | Nền trang | `#F7F7F8` | `#FBF1F3` |
+| `bg.surface` | Card, panel, form | `#FFFFFF` | `#FFFAFB` |
+| `bg.subtle` | Vùng phụ, hàng hover, skeleton | `#EEEEF2` | `#F5E4E9` |
+| `text.primary` | Nội dung chính, thuật ngữ tiếng Anh | `#1B1B22` | `#2B1A20` |
+| `text.secondary` | Nghĩa, mô tả | `#4A4A57` | `#5A3F48` |
+| `text.muted` | Ghi chú, thời gian, placeholder | `#62626F` | `#765560` |
+| `border.default` | Đường chia trang trí (không mang thông tin) | `#DCDCE3` | `#EDD3DB` |
+| `border.strong` | Viền input, checkbox, điều khiển (WCAG 1.4.11) | `#7E7E8C` | `#9C7884` |
+| `accent.default` | Nền nút chính, mục đang chọn | `#4F46E5` | `#B03A62` |
+| `accent.text` | Link, chữ nhấn trên nền sáng | `#4338CA` | `#962F53` |
 | `accent.on` | Chữ trên nền accent | `#FFFFFF` | `#FFFFFF` |
-| `accent.subtle` | Nền thẻ được chọn, chip | `#EEF0FF` | `#E3EFDC` |
-| `status.success / warning / danger / info` | Thông báo, kết quả luyện gõ, lỗi form | `#15803D` / `#A35200` / `#B91C1C` / `#1D4ED8` | `#2B6E35` / `#8F4E00` / `#A8322B` / `#245C9E` |
-| `focus.ring` | Vòng focus 2 px, cách 2 px | `#4F46E5` | `#2F6B3A` |
-| `decor.primary / secondary` | **Chỉ** dùng cho minh họa, sticker, linh vật; không dùng cho chữ | `#C7C3F7` / `#F5D0E0` | `#8FB573` / `#E9A6A6` |
+| `accent.subtle` | Nền thẻ được chọn, chip | `#EEF0FF` | `#FBE3EC` |
+| `status.success / warning / danger / info` | Thông báo, kết quả luyện gõ, lỗi form | `#15803D` / `#A35200` / `#B91C1C` / `#1D4ED8` | `#2E7044` / `#8F4E00` / `#B42332` / `#3B5BA9` |
+| `focus.ring` | Vòng focus 2 px, cách 2 px | `#4F46E5` | `#B03A62` |
+| `decor.primary / secondary` | **Chỉ** dùng cho minh họa, sticker, linh vật; không dùng cho chữ | `#C7C3F7` / `#F5D0E0` | `#F4B6C8` (nơ hồng) / `#E9D5B7` (ren, ngọc trai) |
 
 Trạng thái (đúng/sai, lỗi) **không chỉ thể hiện bằng màu**, luôn kèm icon và chữ (WCAG 1.4.1). Ví dụ: kết quả luyện gõ hiện "✓ Đúng" hoặc "✗ Chưa đúng", kèm đáp án.
+
+Ở theme Coquette, màu `status.danger` (`#B42332`) và `accent.default` (`#B03A62`) cùng tông đỏ hồng. Vì vậy nút xóa và lỗi **bắt buộc** có icon cảnh báo và chữ rõ nghĩa ("Xóa", "Lỗi: …"); nút xóa dùng kiểu viền, không dùng nền đặc giống nút chính.
 
 ### 3.2 Kết quả kiểm tra tương phản
 
@@ -87,13 +89,13 @@ python3 tools/design-tokens/check_contrast.py docs/architecture/design-tokens.js
 
 Kết quả: **19/19 cặp đạt ở mỗi theme, 0 lỗi.** Một số tỷ lệ đáng chú ý:
 
-| Cặp | Yêu cầu | Default | Garden |
+| Cặp | Yêu cầu | Default | Coquette |
 | --- | --- | --- | --- |
-| `text.primary` trên `bg.canvas` | 4.5 | 15.99 | 13.19 |
-| `text.muted` trên `bg.subtle` (cặp sát ngưỡng nhất) | 4.5 | 5.19 | 4.90 |
-| `accent.on` trên `accent.default` (nút chính) | 4.5 | 6.29 | 6.39 |
-| `status.success` trên `bg.surface` | 4.5 | 5.02 | 6.10 |
-| `border.strong` trên `bg.canvas` (viền input) | 3.0 | 3.74 | 3.42 |
+| `text.primary` trên `bg.canvas` | 4.5 | 15.99 | 14.93 |
+| `text.muted` trên `bg.subtle` | 4.5 | 5.19 | 5.30 |
+| `accent.on` trên `accent.default` (nút chính) | 4.5 | 6.29 | 5.79 |
+| `status.success` trên `bg.surface` (chữ sát ngưỡng nhất của Default) | 4.5 | 5.02 | 5.78 |
+| `border.strong` trên `bg.canvas` (viền input, sát ngưỡng nhất của Coquette) | 3.0 | 3.74 | 3.49 |
 
 Script này chỉ kiểm tra màu đặc. Chữ đặt trên ảnh nền, gradient hoặc sticker không nằm trong phạm vi kiểm tra; quy tắc ở §5 ngăn trường hợp đó xảy ra.
 
@@ -114,7 +116,7 @@ Script này chỉ kiểm tra màu đặc. Chữ đặt trên ảnh nền, gradie
 **Font:**
 
 - `Be Vietnam Pro` cho giao diện: thiết kế cho tiếng Việt, giấy phép SIL OFL.
-- Theme Garden dùng `Lora` cho `display`: serif, giấy phép SIL OFL.
+- Theme Coquette dùng `Playfair Display` cho `display` (thuật ngữ, tiêu đề): serif mềm mại, giấy phép SIL OFL. Chỉ dùng từ cỡ 20 px trở lên; nội dung đọc vẫn dùng `Be Vietnam Pro`.
 - Cả hai được self-host qua `next/font`, không tải từ máy chủ của bên thứ ba lúc chạy.
 - Khi dựng khung phải xác minh subset tiếng Việt hiển thị đủ dấu.
 
@@ -123,7 +125,7 @@ Script này chỉ kiểm tra màu đặc. Chữ đặt trên ảnh nền, gradie
 ### 3.4 Khoảng cách, bo góc, đổ bóng, chuyển động
 
 - **Khoảng cách:** bước 4 px: `space-1` = 4, `2` = 8, `3` = 12, `4` = 16, `5` = 20, `6` = 24, `8` = 32, `10` = 40, `12` = 48, `16` = 64. Khoảng cách trong component dùng 8–16; giữa các khối dùng 24–32.
-- **Bo góc:** `sm` 4, `md` 8, `lg` 12, `xl` 16, `full`. Theme chọn `radius.control` và `radius.card`: Default là `md`/`lg`, Garden là `lg`/`xl`.
+- **Bo góc:** `sm` 4, `md` 8, `lg` 12, `xl` 16, `full`. Theme chọn `radius.control` và `radius.card`: Default là `md`/`lg`, Coquette là `lg`/`xl`.
 - **Đổ bóng:** `shadow.card` cho card, `shadow.overlay` cho dialog, menu, toast. Mỗi theme có giá trị riêng.
 - **Chuyển động:** `fast` 120 ms (hover, focus), `normal` 200 ms (mở menu, toast), `slow` 320 ms (dialog). Easing `standard`. Tất cả về 0 khi giảm chuyển động (DS-P4).
 
@@ -157,7 +159,8 @@ Trang trí (minh họa, linh vật, sticker, họa tiết nền) chỉ được 
 - Mọi phần tử trang trí có class `lz-decor` và `aria-hidden="true"`. Khi `data-decor="reduced"`, chúng bị ẩn hoàn toàn.
 - Trang trí không bao giờ là cách duy nhất để truyền thông tin.
 - Ảnh, minh họa và linh vật phải do Lingozi tự tạo, hoặc có giấy phép sử dụng được ghi nguồn (`AGENTS.md` §8). Không lấy từ sản phẩm khác.
-- **Theme ở MVP (FEAT-07):** `default` và `garden`. Garden là phương án mặc định đề xuất cho `Q-09`; chủ dự án có thể đổi sang một phong cách tham khảo khác. Theme mới chỉ cần thêm một khối giá trị trong `design-tokens.json`, thêm tài sản trang trí và qua kiểm tra tương phản.
+- **Theme ở MVP (FEAT-07):** `default` và `coquette`. Chủ dự án chọn Coquette ngày 2026-11-08 (`Q-09`).
+- **Ngôn ngữ trang trí Coquette:** nơ, ren, ngọc trai, hoa nhỏ, trái tim, tông hồng phấn và kem. Trang trí theo quy tắc vùng ở bảng trên. Bo góc lớn hơn theme Default, đổ bóng ánh hồng nhẹ. Theme mới chỉ cần thêm một khối giá trị trong `design-tokens.json`, thêm tài sản trang trí và qua kiểm tra tương phản.
 - **Tùy chỉnh nhiều lớp (FEAT-08, Vòng 5):** chỉ cho phép đổi các token nằm trong danh sách được phép (ví dụ `accent`, `decor`, font display, họa tiết). Server kiểm tra tương phản trước khi lưu; cặp màu không đạt thì bị từ chối kèm thông báo.
 
 ## 6. Component nền cho MVP
@@ -180,7 +183,7 @@ Figma hiện **BLOCKED** (DES-01): phiên làm việc chưa có quyền truy c�
 
 1. **Variables:**
    - Collection `Primitive`: một mode duy nhất.
-   - Collection `Semantic`: mỗi theme một mode (`default`, `garden`), giá trị lấy từ `design-tokens.json`.
+   - Collection `Semantic`: mỗi theme một mode (`default`, `coquette`), giá trị lấy từ `design-tokens.json`.
    - Tên biến giữ nguyên tên token (`color/bg/surface`), để có thể đối chiếu tự động sau này.
 2. **Text styles** theo §3.3; **Effect styles** cho `shadow.card` và `shadow.overlay`.
 3. **Component** theo §6, dùng auto-layout, có variant cho từng trạng thái.
@@ -193,7 +196,7 @@ Nếu Figma được kết nối cho môi trường làm việc, có thể dùng
 
 | ID | Vấn đề | Chốt ở |
 | --- | --- | --- |
-| `DS-01` | Theme thứ hai của MVP là Garden hay phong cách khác (`Q-09`) | Trước Vòng 3; nên chốt sớm để làm minh họa |
+| `DS-01` | ~~Theme thứ hai của MVP~~: **đã chốt Coquette** (2026-11-08) | — |
 | `DS-02` | Có cần chế độ tối cho theme Default ở MVP không | Vòng 3; chế độ tối phải đi qua cùng kiểm tra tương phản |
 | `DS-03` | Logo, minh họa, linh vật: ai tạo và theo giấy phép nào | Trước Vòng 3 |
-| `DS-04` | Xác minh subset tiếng Việt của Be Vietnam Pro và Lora qua `next/font` | Khi dựng khung |
+| `DS-04` | Xác minh subset tiếng Việt của Be Vietnam Pro và Playfair Display qua `next/font` | Khi dựng khung |

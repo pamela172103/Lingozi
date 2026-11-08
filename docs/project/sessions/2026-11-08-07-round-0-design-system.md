@@ -28,7 +28,7 @@
 **Đề xuất, chưa duyệt:**
 
 - Bảng màu.
-- Theme thứ hai là Garden (phương án mặc định cho `Q-09`).
+- Theme thứ hai: ban đầu đề xuất Garden; **chủ dự án chọn Coquette** trong cùng phiên. Font display đổi từ Lora sang Playfair Display.
 - Font Be Vietnam Pro và Lora (SIL OFL).
 - Breakpoint và bố cục sidebar.
 

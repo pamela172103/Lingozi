@@ -2,57 +2,239 @@
   "$description": "Lingozi design tokens - nguồn duy nhất cho CSS (apps/web) và Figma Variables. Tài liệu: docs/architecture/design-system.md",
   "version": "0.1.0",
   "primitive": {
-    "space": { "0": "0", "1": "4px", "2": "8px", "3": "12px", "4": "16px", "5": "20px", "6": "24px", "8": "32px", "10": "40px", "12": "48px", "16": "64px" },
-    "radius": { "sm": "4px", "md": "8px", "lg": "12px", "xl": "16px", "full": "9999px" },
-    "fontSize": { "xs": "12px", "sm": "14px", "md": "16px", "lg": "18px", "xl": "20px", "2xl": "24px", "3xl": "30px", "4xl": "36px" },
-    "lineHeight": { "tight": "1.25", "normal": "1.5", "relaxed": "1.7" },
-    "fontWeight": { "regular": "400", "medium": "500", "semibold": "600", "bold": "700" },
-    "duration": { "fast": "120ms", "normal": "200ms", "slow": "320ms" },
-    "easing": { "standard": "cubic-bezier(0.2, 0, 0, 1)" },
-    "breakpoint": { "xl": "1440px", "lg": "1280px", "md": "1024px", "sm": "768px", "xs": "375px" },
-    "zIndex": { "sticky": "100", "dropdown": "200", "overlay": "300", "modal": "400", "toast": "500" }
+    "space": {
+      "0": "0",
+      "1": "4px",
+      "2": "8px",
+      "3": "12px",
+      "4": "16px",
+      "5": "20px",
+      "6": "24px",
+      "8": "32px",
+      "10": "40px",
+      "12": "48px",
+      "16": "64px"
+    },
+    "radius": {
+      "sm": "4px",
+      "md": "8px",
+      "lg": "12px",
+      "xl": "16px",
+      "full": "9999px"
+    },
+    "fontSize": {
+      "xs": "12px",
+      "sm": "14px",
+      "md": "16px",
+      "lg": "18px",
+      "xl": "20px",
+      "2xl": "24px",
+      "3xl": "30px",
+      "4xl": "36px"
+    },
+    "lineHeight": {
+      "tight": "1.25",
+      "normal": "1.5",
+      "relaxed": "1.7"
+    },
+    "fontWeight": {
+      "regular": "400",
+      "medium": "500",
+      "semibold": "600",
+      "bold": "700"
+    },
+    "duration": {
+      "fast": "120ms",
+      "normal": "200ms",
+      "slow": "320ms"
+    },
+    "easing": {
+      "standard": "cubic-bezier(0.2, 0, 0, 1)"
+    },
+    "breakpoint": {
+      "xl": "1440px",
+      "lg": "1280px",
+      "md": "1024px",
+      "sm": "768px",
+      "xs": "375px"
+    },
+    "zIndex": {
+      "sticky": "100",
+      "dropdown": "200",
+      "overlay": "300",
+      "modal": "400",
+      "toast": "500"
+    }
   },
   "themes": {
     "default": {
       "name": "Mặc định",
-      "font": { "ui": "Be Vietnam Pro", "display": "Be Vietnam Pro" },
+      "font": {
+        "ui": "Be Vietnam Pro",
+        "display": "Be Vietnam Pro"
+      },
       "color": {
-        "bg.canvas": "#F7F7F8", "bg.surface": "#FFFFFF", "bg.subtle": "#EEEEF2",
-        "text.primary": "#1B1B22", "text.secondary": "#4A4A57", "text.muted": "#62626F",
-        "border.default": "#DCDCE3", "border.strong": "#7E7E8C",
-        "accent.default": "#4F46E5", "accent.text": "#4338CA", "accent.on": "#FFFFFF", "accent.subtle": "#EEF0FF",
-        "status.success": "#15803D", "status.warning": "#A35200", "status.danger": "#B91C1C", "status.info": "#1D4ED8",
+        "bg.canvas": "#F7F7F8",
+        "bg.surface": "#FFFFFF",
+        "bg.subtle": "#EEEEF2",
+        "text.primary": "#1B1B22",
+        "text.secondary": "#4A4A57",
+        "text.muted": "#62626F",
+        "border.default": "#DCDCE3",
+        "border.strong": "#7E7E8C",
+        "accent.default": "#4F46E5",
+        "accent.text": "#4338CA",
+        "accent.on": "#FFFFFF",
+        "accent.subtle": "#EEF0FF",
+        "status.success": "#15803D",
+        "status.warning": "#A35200",
+        "status.danger": "#B91C1C",
+        "status.info": "#1D4ED8",
         "focus.ring": "#4F46E5",
-        "decor.primary": "#C7C3F7", "decor.secondary": "#F5D0E0"
+        "decor.primary": "#C7C3F7",
+        "decor.secondary": "#F5D0E0"
       },
-      "radius": { "control": "md", "card": "lg" },
-      "shadow": { "card": "0 1px 2px rgba(27,27,34,0.06), 0 1px 3px rgba(27,27,34,0.08)", "overlay": "0 8px 24px rgba(27,27,34,0.16)" }
+      "radius": {
+        "control": "md",
+        "card": "lg"
+      },
+      "shadow": {
+        "card": "0 1px 2px rgba(27,27,34,0.06), 0 1px 3px rgba(27,27,34,0.08)",
+        "overlay": "0 8px 24px rgba(27,27,34,0.16)"
+      }
     },
-    "garden": {
-      "name": "Garden",
-      "font": { "ui": "Be Vietnam Pro", "display": "Lora" },
-      "color": {
-        "bg.canvas": "#F4F1E8", "bg.surface": "#FFFDF7", "bg.subtle": "#EAE6D8",
-        "text.primary": "#1F2A1F", "text.secondary": "#3F4F3F", "text.muted": "#58664F",
-        "border.default": "#DAD5C4", "border.strong": "#78866F",
-        "accent.default": "#2F6B3A", "accent.text": "#285C32", "accent.on": "#FFFFFF", "accent.subtle": "#E3EFDC",
-        "status.success": "#2B6E35", "status.warning": "#8F4E00", "status.danger": "#A8322B", "status.info": "#245C9E",
-        "focus.ring": "#2F6B3A",
-        "decor.primary": "#8FB573", "decor.secondary": "#E9A6A6"
+    "coquette": {
+      "name": "Coquette",
+      "font": {
+        "ui": "Be Vietnam Pro",
+        "display": "Playfair Display"
       },
-      "radius": { "control": "lg", "card": "xl" },
-      "shadow": { "card": "0 1px 2px rgba(31,42,31,0.06), 0 2px 4px rgba(31,42,31,0.08)", "overlay": "0 8px 24px rgba(31,42,31,0.18)" }
+      "color": {
+        "bg.canvas": "#FBF1F3",
+        "bg.surface": "#FFFAFB",
+        "bg.subtle": "#F5E4E9",
+        "text.primary": "#2B1A20",
+        "text.secondary": "#5A3F48",
+        "text.muted": "#765560",
+        "border.default": "#EDD3DB",
+        "border.strong": "#9C7884",
+        "accent.default": "#B03A62",
+        "accent.text": "#962F53",
+        "accent.on": "#FFFFFF",
+        "accent.subtle": "#FBE3EC",
+        "status.success": "#2E7044",
+        "status.warning": "#8F4E00",
+        "status.danger": "#B42332",
+        "status.info": "#3B5BA9",
+        "focus.ring": "#B03A62",
+        "decor.primary": "#F4B6C8",
+        "decor.secondary": "#E9D5B7"
+      },
+      "radius": {
+        "control": "lg",
+        "card": "xl"
+      },
+      "shadow": {
+        "card": "0 1px 2px rgba(43,26,32,0.05), 0 2px 6px rgba(176,58,98,0.08)",
+        "overlay": "0 8px 24px rgba(43,26,32,0.16)"
+      }
     }
   },
   "contrastChecks": [
-    ["text.primary", "bg.canvas", 4.5], ["text.primary", "bg.surface", 4.5],
-    ["text.secondary", "bg.surface", 4.5], ["text.secondary", "bg.subtle", 4.5],
-    ["text.muted", "bg.surface", 4.5], ["text.muted", "bg.canvas", 4.5], ["text.muted", "bg.subtle", 4.5],
-    ["accent.text", "bg.surface", 4.5], ["accent.text", "bg.canvas", 4.5], ["accent.text", "accent.subtle", 4.5],
-    ["accent.on", "accent.default", 4.5],
-    ["status.success", "bg.surface", 4.5], ["status.warning", "bg.surface", 4.5],
-    ["status.danger", "bg.surface", 4.5], ["status.info", "bg.surface", 4.5],
-    ["border.strong", "bg.surface", 3.0], ["border.strong", "bg.canvas", 3.0],
-    ["focus.ring", "bg.surface", 3.0], ["focus.ring", "bg.canvas", 3.0]
+    [
+      "text.primary",
+      "bg.canvas",
+      4.5
+    ],
+    [
+      "text.primary",
+      "bg.surface",
+      4.5
+    ],
+    [
+      "text.secondary",
+      "bg.surface",
+      4.5
+    ],
+    [
+      "text.secondary",
+      "bg.subtle",
+      4.5
+    ],
+    [
+      "text.muted",
+      "bg.surface",
+      4.5
+    ],
+    [
+      "text.muted",
+      "bg.canvas",
+      4.5
+    ],
+    [
+      "text.muted",
+      "bg.subtle",
+      4.5
+    ],
+    [
+      "accent.text",
+      "bg.surface",
+      4.5
+    ],
+    [
+      "accent.text",
+      "bg.canvas",
+      4.5
+    ],
+    [
+      "accent.text",
+      "accent.subtle",
+      4.5
+    ],
+    [
+      "accent.on",
+      "accent.default",
+      4.5
+    ],
+    [
+      "status.success",
+      "bg.surface",
+      4.5
+    ],
+    [
+      "status.warning",
+      "bg.surface",
+      4.5
+    ],
+    [
+      "status.danger",
+      "bg.surface",
+      4.5
+    ],
+    [
+      "status.info",
+      "bg.surface",
+      4.5
+    ],
+    [
+      "border.strong",
+      "bg.surface",
+      3.0
+    ],
+    [
+      "border.strong",
+      "bg.canvas",
+      3.0
+    ],
+    [
+      "focus.ring",
+      "bg.surface",
+      3.0
+    ],
+    [
+      "focus.ring",
+      "bg.canvas",
+      3.0
+    ]
   ]
 }

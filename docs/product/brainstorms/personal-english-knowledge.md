@@ -24,6 +24,7 @@
 | 10 | Cách phát triển | Agile theo vòng 2 tuần; mỗi vòng thiết kế → phát triển → demo một vài tính năng | Chủ dự án, 2026-11-08 |
 | 11 | Thiết bị ưu tiên | **Desktop-first**, responsive xuống tablet và phone | Chủ dự án, 2026-11-08 |
 | 12 | Đăng nhập MVP | **Email + mật khẩu** và **Google** | Chủ dự án, 2026-11-08 |
+| 13 | Theme MVP | Default + **Coquette** (`Q-09`) | Chủ dự án, 2026-11-08 |
 
 ## 3. Câu hỏi còn mở
 
@@ -39,7 +40,7 @@ Mỗi câu hỏi gắn với vòng cần câu trả lời. Phương án mặc đ
 | `Q-06` | Dòng thời gian sắp theo mốc nào? | Vòng 2 | Thời điểm tạo mục (UTC, hiển thị theo múi giờ người dùng) |
 | `Q-07` | Phạm vi tìm kiếm và tìm gần đúng? | Vòng 2 | Tìm theo nội dung tiếng Anh, nghĩa, ví dụ, ghi chú; không phân biệt hoa/thường, bỏ dấu tiếng Việt; chưa có tìm theo ngữ nghĩa |
 | `Q-08` | Quy tắc chấp nhận đáp án khi luyện gõ (hoa/thường, dấu câu, biến thể)? | Vòng 3 | Bỏ qua hoa/thường và khoảng trắng thừa ở đầu và cuối; dấu câu phải đúng; chưa chấp nhận biến thể |
-| `Q-09` | Hai theme đầu tiên là theme nào? | Vòng 0 (design system) | Một theme trung tính dễ đọc làm mặc định, cộng một theme trong danh sách tham khảo do chủ dự án chọn |
+| `Q-09` | Hai theme đầu tiên là theme nào? | — | **Đã chốt:** Default + Coquette (quyết định 13) |
 | `Q-10` | Nhà cung cấp AI, ngôn ngữ phản hồi, hạn mức, chi phí? | Vòng 4 | Quyết định bằng ADR trước Vòng 4 |
 | `Q-11` | Giao diện hỗ trợ ngôn ngữ nào từ đầu? | Vòng 0 | Giao diện tiếng Việt ở MVP, chuẩn bị cấu trúc i18n để thêm tiếng Anh (AGENTS.md hướng tới cả hai) |
 

@@ -68,9 +68,9 @@ Chỉ thiết kế cho các tính năng của vòng hiện tại, không làm tr
 | Bước | Việc | Skill OpenBA | Nơi lưu |
 | --- | --- | --- | --- |
 | Yêu cầu | User story (INVEST), AC Gherkin, use case cho luồng phức tạp | `userstory`, `ac`, `usecase` | `docs/features/<feature>/requirements/` |
-| Đặc tả | FR `FR-[MODULE]-[FEATURE]-[SEQ]`, business rules `BR-`, ma trận lỗi `ERR-`; cập nhật NFR nếu cần | `srs` | `docs/features/<feature>/srs/` |
-| Giải pháp | User flow, sequence, state; mở rộng ERD; API contract | `user-flow`, `sequence`, `state`, `erd`, `api-design` | `docs/features/<feature>/design/`, `docs/architecture/` |
-| Giao diện | Wireframe → màn hình Figma dùng design system → đặc tả bàn giao `figma-spec.md` → prototype; thử với người dùng khi luồng mới | `wireframe-html`, `figma`, `prototype-html` | `docs/features/<feature>/design/` |
+| Đặc tả | FR `FR-[MODULE]-[FEATURE]-[SEQ]`, business rules `BR-`, ma trận lỗi `ERR-`; cập nhật NFR nếu cần. Danh mục chung ở `srs/README.md`, chi tiết theo từng story | `srs` | `docs/features/<feature>/srs/` |
+| Giải pháp | User flow, sequence, state; mở rộng ERD; API contract | `user-flow`, `sequence`, `state`, `erd`, `api-design` | Trong SRS từng story: `docs/features/<feature>/srs/US-*.md`; ERD và API dùng chung: `docs/architecture/` |
+| Giao diện | Wireframe → màn hình Figma dùng design system → bàn giao (link Figma ghi ở mục Wireframe của SRS từng story) → prototype; thử với người dùng khi luồng mới | `wireframe-ascii`, `wireframe-html`, `figma`, `prototype-html` | Mục 4 của `docs/features/<feature>/srs/US-*.md` |
 | Test | Test checklist, test case truy vết về AC, kịch bản E2E | `test-checklist`, `test-cases`, `playwright-gen` | `docs/features/<feature>/testing/` |
 
 **Figma:** phiên làm việc hiện tại chưa có quyền truy cập Figma, nên việc vẽ tự động bằng skill `figma` đang BLOCKED. Có hai cách gỡ:

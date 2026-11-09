@@ -2,7 +2,7 @@
 
 - Cập nhật: 2026-11-08.
 - Giai đoạn: **Vòng 1 — Lưu được kiến thức của riêng mình** (2026-11-08 → 2026-11-21), đang ở bước ② Thiết kế. Vòng 0 xong phần việc. Xem [lộ trình](../product/roadmap.md) §5.
-- Phiên gần nhất: [FEAT-01: đăng nhập bằng mã email, không mật khẩu](sessions/2026-11-09-17-auth-email-code.md).
+- Phiên gần nhất: [Đổi cấu trúc docs/features: SRS theo từng user story](sessions/2026-11-09-18-srs-per-story.md).
 - Đã đọc và gộp 4 commit từ `origin/work` vào `main` theo fast-forward, tới `61514e0`. Bàn giao phiên 05 được lưu cùng commit tài liệu tiếp theo; tra bằng `git log -- docs/project/`.
 
 ## Đã hoàn thành
@@ -73,6 +73,7 @@ Không có công việc triển khai đang dở. Thứ tự dưới đây là đ
   - Kiểm tra tay: tắt SQL Server thì `/api/system/status` trả `database: unavailable`, bật lại thì `ok`.
   - Script token: 0 lỗi tương phản; `tokens.css` khớp với nguồn.
   - CI GitHub Actions run #1 (Node 26, ubuntu-24.04): 4/4 job success.
+- Phiên 2026-11-09-18: đổi cấu trúc `docs/features/<feature>/`: SRS theo từng user story (19 file), bỏ thư mục `design/`; `python3 tools/feature-docs/check_feature_docs.py` báo OK cho cả hai tính năng (AC, BR, ERR khớp, liên kết hợp lệ); kiểm tra cú pháp Mermaid chỉ bằng script đếm ngoặc (chưa render).
 - Phiên 2026-11-09-17: FEAT-01 v0.3 theo luồng đăng nhập không mật khẩu (mã 6 số qua email); Facebook thay Apple; ADR 0004 sửa đổi; ERD thêm `EmailLoginCodes`; PRD 0.3.0. Các con số bảo mật của mã chờ chủ dự án xác nhận.
 - Phiên 2026-11-09-16: sửa lỗi phiên 15. Trang đăng nhập và đăng ký KHÔNG theo theme; đã gỡ theme, bộ chọn theme, vùng trang trí và TC-AUTH-039 khỏi wireframe và test case.
 - Phiên 2026-11-09-15: (đã sửa ở phiên 16) thêm theme vào trang xác thực.

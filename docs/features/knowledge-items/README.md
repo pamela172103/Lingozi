@@ -40,12 +40,10 @@
 
 | Loại | Tài liệu |
 | --- | --- |
-| User story + AC | [requirements/user-stories.md](requirements/user-stories.md) |
-| Đặc tả: FR, BR, ma trận lỗi | [srs/srs.md](srs/srs.md) |
-| API contract | [design/api-contract.md](design/api-contract.md) |
-| Luồng | [design/flows.md](design/flows.md) |
-| Wireframe | [design/wireframes.md](design/wireframes.md) |
-| Test case + RTM | [testing/test-cases.md](testing/test-cases.md) |
+| User story và AC | [requirements/user-stories.md](requirements/user-stories.md) |
+| SRS: danh mục chung (FR, BR, ERR, NFR, quy ước API) | [srs/README.md](srs/README.md) |
+| SRS theo story (luồng, wireframe, API, AC) | [US-LIB-01](srs/US-LIB-01-choose-type-and-save.md), [02](srs/US-LIB-02-similar-item-hint.md), [03](srs/US-LIB-03-list-items.md), [04](srs/US-LIB-04-view-item.md), [05](srs/US-LIB-05-edit-item.md), [06](srs/US-LIB-06-delete-item.md), [07](srs/US-LIB-07-private-library.md), [08](srs/US-LIB-08-auto-ipa.md), [09](srs/US-LIB-09-meaning-suggestions.md) |
+| Test case và RTM | [testing/test-cases.md](testing/test-cases.md) |
 
 ## Definition of Ready
 
@@ -53,7 +51,7 @@
 | --- | --- |
 | User story có ID, AC dạng Gherkin | Có, chờ duyệt |
 | Business rules và mã lỗi | Có (BR-LIB-001 → 015), chờ duyệt |
-| Màn hình đã duyệt, đủ trạng thái | Wireframe ASCII (W-LIB-02a chọn loại, W-LIB-02 form theo loại); Figma BLOCKED (`DES-01`), chờ duyệt |
+| Màn hình đã duyệt, đủ trạng thái | Wireframe ASCII trong SRS từng story (W-LIB-01 → 05); Figma chưa dựng màn hình (`DES-01`), chờ duyệt |
 | Nguồn phiên âm và gợi ý nghĩa | [ADR 0007](../../decisions/0007-pronunciation-and-meaning-suggestions.md): đã chọn API từ điển miễn phí (phương án B). **Cổng chưa đạt:** điều khoản, giấy phép, giới hạn gọi chưa kiểm tra trực tiếp. US-LIB-08/09 đạt DoR ở mức thiết kế; không ghi là hoạt động |
 | API contract và ERD liên quan | Có; ERD §3.2 đã duyệt (chưa dùng cột `SearchText` cho tới Vòng 2) |
 | Test case truy vết về AC | Có |

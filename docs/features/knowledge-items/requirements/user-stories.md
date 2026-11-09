@@ -1,7 +1,7 @@
 # User story và tiêu chí nghiệm thu — FEAT-02 Mục kiến thức
 
 - Cập nhật: 2026-11-08. Trạng thái: **chờ duyệt**.
-- Mọi story yêu cầu người dùng đã đăng nhập và đã xác thực email (FEAT-01, BR-AUTH-003). Mã BR và ERR xem [srs.md](../srs/srs.md).
+- Mọi story yêu cầu người dùng đã đăng nhập và đã xác thực email (FEAT-01, BR-AUTH-003). Mã BR và ERR xem [srs/README.md](../srs/README.md).
 - Câu đặt trong ngoặc kép là thông báo hiển thị cho người dùng. Câu chữ cuối cùng nằm trong `messages/vi.json`.
 
 ## US-LIB-01 — Chọn loại và lưu mục kiến thức

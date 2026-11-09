@@ -28,13 +28,13 @@ Các đường dẫn `rules/`, `_templates/`, `skills/`, `scripts/` trong kit đ
 | `docs/{product_name}/...` | `docs/product/...` |
 | `docs/{feature}/srs/...` | `docs/features/<feature>/srs/...` |
 | Tài liệu yêu cầu, story, AC của tính năng | `docs/features/<feature>/requirements/` |
-| Sơ đồ, luồng, wireframe của tính năng | `docs/features/<feature>/design/` |
+| Đặc tả theo từng user story: FR, BR, ERR, luồng, sequence, state, wireframe, API, AC | `docs/features/<feature>/srs/US-XXX-NN-<slug>.md`; danh mục chung `docs/features/<feature>/srs/README.md` |
 | Test case và checklist của tính năng | `docs/features/<feature>/testing/` |
 
 Luôn kiểm tra đường dẫn đầu ra trước khi chạy script. Với trình render sơ đồ, chạy từ gốc repo và truyền đường dẫn tài liệu thực tế, ví dụ sau khi đã tạo file nguồn:
 
 ```bash
-python3 tools/openba-kit/scripts/render_diagrams.py docs/features/<feature>/srs/flows.md
+python3 tools/openba-kit/scripts/render_diagrams.py docs/features/<feature>/srs/US-XXX-NN-<slug>.md
 ```
 
 Thay `<feature>` bằng tên thực tế, không chạy nguyên dòng placeholder. Lệnh này sinh file cạnh tài liệu đầu vào; xem diff trước khi commit. Một số tính năng export cần công cụ bổ sung; chỉ cài khi công việc cần và sau khi kiểm tra yêu cầu của script.

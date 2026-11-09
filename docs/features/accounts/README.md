@@ -37,10 +37,8 @@
 | Loại | Tài liệu |
 | --- | --- |
 | User story và AC | [requirements/user-stories.md](requirements/user-stories.md) |
-| Đặc tả: FR, BR, lỗi, NFR | [srs/srs.md](srs/srs.md) |
-| API contract | [design/api-contract.md](design/api-contract.md) |
-| Luồng và sequence | [design/flows.md](design/flows.md) |
-| Wireframe | [design/wireframes.md](design/wireframes.md) |
+| SRS: danh mục chung (FR, BR, ERR, NFR, quy ước API) | [srs/README.md](srs/README.md) |
+| SRS theo story (luồng, wireframe, API, AC) | [US-AUTH-01](srs/US-AUTH-01-request-email-code.md), [02](srs/US-AUTH-02-verify-email-code.md), [03](srs/US-AUTH-03-keep-session.md), [04](srs/US-AUTH-04-google-sign-in.md), [05](srs/US-AUTH-05-facebook-sign-in.md), [06](srs/US-AUTH-06-link-providers.md), [07](srs/US-AUTH-07-code-not-received.md), [08](srs/US-AUTH-08-sign-out.md), [09](srs/US-AUTH-09-protect-library.md), [10](srs/US-AUTH-10-legal-pages.md) |
 | Test case và RTM | [testing/test-cases.md](testing/test-cases.md) |
 
 ## Definition of Ready
@@ -49,7 +47,7 @@
 | --- | --- |
 | User story có ID và AC Gherkin | Có (39 AC), chờ duyệt |
 | BR và mã lỗi | Có (BR-AUTH-001 → 013), chờ duyệt |
-| Màn hình đã duyệt | Wireframe ASCII (W-AUTH-01 → 07); Figma BLOCKED (`DES-01`) |
+| Màn hình đã duyệt | Wireframe ASCII trong SRS từng story (W-AUTH-01 → 07); Figma chưa dựng màn hình (`DES-01`) |
 | API contract và ERD | Có; ERD cần bảng `EmailLoginCodes` (đã ghi, chờ duyệt) |
 | Test case truy vết về AC | Có (43 TC) |
 | Quyết định bảo mật của mã | Đã xác nhận 2026-11-09: 6 số, 10 phút, dùng một lần, 5 lần sai, giới hạn gửi (BR-AUTH-001, 002, 009) |

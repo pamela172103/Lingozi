@@ -1,7 +1,7 @@
 # User story và tiêu chí nghiệm thu — FEAT-01 Tài khoản
 
 - Cập nhật: 2026-11-09 (v0.3: đăng nhập không mật khẩu bằng mã email; Facebook thay Apple). Trạng thái: **chờ duyệt**.
-- Quy ước: mỗi story có kịch bản thành công, lỗi và biên (`rules/08`). Mã BR và ERR xem [srs.md](../srs/srs.md).
+- Quy ước: mỗi story có kịch bản thành công, lỗi và biên (`rules/08`). Mã BR và ERR xem [srs/README.md](../srs/README.md).
 - Câu trong ngoặc kép là thông báo hiển thị; câu chữ cuối cùng nằm trong `messages/vi.json`.
 - Thay đổi so với v0.2: không còn mật khẩu. Mã story được giữ để truy vết; US-AUTH-03 và US-AUTH-07 đổi nội dung.
 

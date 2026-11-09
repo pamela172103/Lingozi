@@ -1,0 +1,116 @@
+"""Check that per-story SRS files under docs/features/*/srs/ stay in sync with the rest of the docs.
+
+Usage (from repository root):
+    python3 tools/feature-docs/check_feature_docs.py            # check all features
+    python3 tools/feature-docs/check_feature_docs.py accounts   # check one feature
+
+Checks per feature:
+  1. Every user story in requirements/user-stories.md has a US-*.md file in srs/, and vice versa.
+  2. The Gherkin block in each srs file is identical to the one in the user story.
+  3. Every AC in the Gherkin has a row in the srs AC table with at least one test case.
+  4. BR and ERR rows copied into a story file are identical to the rows in srs/README.md.
+  5. Every FR / BR / ERR ID used in a story file exists in srs/README.md.
+  6. Relative markdown links in the feature's files resolve.
+Exit code 1 if any check fails.
+"""
+import re
+import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[2]
+FEATURES = ROOT / "docs" / "features"
+
+
+def stories(text: str) -> dict:
+    result = {}
+    for block in re.split(r"^## ", text, flags=re.M)[1:]:
+        m = re.match(r"(US-[A-Z]+-\d+) — ", block)
+        if not m:
+            continue
+        g = re.search(r"```gherkin\n(.*?)```", block, flags=re.S)
+        result[m.group(1)] = g.group(1).strip() if g else ""
+    return result
+
+
+def rows(text: str, id_regex: str) -> dict:
+    out = {}
+    for line in text.split("\n"):
+        m = re.match(r"^\|\s*`(" + id_regex + r")`", line)
+        if m:
+            out[m.group(1)] = line.strip()
+    return out
+
+
+def check_feature(feature_dir: Path) -> list:
+    errors = []
+    srs_dir = feature_dir / "srs"
+    catalog_path = srs_dir / "README.md"
+    stories_path = feature_dir / "requirements" / "user-stories.md"
+    if not catalog_path.exists() or not stories_path.exists():
+        return [f"{feature_dir.name}: missing srs/README.md or requirements/user-stories.md"]
+    catalog = catalog_path.read_text(encoding="utf-8")
+    story_ac = stories(stories_path.read_text(encoding="utf-8"))
+    srs_files = {re.match(r"(US-[A-Z]+-\d+)", p.name).group(1): p for p in srs_dir.glob("US-*.md")}
+
+    for sid in story_ac:
+        if sid not in srs_files:
+            errors.append(f"{feature_dir.name}: {sid} has no srs file")
+    for sid in srs_files:
+        if sid not in story_ac:
+            errors.append(f"{feature_dir.name}: srs file for {sid} has no user story")
+
+    cat_br = rows(catalog, r"BR-[A-Z]+-\d+")
+    cat_err = rows(catalog, r"ERR-[A-Z]+-\d+-\d+")
+    cat_fr = set(re.findall(r"`(FR-[A-Z]+-[A-Z]+-\d+)`", catalog))
+
+    for sid, path in sorted(srs_files.items()):
+        if sid not in story_ac:
+            continue
+        text = path.read_text(encoding="utf-8")
+        g = re.search(r"```gherkin\n(.*?)```", text, flags=re.S)
+        if not g or g.group(1).strip() != story_ac[sid]:
+            errors.append(f"{path.name}: Gherkin differs from requirements/user-stories.md")
+        ac_ids = re.findall(r"^Scenario: (AC-\d+[a-z]?) ", story_ac[sid], flags=re.M)
+        for ac in ac_ids:
+            m = re.search(r"^\| " + re.escape(ac) + r" \|.*$", text, flags=re.M)
+            if not m:
+                errors.append(f"{path.name}: {ac} missing in AC table")
+            elif not re.search(r"TC-[A-Z]+-\d+", m.group(0)):
+                errors.append(f"{path.name}: {ac} has no test case")
+        for rid, row in rows(text, r"BR-[A-Z]+-\d+").items():
+            if rid not in cat_br:
+                errors.append(f"{path.name}: {rid} not in srs/README.md")
+            elif cat_br[rid] != row:
+                errors.append(f"{path.name}: {rid} differs from srs/README.md")
+        for rid, row in rows(text, r"ERR-[A-Z]+-\d+-\d+").items():
+            if rid not in cat_err:
+                errors.append(f"{path.name}: {rid} not in srs/README.md")
+            elif cat_err[rid] != row:
+                errors.append(f"{path.name}: {rid} differs from srs/README.md")
+        for fr in set(re.findall(r"`(FR-[A-Z]+-[A-Z]+-\d+)`", text)):
+            if fr not in cat_fr:
+                errors.append(f"{path.name}: {fr} not in srs/README.md")
+
+    for path in feature_dir.rglob("*.md"):
+        for link in re.findall(r"\]\(([^)#\s]+)(?:#[^)]*)?\)", path.read_text(encoding="utf-8")):
+            if link.startswith(("http://", "https://", "mailto:")):
+                continue
+            if not (path.parent / link).resolve().exists():
+                errors.append(f"{path.relative_to(ROOT)}: broken link {link}")
+    return errors
+
+
+def main(argv: list) -> int:
+    targets = [FEATURES / a for a in argv] if argv else sorted(p for p in FEATURES.iterdir() if p.is_dir())
+    all_errors = []
+    for t in targets:
+        errs = check_feature(t)
+        print(f"{t.name}: {'OK' if not errs else str(len(errs)) + ' problem(s)'}")
+        all_errors += errs
+    for e in all_errors:
+        print("  -", e)
+    return 1 if all_errors else 0
+
+
+if __name__ == "__main__":
+    sys.exit(main(sys.argv[1:]))

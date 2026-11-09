@@ -106,9 +106,55 @@ sequenceDiagram
 
 ## 4. Wireframe
 
-_Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe ASCII là căn cứ cho DoR._
+_Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe ASCII là căn cứ cho DoR. Quy tắc: vẽ đủ mọi màn hình, hộp thoại và trạng thái mà AC của story nhắc tới._
 
-Story này không có màn hình riêng. Người dùng thấy [W-AUTH-01](US-AUTH-01-request-email-code.md#4-wireframe) khi bị chuyển hướng.
+### W-AUTH-01 — Đăng nhập: trạng thái ban đầu (`/auth/login`)
+
+```text
+┌────────────────────────────────────────────────────────────────┐
+│                         [Logo Lingozi]                         │
+│                                                                │
+│         ┌────────────────────────────────────────────┐         │
+│         │ Đăng nhập                                  │         │
+│         │ Đăng nhập hoặc tạo tài khoản mới.          │         │
+│         │                                            │         │
+│         │ [ G   Tiếp tục với Google     ]            │         │
+│         │ [ f   Tiếp tục với Facebook   ]            │         │
+│         │ ────────────── hoặc ──────────────         │         │
+│         │ [     Tiếp tục với email      ]            │         │
+│         └────────────────────────────────────────────┘         │
+│                                                                │
+│            Chính sách quyền riêng tư · Xóa dữ liệu             │
+└────────────────────────────────────────────────────────────────┘
+```
+
+- Ba phương thức theo thứ tự: Google, Facebook, email. Facebook thay cho Apple.
+- Ô email ẩn cho tới khi bấm "Tiếp tục với email".
+- Không có ô mật khẩu và không có liên kết "Quên mật khẩu".
+- Chân trang có liên kết tới `/privacy` và `/data-deletion`.
+- Nút của nhà cung cấp chưa được cấu hình bị ẩn (API `start` trả 404).
+
+### W-AUTH-22 — Thông báo lỗi phiên làm việc (ERR-AUTH-400-05)
+
+```text
+┌──────────────┬──────────────────────────────────────────────────────────────┐
+│Lingozi       │ Lưu kiến thức mới                                            │
+│              │ ┌──────────────────────────────────────────────────────────┐ │
+│▸ Thư viện    │ │ (!) Phiên làm việc không hợp lệ.                         │ │
+│▸ Luyện tập   │ │     Vui lòng tải lại trang.        [ Tải lại ]           │ │
+│              │ └──────────────────────────────────────────────────────────┘ │
+│              │                                                              │
+│              │ (nội dung form giữ nguyên)                                   │
+│⚙ Cài đặt     │                                                              │
+└──────────────┴──────────────────────────────────────────────────────────────┘
+```
+
+- Hiện trên mọi form khi request thay đổi dữ liệu thiếu hoặc sai token antiforgery.
+- Giao diện lấy lại token và cho thử lại một lần; không mất dữ liệu đã nhập.
+
+### Điều hướng và liên kết màn hình
+
+- Trang đích sau khi đăng nhập là trang người dùng định mở trước đó (`returnUrl`), ví dụ [W-LIB-01](../../knowledge-items/srs/US-LIB-03-list-items.md).
 
 ## 5. API
 
@@ -147,11 +193,11 @@ Scenario: AC-03 Không chuyển hướng ra ngoài
   Then sau khi đăng nhập tôi về "Thư viện", không bị chuyển ra domain đó (BR-AUTH-011)
 ```
 
-| AC | Nội dung | FR | BR | ERR | Test case |
-| --- | --- | --- | --- | --- | --- |
-| AC-01 | Chưa đăng nhập | `FR-AUTH-SEC-001` | — | `ERR-AUTH-401-02` | TC-AUTH-034 |
-| AC-02 | Request thay đổi dữ liệu thiếu token antiforgery | `FR-AUTH-SEC-001` | — | `ERR-AUTH-400-05` | TC-AUTH-035 |
-| AC-03 | Không chuyển hướng ra ngoài | `FR-AUTH-SEC-001` | `BR-AUTH-011` | — | TC-AUTH-036 |
+| AC | Nội dung | FR | BR | ERR | Wireframe | Test case |
+| --- | --- | --- | --- | --- | --- | --- |
+| AC-01 | Chưa đăng nhập | `FR-AUTH-SEC-001` | — | `ERR-AUTH-401-02` | W-AUTH-01 | TC-AUTH-034 |
+| AC-02 | Request thay đổi dữ liệu thiếu token antiforgery | `FR-AUTH-SEC-001` | — | `ERR-AUTH-400-05` | W-AUTH-22 | TC-AUTH-035 |
+| AC-03 | Không chuyển hướng ra ngoài | `FR-AUTH-SEC-001` | `BR-AUTH-011` | — | W-AUTH-01 | TC-AUTH-036 |
 
 ## 7. Truy vết test case
 

@@ -121,24 +121,106 @@ sequenceDiagram
 
 ## 4. Wireframe
 
-_Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe ASCII là căn cứ cho DoR._
+_Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe ASCII là căn cứ cho DoR. Quy tắc: vẽ đủ mọi màn hình, hộp thoại và trạng thái mà AC của story nhắc tới._
 
-### W-LIB-03 Dialog mục tương tự
+### W-LIB-08 — Form Từ vựng: mặc định (`/library/items/new`, sau khi chọn)
 
 ```text
-┌──────────── Dialog (role=dialog, aria-modal) ─────────────────┐
-│ Bạn đã lưu nội dung tương tự                               h2 │
-│ ┌──────────────────────────────────────────────────────────┐  │
-│ │ Give up · Từ vựng · từ bỏ · 02/11/2026          [Mở] │  │
-│ └──────────────────────────────────────────────────────────┘  │
-│ và 2 mục khác                                                 │
-│ Bạn muốn bổ sung vào mục cũ hay tạo mục riêng?                │
-│        [ Hủy ]  [ Vẫn tạo mục mới ]  [ Mở mục cũ để bổ sung ] │
-└───────────────────────────────────────────────────────────────┘
+┌──────────────┬────────────────────────────────────────────────────────────────┐
+│Lingozi       │ ← Thư viện    Từ vựng · [Đổi loại]   h1                        │
+│              │ ┌────────────────────────────┐  ┌────────────────────────────┐ │
+│▸ Thư viện    │ │ Từ *                       │  │ Ví dụ (0/20)               │ │
+│▸ Luyện tập   │ │ [give up__________]        │  │ [ + Thêm ví dụ ]           │ │
+│              │ │ Phiên âm                   │  │                            │ │
+│              │ │ [________________]         │  │ Ghi chú cá nhân            │ │
+│              │ │                            │  │ [________________]         │ │
+│⚙ Cài đặt     │ │ Nghĩa (không bắt buộc)     │  │                            │ │
+│              │ │ [________________]         │  │ Nguồn (gặp ở đâu)          │ │
+│              │ │ [________________]         │  │ [________________]         │ │
+│              │ │ Gợi ý: (chưa có)           │  └────────────────────────────┘ │
+│              │ └────────────────────────────┘                                 │
+│              │                                                                │
+│              │                      [ Hủy ]   [ Lưu ]                         │
+└──────────────┴────────────────────────────────────────────────────────────────┘
 ```
 
-- Khi mở dialog, focus vào tiêu đề. Esc tương đương "Hủy" và trả focus về nút Lưu.
-- Khi có nhiều mục, nút "Mở mục cũ để bổ sung" mở mục mới nhất. Nút "Mở" trên từng dòng mở đúng mục đó.
+- Chỉ "Từ" là bắt buộc; phiên âm, nghĩa, ví dụ, ghi chú, nguồn đều tùy chọn.
+- Đang lưu: nút "Lưu" có spinner, các ô bị khóa, "Hủy" vẫn dùng được.
+- Mỗi lần mở form sinh một `clientRequestId`; bấm Lưu hai lần hoặc gửi lại chỉ tạo một mục.
+- Form 2 cột ở ≥ 1280 px, 1 cột ở < 1024 px.
+
+### W-LIB-12 — Hộp thoại mục tương tự
+
+```text
+┌──────────────┬────────────────────────────────────────────────────────────────┐
+│Lingozi       │ (nền mờ: form Lưu kiến thức)                                   │
+│              │                                                                │
+│▸ Thư viện    │ ┌──────────────────────────────────────────────────────────┐   │
+│▸ Luyện tập   │ │ Bạn đã lưu nội dung tương tự   h2                        │   │
+│              │ │                                                          │   │
+│              │ │ Give up · Từ vựng · từ bỏ · 02/11/2026   [Mở]            │   │
+│              │ │ và 2 mục khác                                            │   │
+│⚙ Cài đặt     │ │                                                          │   │
+│              │ │ Bạn muốn bổ sung vào mục cũ hay tạo mục riêng?           │   │
+│              │ │                                                          │   │
+│              │ │ [ Hủy ] [ Vẫn tạo mục mới ] [ Mở mục cũ để bổ sung ]     │   │
+│              │ └──────────────────────────────────────────────────────────┘   │
+└──────────────┴────────────────────────────────────────────────────────────────┘
+```
+
+- `role="dialog"`, `aria-modal`; focus vào tiêu đề khi mở; Esc tương đương "Hủy" và trả focus về nút Lưu.
+- Liệt kê tối đa 5 mục mới nhất; nhiều hơn thì hiện dòng "và N mục khác".
+- Nút "Mở mục cũ để bổ sung" mở mục mới nhất; nút "Mở" trên từng dòng mở đúng mục đó. Không bao giờ tự gộp.
+
+### W-LIB-13 — Sửa mục cũ kèm nội dung vừa nhập (từ hộp thoại mục tương tự)
+
+```text
+┌──────────────┬────────────────────────────────────────────────────────────────┐
+│Lingozi       │ ← Thư viện    Sửa "give up"   h1                               │
+│              │ ┌──────────────────────────────────────────────────────────┐   │
+│▸ Thư viện    │ │ Nội dung bạn vừa nhập (chỉ đọc)        [ Đóng ]          │   │
+│▸ Luyện tập   │ │ Nghĩa: từ bỏ    Ví dụ: Don't give up.                    │   │
+│              │ └──────────────────────────────────────────────────────────┘   │
+│              │ ┌────────────────────────────┐  ┌────────────────────────────┐ │
+│              │ │ Từ *                       │  │ Ví dụ (1/20)               │ │
+│⚙ Cài đặt     │ │ [give up__________]        │  │ 1. Quit smoking.           │ │
+│              │ │ Phiên âm                   │  │ [ + Thêm ví dụ ]           │ │
+│              │ │ [/ɡɪv ʌp/_________]        │  │ Ghi chú cá nhân            │ │
+│              │ │ Nghĩa                      │  │ [________________]         │ │
+│              │ │ [từ bỏ____________]        │  └────────────────────────────┘ │
+│              │ └────────────────────────────┘                                 │
+│              │                                                                │
+│              │                  [ Hủy ]   [ Lưu thay đổi ]                    │
+└──────────────┴────────────────────────────────────────────────────────────────┘
+```
+
+- Panel chỉ để người dùng tự chép sang mục cũ; không tự gộp vào mục cũ.
+- Dữ liệu panel chỉ nằm trong bộ nhớ của trang; rời trang thì mất và có hộp thoại xác nhận.
+
+### W-LIB-14 — Chi tiết mục: đầy đủ (`/library/items/{id}`)
+
+```text
+┌──────────────┬────────────────────────────────────────────────────────────────┐
+│Lingozi       │ [ ✓ Đã lưu ]  (toast sau khi lưu)                              │
+│              │ ← Thư viện                            [ Sửa ]  [ x Xóa ]       │
+│▸ Thư viện    │ give up                                         term           │
+│▸ Luyện tập   │ Từ vựng · /ɡɪv ʌp/                                             │
+│              │                                                                │
+│              │ Nghĩa   h2                                                     │
+│              │ từ bỏ                                                          │
+│⚙ Cài đặt     │                                                                │
+│              │ Ví dụ   h2                                                     │
+│              │ 1. Don't give up. — Đừng bỏ cuộc.                              │
+│              │                                                                │
+│              │ Ghi chú · Nguồn: Friends S01E01                                │
+│              │                                                                │
+│              │ Tạo 08/11/2026 14:00 · Sửa 08/11/2026 14:05                    │
+└──────────────┴────────────────────────────────────────────────────────────────┘
+```
+
+- Nội dung hiện cỡ `text.term`; phiên âm chỉ có với Từ vựng, kèm nguồn khi do hệ thống điền.
+- Nút "Xóa" kiểu viền, có icon cảnh báo, không dùng nền đặc giống nút chính.
+- Toast "Đã lưu" (`role="status"`) chỉ hiện ngay sau khi lưu.
 
 ## 5. API
 
@@ -192,13 +274,13 @@ Scenario: AC-05 Nhiều mục tương tự
   Then hộp thoại hiện 5 mục mới nhất và dòng "và 2 mục khác"
 ```
 
-| AC | Nội dung | FR | BR | ERR | Test case |
-| --- | --- | --- | --- | --- | --- |
-| AC-01 | Có mục tương tự | `FR-LIB-ITEM-002` | `BR-LIB-003` | — | TC-LIB-008 |
-| AC-02 | Mở mục cũ | `FR-LIB-ITEM-002` | `BR-LIB-003` | — | TC-LIB-009 |
-| AC-03 | Vẫn tạo mục mới | `FR-LIB-ITEM-002` | `BR-LIB-003` | — | TC-LIB-010 |
-| AC-04 | Không gợi ý mục của người khác | `FR-LIB-ITEM-002` | `BR-LIB-006` | — | TC-LIB-011 |
-| AC-05 | Nhiều mục tương tự | `FR-LIB-ITEM-002` | `BR-LIB-003` | — | TC-LIB-012 |
+| AC | Nội dung | FR | BR | ERR | Wireframe | Test case |
+| --- | --- | --- | --- | --- | --- | --- |
+| AC-01 | Có mục tương tự | `FR-LIB-ITEM-002` | `BR-LIB-003` | — | W-LIB-12 | TC-LIB-008 |
+| AC-02 | Mở mục cũ | `FR-LIB-ITEM-002` | `BR-LIB-003` | — | W-LIB-13 | TC-LIB-009 |
+| AC-03 | Vẫn tạo mục mới | `FR-LIB-ITEM-002` | `BR-LIB-003` | — | W-LIB-12, W-LIB-14 | TC-LIB-010 |
+| AC-04 | Không gợi ý mục của người khác | `FR-LIB-ITEM-002` | `BR-LIB-006` | — | W-LIB-08, W-LIB-14 | TC-LIB-011 |
+| AC-05 | Nhiều mục tương tự | `FR-LIB-ITEM-002` | `BR-LIB-003` | — | W-LIB-12 | TC-LIB-012 |
 
 ## 7. Truy vết test case
 

@@ -99,9 +99,65 @@ sequenceDiagram
 
 ## 4. Wireframe
 
-_Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe ASCII là căn cứ cho DoR._
+_Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe ASCII là căn cứ cho DoR. Quy tắc: vẽ đủ mọi màn hình, hộp thoại và trạng thái mà AC của story nhắc tới._
 
-Dùng lại form [W-LIB-02](US-LIB-01-choose-type-and-save.md#4-wireframe), dưới ô "Nghĩa": hàng chip gợi ý, mỗi chip kèm nhãn nguồn bằng chữ ("Từ mục của bạn", "Từ từ điển"); bấm chip mới điền vào ô; không có gợi ý thì không hiện gì và không có thông báo lỗi. Vùng chip có `aria-live="polite"`.
+### W-LIB-27 — Gợi ý nghĩa: từ mục của bạn
+
+```text
+┌─ Form (một phần) ────────────────────────────────────────┐
+│ Từ *                                                     │
+│ [give up__________________]                              │
+│ Nghĩa (không bắt buộc)                                   │
+│ [__________________________]                             │
+│ Gợi ý:  ( từ bỏ · Từ mục của bạn )                       │
+└──────────────────────────────────────────────────────────┘
+```
+
+- Chip gợi ý có nhãn nguồn bằng chữ; ô "Nghĩa" vẫn trống cho tới khi bấm chip.
+- Vùng gợi ý có `aria-live="polite"`.
+
+### W-LIB-28 — Gợi ý nghĩa: từ mục của bạn và từ điển
+
+```text
+┌─ Form (một phần) ────────────────────────────────────────┐
+│ Từ *                                                     │
+│ [give up__________________]                              │
+│ Nghĩa (không bắt buộc)                                   │
+│ [__________________________]                             │
+│ Gợi ý:  ( từ bỏ · Từ mục của bạn )                       │
+│         ( to stop trying · Từ từ điển )                  │
+└──────────────────────────────────────────────────────────┘
+```
+
+- Tối đa 5 gợi ý; gợi ý của chính người dùng luôn hiện trước gợi ý từ điển.
+
+### W-LIB-29 — Gợi ý nghĩa: không có gợi ý
+
+```text
+┌─ Form (một phần) ────────────────────────────────────────┐
+│ Từ *                                                     │
+│ [xyzzy___________________]                               │
+│ Nghĩa (không bắt buộc)                                   │
+│ [__________________________]                             │
+└──────────────────────────────────────────────────────────┘
+```
+
+- Không hiện chip và không có thông báo; nghĩa vẫn không bắt buộc.
+- Gợi ý của người dùng khác không bao giờ xuất hiện: người dùng chưa có mục nào thì không có gợi ý "own".
+
+### W-LIB-30 — Gợi ý nghĩa: sau khi bấm một gợi ý
+
+```text
+┌─ Form (một phần) ────────────────────────────────────────┐
+│ Từ *                                                     │
+│ [give up__________________]                              │
+│ Nghĩa (không bắt buộc)                                   │
+│ [từ bỏ____________________]                              │
+│ Gợi ý:  ( từ bỏ · Từ mục của bạn )                       │
+└──────────────────────────────────────────────────────────┘
+```
+
+- Bấm chip mới điền vào ô "Nghĩa"; người dùng vẫn sửa được.
 
 ## 5. API
 
@@ -154,13 +210,13 @@ Scenario: AC-05 Không có gợi ý
   Then không hiện gợi ý, không có thông báo lỗi, và nghĩa vẫn không bắt buộc
 ```
 
-| AC | Nội dung | FR | BR | ERR | Test case |
-| --- | --- | --- | --- | --- | --- |
-| AC-01 | Gợi ý từ mục của chính tôi | `FR-LIB-ITEM-009` | `BR-LIB-014` | — | TC-LIB-045 |
-| AC-02 | Gợi ý từ nguồn từ điển | `FR-LIB-ITEM-009` | `BR-LIB-014` | — | TC-LIB-046 |
-| AC-03 | Không gợi ý dữ liệu của người khác | `FR-LIB-ITEM-009` | `BR-LIB-014` | — | TC-LIB-047 |
-| AC-04 | Bấm gợi ý mới điền | `FR-LIB-ITEM-009` | `BR-LIB-014` | — | TC-LIB-048 |
-| AC-05 | Không có gợi ý | `FR-LIB-ITEM-009` | `BR-LIB-015` | — | TC-LIB-049 |
+| AC | Nội dung | FR | BR | ERR | Wireframe | Test case |
+| --- | --- | --- | --- | --- | --- | --- |
+| AC-01 | Gợi ý từ mục của chính tôi | `FR-LIB-ITEM-009` | `BR-LIB-014` | — | W-LIB-27 | TC-LIB-045 |
+| AC-02 | Gợi ý từ nguồn từ điển | `FR-LIB-ITEM-009` | `BR-LIB-014` | — | W-LIB-28 | TC-LIB-046 |
+| AC-03 | Không gợi ý dữ liệu của người khác | `FR-LIB-ITEM-009` | `BR-LIB-014` | — | W-LIB-29 | TC-LIB-047 |
+| AC-04 | Bấm gợi ý mới điền | `FR-LIB-ITEM-009` | `BR-LIB-014` | — | W-LIB-30 | TC-LIB-048 |
+| AC-05 | Không có gợi ý | `FR-LIB-ITEM-009` | `BR-LIB-015` | — | W-LIB-29 | TC-LIB-049 |
 
 ## 7. Truy vết test case
 

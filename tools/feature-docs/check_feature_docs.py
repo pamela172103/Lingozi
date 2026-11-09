@@ -11,6 +11,10 @@ Checks per feature:
   4. BR and ERR rows copied into a story file are identical to the rows in srs/README.md.
   5. Every FR / BR / ERR ID used in a story file exists in srs/README.md.
   6. Relative markdown links in the feature's files resolve.
+  7. Wireframes: every AC row has a Wireframe cell; each W-ID in it is drawn (### W-... heading with a
+     ```text frame) in the same file, or is a markdown link to another story/feature, or is "Không có UI";
+     a story with any UI AC has at least one frame; a frame has equal-width lines; the same W-ID is
+     identical in every story file of the feature.
 Exit code 1 if any check fails.
 """
 import re
@@ -90,6 +94,44 @@ def check_feature(feature_dir: Path) -> list:
         for fr in set(re.findall(r"`(FR-[A-Z]+-[A-Z]+-\d+)`", text)):
             if fr not in cat_fr:
                 errors.append(f"{path.name}: {fr} not in srs/README.md")
+
+    frames = {}
+    for sid, path in sorted(srs_files.items()):
+        if sid not in story_ac:
+            continue
+        text = path.read_text(encoding="utf-8")
+        drawn = {}
+        for m in re.finditer(r"^### (W-[A-Z]+-\d+) — .*?(?=^#{2,3} |\Z)", text, flags=re.S | re.M):
+            block = m.group(0).strip()
+            drawn[m.group(1)] = block
+            fm = re.search(r"```text\n(.*?)```", block, flags=re.S)
+            if not fm:
+                errors.append(f"{path.name}: {m.group(1)} has no ```text frame")
+            elif len({len(x) for x in fm.group(1).rstrip("\n").split("\n")}) != 1:
+                errors.append(f"{path.name}: {m.group(1)} frame lines have different widths")
+            if m.group(1) in frames and frames[m.group(1)][1] != block:
+                errors.append(f"{path.name}: {m.group(1)} differs from {frames[m.group(1)][0]}")
+            frames.setdefault(m.group(1), (path.name, block))
+        ui = False
+        for ac in re.findall(r"^Scenario: (AC-\d+[a-z]?) ", story_ac[sid], flags=re.M):
+            m = re.search(r"^\| " + re.escape(ac) + r" \|.*$", text, flags=re.M)
+            if not m:
+                continue
+            cells = [c.strip() for c in m.group(0).strip().strip("|").split("|")]
+            if len(cells) < 7:
+                errors.append(f"{path.name}: {ac} has no Wireframe cell")
+                continue
+            cell = cells[-2]
+            if cell == "Không có UI":
+                continue
+            ui = True
+            for part in re.split(r",\s*(?=W-|\[)", cell):
+                if part.startswith("["):
+                    continue
+                if part not in drawn:
+                    errors.append(f"{path.name}: {ac} cites {part} which is not drawn in this file")
+        if ui and not drawn:
+            errors.append(f"{path.name}: story has UI acceptance criteria but no wireframe")
 
     for path in feature_dir.rglob("*.md"):
         for link in re.findall(r"\]\(([^)#\s]+)(?:#[^)]*)?\)", path.read_text(encoding="utf-8")):

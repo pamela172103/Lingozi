@@ -103,13 +103,66 @@ sequenceDiagram
 
 ## 4. Wireframe
 
-_Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe ASCII là căn cứ cho DoR._
+_Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe ASCII là căn cứ cho DoR. Quy tắc: vẽ đủ mọi màn hình, hộp thoại và trạng thái mà AC của story nhắc tới._
 
-### W-AUTH-05 Không nhận được mã (phần mở rộng của W-AUTH-02)
+### W-AUTH-05 — Nhập mã: trạng thái ban đầu (`/auth/code`)
 
-- Hướng dẫn: "Kiểm tra mục Spam hoặc Quảng cáo. Mã có hiệu lực 10 phút."
-- Nút "Gửi mã mới" (disabled trong 60 giây, đếm ngược).
-- Thông báo giống hệt cho email chưa có tài khoản và đã có tài khoản.
+```text
+┌────────────────────────────────────────────────────────────────┐
+│                         [Logo Lingozi]                         │
+│                                                                │
+│         ┌────────────────────────────────────────────┐         │
+│         │ Nhập mã                                    │         │
+│         │ Chúng tôi đã gửi mã 6 số tới               │         │
+│         │ an@example.com.                            │         │
+│         │ Mã có hiệu lực 10 phút (còn 09:58).        │         │
+│         │                                            │         │
+│         │ [ ] [ ] [ ] [ ] [ ] [ ]                    │         │
+│         │                                            │         │
+│         │ [            Xác nhận            ]         │         │
+│         │                                            │         │
+│         │ Không nhận được mã?   Đổi email            │         │
+│         └────────────────────────────────────────────┘         │
+│                                                                │
+│            Chính sách quyền riêng tư · Xóa dữ liệu             │
+└────────────────────────────────────────────────────────────────┘
+```
+
+- Sáu ô, mỗi ô có nhãn riêng; `autocomplete="one-time-code"`, `inputmode="numeric"`.
+- Dán 6 số vào ô đầu thì điền cả sáu ô; đủ 6 số thì tự gửi xác nhận.
+- Đếm ngược 10 phút theo thời hạn của mã.
+- Không có ô mật khẩu.
+
+### W-AUTH-09 — Nhập mã: không nhận được mã
+
+```text
+┌────────────────────────────────────────────────────────────────┐
+│                         [Logo Lingozi]                         │
+│                                                                │
+│         ┌────────────────────────────────────────────┐         │
+│         │ Nhập mã                                    │         │
+│         │ Chúng tôi đã gửi mã 6 số tới               │         │
+│         │ an@example.com.                            │         │
+│         │ Mã có hiệu lực 10 phút (còn 09:58).        │         │
+│         │                                            │         │
+│         │ [ ] [ ] [ ] [ ] [ ] [ ]                    │         │
+│         │                                            │         │
+│         │ [            Xác nhận            ]         │         │
+│         │                                            │         │
+│         │ Không nhận được mã? (đang mở)              │         │
+│         │ • Kiểm tra mục Spam hoặc Quảng cáo.        │         │
+│         │ • Mã có hiệu lực 10 phút.                  │         │
+│         │ [    Gửi mã mới (sau 42 giây)    ]         │         │
+│         │ Đổi email                                  │         │
+│         └────────────────────────────────────────────┘         │
+│                                                                │
+│            Chính sách quyền riêng tư · Xóa dữ liệu             │
+└────────────────────────────────────────────────────────────────┘
+```
+
+- "Gửi mã mới" bị vô hiệu trong 60 giây, đếm ngược; hết thời gian thì bật.
+- Gửi mã mới làm mã cũ mất hiệu lực.
+- Hướng dẫn và thời gian chờ giống hệt cho email có và không có tài khoản (BR-AUTH-007).
 
 ## 5. API
 
@@ -141,11 +194,11 @@ Scenario: AC-03 Email không có tài khoản
   Then màn hình và thời gian chờ giống hệt trường hợp email đã có tài khoản (BR-AUTH-007)
 ```
 
-| AC | Nội dung | FR | BR | ERR | Test case |
-| --- | --- | --- | --- | --- | --- |
-| AC-01 | Gửi lại mã sau thời gian chờ | `FR-AUTH-CODE-001` | `BR-AUTH-009` | — | TC-AUTH-028 |
-| AC-02 | Không thấy thư | `FR-AUTH-CODE-001` | `BR-AUTH-009` | — | TC-AUTH-029 |
-| AC-03 | Email không có tài khoản | `FR-AUTH-CODE-001` | `BR-AUTH-007` | — | TC-AUTH-030 |
+| AC | Nội dung | FR | BR | ERR | Wireframe | Test case |
+| --- | --- | --- | --- | --- | --- | --- |
+| AC-01 | Gửi lại mã sau thời gian chờ | `FR-AUTH-CODE-001` | `BR-AUTH-009` | — | W-AUTH-09 | TC-AUTH-028 |
+| AC-02 | Không thấy thư | `FR-AUTH-CODE-001` | `BR-AUTH-009` | — | W-AUTH-09 | TC-AUTH-029 |
+| AC-03 | Email không có tài khoản | `FR-AUTH-CODE-001` | `BR-AUTH-007` | — | W-AUTH-05, W-AUTH-09 | TC-AUTH-030 |
 
 ## 7. Truy vết test case
 

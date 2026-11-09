@@ -105,15 +105,71 @@ sequenceDiagram
 
 ## 4. Wireframe
 
-_Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe ASCII là căn cứ cho DoR._
+_Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe ASCII là căn cứ cho DoR. Quy tắc: vẽ đủ mọi màn hình, hộp thoại và trạng thái mà AC của story nhắc tới._
 
-### W-LIB-05 Xác nhận xóa
+### W-LIB-14 — Chi tiết mục: đầy đủ (`/library/items/{id}`)
 
-`ConfirmDialog` gồm:
+```text
+┌──────────────┬────────────────────────────────────────────────────────────────┐
+│Lingozi       │ [ ✓ Đã lưu ]  (toast sau khi lưu)                              │
+│              │ ← Thư viện                            [ Sửa ]  [ x Xóa ]       │
+│▸ Thư viện    │ give up                                         term           │
+│▸ Luyện tập   │ Từ vựng · /ɡɪv ʌp/                                             │
+│              │                                                                │
+│              │ Nghĩa   h2                                                     │
+│              │ từ bỏ                                                          │
+│⚙ Cài đặt     │                                                                │
+│              │ Ví dụ   h2                                                     │
+│              │ 1. Don't give up. — Đừng bỏ cuộc.                              │
+│              │                                                                │
+│              │ Ghi chú · Nguồn: Friends S01E01                                │
+│              │                                                                │
+│              │ Tạo 08/11/2026 14:00 · Sửa 08/11/2026 14:05                    │
+└──────────────┴────────────────────────────────────────────────────────────────┘
+```
 
-- Tiêu đề: "Xóa mục 'give up'?"
-- Nội dung: "Hành động này không thể hoàn tác. Mục và các ví dụ sẽ bị xóa vĩnh viễn."
-- Hai nút: "Hủy" (focus mặc định) và "Xóa" (kiểu viền, màu `status.danger`, có icon ⚠). Ở theme Coquette, nút xóa phải phân biệt được với màu accent ([design system](../../../architecture/design-system.md) §3.1).
+- Nội dung hiện cỡ `text.term`; phiên âm chỉ có với Từ vựng, kèm nguồn khi do hệ thống điền.
+- Nút "Xóa" kiểu viền, có icon cảnh báo, không dùng nền đặc giống nút chính.
+- Toast "Đã lưu" (`role="status"`) chỉ hiện ngay sau khi lưu.
+
+### W-LIB-20 — Hộp thoại xác nhận xóa
+
+```text
+┌──────────────┬────────────────────────────────────────────────────────────────┐
+│Lingozi       │ (nền mờ: trang chi tiết)                                       │
+│              │                                                                │
+│▸ Thư viện    │ ┌──────────────────────────────────────────────────────────┐   │
+│▸ Luyện tập   │ │ Xóa mục "give up"?   h2                                  │   │
+│              │ │                                                          │   │
+│              │ │ Hành động này không thể hoàn tác. Mục và các             │   │
+│              │ │ ví dụ sẽ bị xóa vĩnh viễn.                               │   │
+│⚙ Cài đặt     │ │                                                          │   │
+│              │ │        [ Hủy ] (focus mặc định)   [ ! Xóa ]              │   │
+│              │ └──────────────────────────────────────────────────────────┘   │
+└──────────────┴────────────────────────────────────────────────────────────────┘
+```
+
+- Focus mặc định ở "Hủy"; Esc tương đương "Hủy" và trả focus về nút "Xóa".
+- Nút "Xóa" kiểu viền, màu `status.danger`, có icon cảnh báo, phân biệt với nút chính ở cả hai theme.
+- Xác nhận xong thì xóa cứng; không phục hồi được ở MVP.
+
+### W-LIB-21 — Thư viện sau khi xóa (hoặc mục không còn tồn tại)
+
+```text
+┌──────────────┬────────────────────────────────────────────────────────────────┐
+│Lingozi       │ [ ✓ Đã xóa ]  (toast)   hoặc   [ i Mục này không còn tồn tại ] │
+│              │ Thư viện                         24 mục   h1                   │
+│▸ Thư viện    │ ┌────────────────────────────┐  ┌────────────────────────────┐ │
+│▸ Luyện tập   │ │ give up         Từ vựng    │  │ Present perfect Ngữ pháp   │ │
+│              │ │ từ bỏ                      │  │ Thì hiện tại hoàn thành    │ │
+│              │ │                 08/11/2026 │  │                 07/11/2026 │ │
+│              │ └────────────────────────────┘  └────────────────────────────┘ │
+│⚙ Cài đặt     │                                                                │
+└──────────────┴────────────────────────────────────────────────────────────────┘
+```
+
+- Xóa thành công: về Thư viện với toast "Đã xóa".
+- Mục đã bị xóa ở nơi khác: hiện "Mục này không còn tồn tại" và về Thư viện; không hiện lỗi hệ thống.
 
 ## 5. API
 
@@ -150,11 +206,11 @@ Scenario: AC-03 Xóa mục đã bị xóa ở nơi khác
   Then tôi thấy "Mục này không còn tồn tại" và được đưa về Thư viện (không hiện lỗi hệ thống)
 ```
 
-| AC | Nội dung | FR | BR | ERR | Test case |
-| --- | --- | --- | --- | --- | --- |
-| AC-01 | Xóa có xác nhận | `FR-LIB-ITEM-006` | `BR-LIB-009` | — | TC-LIB-023 |
-| AC-02 | Hủy xóa | `FR-LIB-ITEM-006` | — | — | TC-LIB-024 |
-| AC-03 | Xóa mục đã bị xóa ở nơi khác | `FR-LIB-ITEM-006` | `BR-LIB-009` | `ERR-LIB-404-01` | TC-LIB-025 |
+| AC | Nội dung | FR | BR | ERR | Wireframe | Test case |
+| --- | --- | --- | --- | --- | --- | --- |
+| AC-01 | Xóa có xác nhận | `FR-LIB-ITEM-006` | `BR-LIB-009` | — | W-LIB-20, W-LIB-21 | TC-LIB-023 |
+| AC-02 | Hủy xóa | `FR-LIB-ITEM-006` | — | — | W-LIB-20 | TC-LIB-024 |
+| AC-03 | Xóa mục đã bị xóa ở nơi khác | `FR-LIB-ITEM-006` | `BR-LIB-009` | `ERR-LIB-404-01` | W-LIB-21 | TC-LIB-025 |
 
 ## 7. Truy vết test case
 

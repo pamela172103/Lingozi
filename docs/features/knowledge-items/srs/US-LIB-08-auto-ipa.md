@@ -150,9 +150,103 @@ stateDiagram-v2
 
 ## 4. Wireframe
 
-_Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe ASCII là căn cứ cho DoR._
+_Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe ASCII là căn cứ cho DoR. Quy tắc: vẽ đủ mọi màn hình, hộp thoại và trạng thái mà AC của story nhắc tới._
 
-Dùng lại form [W-LIB-02](US-LIB-01-choose-type-and-save.md#4-wireframe), ô "Phiên âm" của loại Từ vựng. Trạng thái của ô: phiên âm từ nguồn hiện nhãn "✓ Tự động (Anh-Anh)" kèm dòng "Nguồn: Wiktionary, CC BY-SA 3.0" và nút "Sửa"; sau khi sửa nhãn đổi thành "Bạn đã chỉnh sửa"; ô trống hiện "Chưa có phiên âm Anh-Anh, bạn có thể tự nhập"; nguồn lỗi hiện dòng "Không lấy được phiên âm tự động" (màu `text.muted`, không đỏ); sai ký tự hiện lỗi ERR-LIB-400-02 dưới ô.
+### W-LIB-22 — Ô phiên âm: tự điền từ nguồn
+
+```text
+┌─ Form Từ vựng (một phần) ────────────────────────────────┐
+│ Từ *                                                     │
+│ [water____________________]                              │
+│ Phiên âm                                                 │
+│ [/ˈwɔːtə/________________]                               │
+│ ✓ Tự động (Anh-Anh) · Wiktionary, CC BY-SA 3.0  [Sửa]    │
+└──────────────────────────────────────────────────────────┘
+```
+
+- Gọi nguồn khi rời ô "Từ" hoặc sau 500 ms không gõ; chỉ điền khi nguồn có phiên âm Anh-Anh (file audio `-uk`).
+- Lưu không sửa gì thì `ipaSource` là `dictionary`.
+
+### W-LIB-23 — Ô phiên âm: người dùng sửa hoặc tự nhập
+
+```text
+┌─ Form Từ vựng (một phần) ────────────────────────────────┐
+│ Từ *                                                     │
+│ [water____________________]                              │
+│ Phiên âm                                                 │
+│ [/ˈwɔːtə/ (ghi chú của tôi)_]                            │
+│ Bạn đã chỉnh sửa                                         │
+└──────────────────────────────────────────────────────────┘
+```
+
+- Sau khi sửa phiên âm do hệ thống điền, nhãn đổi thành "Bạn đã chỉnh sửa"; tự nhập thì nhãn "Bạn đã nhập".
+- Lưu thì `ipaSource` là `user`.
+
+### W-LIB-24 — Ô phiên âm: trống (chưa có phiên âm Anh-Anh)
+
+```text
+┌─ Form Từ vựng (một phần) ────────────────────────────────┐
+│ Từ *                                                     │
+│ [learn____________________]                              │
+│ Phiên âm                                                 │
+│ [__________________________]                             │
+│ Chưa có phiên âm Anh-Anh, bạn có thể tự nhập.            │
+└──────────────────────────────────────────────────────────┘
+```
+
+- Hiện khi nguồn không có phiên âm Anh-Anh được gắn nhãn; không điền phiên âm Anh-Mỹ hay không nhãn.
+- Xóa hết phiên âm rồi lưu thì `ipa` và `ipaSource` là trống. Lưu vẫn được khi ô trống.
+
+### W-LIB-25 — Ô phiên âm: nguồn lỗi hoặc quá 3 giây
+
+```text
+┌─ Form Từ vựng (một phần) ────────────────────────────────┐
+│ Từ *                                                     │
+│ [water____________________]                              │
+│ Phiên âm                                                 │
+│ [__________________________]                             │
+│ Không lấy được phiên âm tự động.                         │
+└──────────────────────────────────────────────────────────┘
+```
+
+- Dòng thông báo màu `text.muted`, không đỏ; form vẫn dùng bình thường.
+
+### W-LIB-26 — Ô phiên âm: ký tự không hợp lệ (ERR-LIB-400-02)
+
+```text
+┌─ Form Từ vựng (một phần) ────────────────────────────────┐
+│ Từ *                                                     │
+│ [water____________________]                              │
+│ Phiên âm                                                 │
+│ [<b>give</b>_______________]                             │
+│ (!) Phiên âm chỉ được chứa ký tự IPA.                    │
+└──────────────────────────────────────────────────────────┘
+```
+
+- Lỗi dưới ô; không lưu được cho tới khi sửa.
+
+### W-LIB-09 — Form Ngữ pháp: mặc định
+
+```text
+┌──────────────┬────────────────────────────────────────────────────────────────┐
+│Lingozi       │ ← Thư viện    Ngữ pháp · [Đổi loại]   h1                       │
+│              │ ┌────────────────────────────┐  ┌────────────────────────────┐ │
+│▸ Thư viện    │ │ Điểm ngữ pháp *            │  │ Ví dụ (0/20)               │ │
+│▸ Luyện tập   │ │ [Present perfect___]       │  │ [ + Thêm ví dụ ]           │ │
+│              │ │                            │  │                            │ │
+│              │ │ Nghĩa / giải thích         │  │ Ghi chú cá nhân            │ │
+│              │ │ (không bắt buộc)           │  │ [________________]         │ │
+│⚙ Cài đặt     │ │ [________________]         │  │                            │ │
+│              │ │ [________________]         │  │ Nguồn (gặp ở đâu)          │ │
+│              │ │ Gợi ý: (chưa có)           │  │ [________________]         │ │
+│              │ └────────────────────────────┘  └────────────────────────────┘ │
+│              │                                                                │
+│              │                      [ Hủy ]   [ Lưu ]                         │
+└──────────────┴────────────────────────────────────────────────────────────────┘
+```
+
+- Nhãn bắt buộc là "Điểm ngữ pháp"; không có ô "Phiên âm" và không gọi nguồn phiên âm.
+- Nghĩa chỉ gồm khoảng trắng được lưu là trống.
 
 ## 5. API
 
@@ -225,17 +319,17 @@ Scenario: AC-08 Không có ô phiên âm cho Ngữ pháp
   Then không có ô phiên âm và không gọi nguồn phiên âm
 ```
 
-| AC | Nội dung | FR | BR | ERR | Test case |
-| --- | --- | --- | --- | --- | --- |
-| AC-01 | Tự điền phiên âm Anh-Anh | `FR-LIB-ITEM-008` | `BR-LIB-013` | — | TC-LIB-038 |
-| AC-01a | Chỉ điền khi có phiên âm Anh-Anh được gắn nhãn | `FR-LIB-ITEM-008` | `BR-LIB-013` | — | TC-LIB-038 |
-| AC-02 | Sửa phiên âm do máy điền | `FR-LIB-ITEM-008` | `BR-LIB-013` | — | TC-LIB-039 |
-| AC-03 | Không có phiên âm từ nguồn | `FR-LIB-ITEM-008` | `BR-LIB-013`, `BR-LIB-015` | — | TC-LIB-040 |
-| AC-04 | Tự nhập phiên âm | `FR-LIB-ITEM-008` | `BR-LIB-013` | — | TC-LIB-040 |
-| AC-05 | Phiên âm sai ký tự | `FR-LIB-ITEM-008` | `BR-LIB-013` | `ERR-LIB-400-02` | TC-LIB-041 |
-| AC-06 | Nguồn lỗi hoặc quá thời gian | `FR-LIB-ITEM-008` | `BR-LIB-015` | — | TC-LIB-042 |
-| AC-07 | Xóa phiên âm | `FR-LIB-ITEM-008` | `BR-LIB-013` | — | TC-LIB-043 |
-| AC-08 | Không có ô phiên âm cho Ngữ pháp | `FR-LIB-ITEM-008` | `BR-LIB-013` | — | TC-LIB-044, TC-LIB-050 |
+| AC | Nội dung | FR | BR | ERR | Wireframe | Test case |
+| --- | --- | --- | --- | --- | --- | --- |
+| AC-01 | Tự điền phiên âm Anh-Anh | `FR-LIB-ITEM-008` | `BR-LIB-013` | — | W-LIB-22 | TC-LIB-038 |
+| AC-01a | Chỉ điền khi có phiên âm Anh-Anh được gắn nhãn | `FR-LIB-ITEM-008` | `BR-LIB-013` | — | W-LIB-24 | TC-LIB-038 |
+| AC-02 | Sửa phiên âm do máy điền | `FR-LIB-ITEM-008` | `BR-LIB-013` | — | W-LIB-23 | TC-LIB-039 |
+| AC-03 | Không có phiên âm từ nguồn | `FR-LIB-ITEM-008` | `BR-LIB-013`, `BR-LIB-015` | — | W-LIB-24 | TC-LIB-040 |
+| AC-04 | Tự nhập phiên âm | `FR-LIB-ITEM-008` | `BR-LIB-013` | — | W-LIB-23 | TC-LIB-040 |
+| AC-05 | Phiên âm sai ký tự | `FR-LIB-ITEM-008` | `BR-LIB-013` | `ERR-LIB-400-02` | W-LIB-26 | TC-LIB-041 |
+| AC-06 | Nguồn lỗi hoặc quá thời gian | `FR-LIB-ITEM-008` | `BR-LIB-015` | — | W-LIB-25 | TC-LIB-042 |
+| AC-07 | Xóa phiên âm | `FR-LIB-ITEM-008` | `BR-LIB-013` | — | W-LIB-24 | TC-LIB-043 |
+| AC-08 | Không có ô phiên âm cho Ngữ pháp | `FR-LIB-ITEM-008` | `BR-LIB-013` | — | W-LIB-09 | TC-LIB-044, TC-LIB-050 |
 
 ## 7. Truy vết test case
 

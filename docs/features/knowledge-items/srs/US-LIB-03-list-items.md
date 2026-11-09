@@ -101,34 +101,115 @@ sequenceDiagram
 
 ## 4. Wireframe
 
-_Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe ASCII là căn cứ cho DoR._
+_Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe ASCII là căn cứ cho DoR. Quy tắc: vẽ đủ mọi màn hình, hộp thoại và trạng thái mà AC của story nhắc tới._
 
-### W-LIB-01 Danh sách thư viện (`/library`)
+### W-LIB-01 — Danh sách thư viện: có dữ liệu (`/library`)
 
 ```text
-┌ Sidebar 240 ┬──────────── nội dung tối đa 1120 ───────────────────────────────┐
-│ Lingozi     │ [🔍 Tìm kiếm (Vòng 2, chưa hiện)]        [ + Lưu kiến thức  (N) ]│
-│ ▸ Thư viện ●│ ┌ banner lz-decor (≤120px) ──────────────────────────────────────┐│
-│ ▸ Luyện tập │ └────────────────────────────────────────────────────────────────┘│
-│             │ Thư viện                                       25 mục          h1 │
-│             │ ┌──────────────────────────┐ ┌──────────────────────────┐         │
-│             │ │ give up        Từ vựng    │ │ Present perfect  Ngữ pháp  │         │
-│             │ │ từ bỏ                     │ │ phá vỡ sự ngại ngùng ban  │         │
-│             │ │                 08/11/2026│ │ đầu…            07/11/2026│         │
-│             │ └──────────────────────────┘ └──────────────────────────┘         │
-│             │  … lưới 2 cột ở ≥1280px, 1 cột ở <1024px                          │
-│ ⚙ Cài đặt   │           ‹ Trước   Trang 1 / 2   Sau ›                           │
-└─────────────┴───────────────────────────────────────────────────────────────────┘
+┌──────────────┬────────────────────────────────────────────────────────────────┐
+│Lingozi       │                                   [ + Lưu kiến thức (N) ]      │
+│              │ Thư viện                         25 mục   h1                   │
+│▸ Thư viện    │ ┌────────────────────────────┐  ┌────────────────────────────┐ │
+│▸ Luyện tập   │ │ give up         Từ vựng    │  │ Present perfect Ngữ pháp   │ │
+│              │ │ từ bỏ                      │  │ Thì hiện tại hoàn thành    │ │
+│              │ │                 08/11/2026 │  │                 07/11/2026 │ │
+│              │ └────────────────────────────┘  └────────────────────────────┘ │
+│⚙ Cài đặt     │ ┌────────────────────────────┐  ┌────────────────────────────┐ │
+│              │ │ break the ice   Từ vựng    │  │ Used to V       Ngữ pháp   │ │
+│              │ │ phá vỡ sự ngại ngùng ban   │  │ đã từng làm gì             │ │
+│              │ │                 06/11/2026 │  │                 05/11/2026 │ │
+│              │ └────────────────────────────┘  └────────────────────────────┘ │
+│              │                                                                │
+│              │         ‹ Trước     Trang 1 / 2     Sau ›                      │
+└──────────────┴────────────────────────────────────────────────────────────────┘
 ```
 
-| Trạng thái | Hiển thị |
-| --- | --- |
-| Loading | 6 `Skeleton` có dạng card; `aria-busy="true"` trên danh sách |
-| Empty | `EmptyState`: linh vật (`lz-decor`), "Thư viện của bạn đang trống", "Lưu từ hoặc cách diễn đạt đầu tiên bạn gặp hôm nay.", nút chính "Lưu kiến thức đầu tiên" |
-| Error | `InlineAlert` (danger) "Không tải được thư viện" + nút "Thử lại" |
-| Trang ngoài phạm vi | "Trang này không có mục nào." + link "Về trang 1" |
+- Mới nhất trước, 20 mục mỗi trang (tối đa 50); lưới 2 cột ở ≥ 1280 px, 1 cột ở < 1024 px.
+- Mỗi thẻ là một liên kết tới trang chi tiết: nội dung (h3), loại (`Badge`), nghĩa cắt ở 2 dòng, ngày tạo trong thẻ `<time>`.
+- Chưa có ô tìm kiếm (Vòng 2).
 
-`KnowledgeItemCard` là một link tới trang chi tiết. Term dùng `text.h3`, nghĩa dùng `text.body` có `line-clamp: 2`, loại hiển thị bằng `Badge`, ngày dùng `text.caption` trong thẻ `<time>`.
+### W-LIB-02 — Danh sách thư viện: trống
+
+```text
+┌──────────────┬────────────────────────────────────────────────────────────────┐
+│Lingozi       │                                   [ + Lưu kiến thức (N) ]      │
+│              │ Thư viện                          0 mục   h1                   │
+│▸ Thư viện    │ ┌──────────────────────────────────────────────────────────┐   │
+│▸ Luyện tập   │ │                                                          │   │
+│              │ │         (hình linh vật, lz-decor)                        │   │
+│              │ │                                                          │   │
+│              │ │    Thư viện của bạn đang trống                           │   │
+│⚙ Cài đặt     │ │    Lưu từ hoặc cách diễn đạt đầu tiên                    │   │
+│              │ │    bạn gặp hôm nay.                                      │   │
+│              │ │                                                          │   │
+│              │ │      [ Lưu kiến thức đầu tiên ]                          │   │
+│              │ │                                                          │   │
+│              │ └──────────────────────────────────────────────────────────┘   │
+└──────────────┴────────────────────────────────────────────────────────────────┘
+```
+
+- `EmptyState` có nút hành động chính; hình trang trí `aria-hidden`, ẩn khi giảm trang trí.
+
+### W-LIB-03 — Danh sách thư viện: lỗi tải
+
+```text
+┌──────────────┬────────────────────────────────────────────────────────────────┐
+│Lingozi       │                                   [ + Lưu kiến thức (N) ]      │
+│              │ Thư viện   h1                                                  │
+│▸ Thư viện    │ ┌──────────────────────────────────────────────────────────┐   │
+│▸ Luyện tập   │ │ (!) Không tải được thư viện.                             │   │
+│              │ │     [ Thử lại ]                                          │   │
+│              │ └──────────────────────────────────────────────────────────┘   │
+│              │                                                                │
+│⚙ Cài đặt     │                                                                │
+└──────────────┴────────────────────────────────────────────────────────────────┘
+```
+
+- `InlineAlert` (danger) kèm icon và chữ; "Thử lại" gọi lại API.
+- Không hiện dữ liệu cũ hay dữ liệu của người khác.
+
+### W-LIB-04 — Danh sách thư viện: trang ngoài phạm vi
+
+```text
+┌──────────────┬────────────────────────────────────────────────────────────────┐
+│Lingozi       │                                   [ + Lưu kiến thức (N) ]      │
+│              │ Thư viện   h1                                                  │
+│▸ Thư viện    │ ┌──────────────────────────────────────────────────────────┐   │
+│▸ Luyện tập   │ │ Trang này không có mục nào.                              │   │
+│              │ │     Về trang 1                                           │   │
+│              │ └──────────────────────────────────────────────────────────┘   │
+│              │                                                                │
+│⚙ Cài đặt     │                                                                │
+└──────────────┴────────────────────────────────────────────────────────────────┘
+```
+
+- Hiện khi `page` vượt tổng số trang; `pageSize` lớn hơn 50 được giới hạn về 50 và không hiện thông báo riêng.
+
+### W-LIB-05 — Danh sách thư viện: đang tải
+
+```text
+┌──────────────┬────────────────────────────────────────────────────────────────┐
+│Lingozi       │                                   [ + Lưu kiến thức (N) ]      │
+│              │ Thư viện   h1                                                  │
+│▸ Thư viện    │ ┌────────────────────────────┐  ┌────────────────────────────┐ │
+│▸ Luyện tập   │ │ ░░░░░░░░░░░░░░░░░░         │  │ ░░░░░░░░░░░░░░░░░░         │ │
+│              │ │ ░░░░░░░░░░                 │  │ ░░░░░░░░░░                 │ │
+│              │ │             ░░░░░░░░       │  │             ░░░░░░░░       │ │
+│              │ └────────────────────────────┘  └────────────────────────────┘ │
+│⚙ Cài đặt     │ ┌────────────────────────────┐  ┌────────────────────────────┐ │
+│              │ │ ░░░░░░░░░░░░░░░░░░         │  │ ░░░░░░░░░░░░░░░░░░         │ │
+│              │ │ ░░░░░░░░░░                 │  │ ░░░░░░░░░░                 │ │
+│              │ │             ░░░░░░░░       │  │             ░░░░░░░░       │ │
+│              │ └────────────────────────────┘  └────────────────────────────┘ │
+│              │ ┌────────────────────────────┐  ┌────────────────────────────┐ │
+│              │ │ ░░░░░░░░░░░░░░░░░░         │  │ ░░░░░░░░░░░░░░░░░░         │ │
+│              │ │ ░░░░░░░░░░                 │  │ ░░░░░░░░░░                 │ │
+│              │ │             ░░░░░░░░       │  │             ░░░░░░░░       │ │
+│              │ └────────────────────────────┘  └────────────────────────────┘ │
+└──────────────┴────────────────────────────────────────────────────────────────┘
+```
+
+- 6 `Skeleton` dạng thẻ; danh sách có `aria-busy="true"`.
 
 ## 5. API
 
@@ -176,12 +257,12 @@ Scenario: AC-04 Tham số trang ngoài giới hạn
   And pageSize lớn hơn 50 được giới hạn về 50
 ```
 
-| AC | Nội dung | FR | BR | ERR | Test case |
-| --- | --- | --- | --- | --- | --- |
-| AC-01 | Danh sách có dữ liệu | `FR-LIB-ITEM-003` | `BR-LIB-011` | — | TC-LIB-013 |
-| AC-02 | Thư viện trống | `FR-LIB-ITEM-003` | — | — | TC-LIB-014 |
-| AC-03 | Lỗi tải | `FR-LIB-ITEM-003` | — | — | TC-LIB-015 |
-| AC-04 | Tham số trang ngoài giới hạn | `FR-LIB-ITEM-003` | `BR-LIB-011` | — | TC-LIB-016 |
+| AC | Nội dung | FR | BR | ERR | Wireframe | Test case |
+| --- | --- | --- | --- | --- | --- | --- |
+| AC-01 | Danh sách có dữ liệu | `FR-LIB-ITEM-003` | `BR-LIB-011` | — | W-LIB-01 | TC-LIB-013 |
+| AC-02 | Thư viện trống | `FR-LIB-ITEM-003` | — | — | W-LIB-02 | TC-LIB-014 |
+| AC-03 | Lỗi tải | `FR-LIB-ITEM-003` | — | — | W-LIB-03 | TC-LIB-015 |
+| AC-04 | Tham số trang ngoài giới hạn | `FR-LIB-ITEM-003` | `BR-LIB-011` | — | W-LIB-04 | TC-LIB-016 |
 
 ## 7. Truy vết test case
 

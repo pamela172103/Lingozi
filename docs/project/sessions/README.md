@@ -27,4 +27,6 @@ Mỗi phiên dùng một file `YYYY-MM-DD-NN-short-topic.md`, theo [mẫu](../se
 - [2026-11-09 · 17 · FEAT-01: đăng nhập bằng mã email](2026-11-09-17-auth-email-code.md).
 - [2026-11-09 · 18 · SRS theo từng user story](2026-11-09-18-srs-per-story.md).
 
+- [2026-11-09 · 19 · Wireframe đủ cho từng user story](2026-11-09-19-wireframes-per-story.md).
+
 Thêm liên kết nhật ký mới vào danh sách này sau mỗi phiên.

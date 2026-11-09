@@ -28,7 +28,7 @@ Các đường dẫn `rules/`, `_templates/`, `skills/`, `scripts/` trong kit đ
 | `docs/{product_name}/...` | `docs/product/...` |
 | `docs/{feature}/srs/...` | `docs/features/<feature>/srs/...` |
 | Tài liệu yêu cầu, story, AC của tính năng | `docs/features/<feature>/requirements/` |
-| Đặc tả theo từng user story: FR, BR, ERR, luồng, sequence, state, wireframe, API, AC | `docs/features/<feature>/srs/US-XXX-NN-<slug>.md`; danh mục chung `docs/features/<feature>/srs/README.md` |
+| Đặc tả theo từng user story: FR, BR, ERR, luồng, sequence, state, wireframe (đủ mọi màn hình và trạng thái nêu trong AC; xem quy tắc wireframe ở `docs/features/README.md`), API, AC | `docs/features/<feature>/srs/US-XXX-NN-<slug>.md`; danh mục chung `docs/features/<feature>/srs/README.md` |
 | Test case và checklist của tính năng | `docs/features/<feature>/testing/` |
 
 Luôn kiểm tra đường dẫn đầu ra trước khi chạy script. Với trình render sơ đồ, chạy từ gốc repo và truyền đường dẫn tài liệu thực tế, ví dụ sau khi đã tạo file nguồn:

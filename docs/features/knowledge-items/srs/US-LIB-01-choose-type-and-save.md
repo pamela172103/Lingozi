@@ -135,64 +135,175 @@ sequenceDiagram
 
 ## 4. Wireframe
 
-_Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe ASCII là căn cứ cho DoR._
+_Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe ASCII là căn cứ cho DoR. Quy tắc: vẽ đủ mọi màn hình, hộp thoại và trạng thái mà AC của story nhắc tới._
 
-### W-LIB-02a Chọn loại (`/library/items/new`, bước 1)
-
-```text
-┌ Sidebar 240 ┬──────────────────────────────────────────────────────────────┐
-│ Lingozi     │ ← Thư viện    Lưu kiến thức mới                             h1 │
-│             │ Bạn muốn lưu loại nào?                                       h2 │
-│             │ ┌ Từ vựng ──────────────────┐ ┌ Ngữ pháp ─────────────────┐   │
-│             │ │ Một từ hoặc cụm từ ngắn,   │ │ Một điểm ngữ pháp hoặc    │   │
-│             │ │ có nghĩa và phiên âm IPA   │ │ mẫu câu, ví dụ đi kèm     │   │
-│             │ └────────────────────────────┘ └───────────────────────────┘   │
-│             │                                    [ Tiếp tục ] (disabled)     │
-└─────────────┴──────────────────────────────────────────────────────────────┘
-```
-
-- Hai thẻ là một `radiogroup`; chọn bằng phím mũi tên, Enter hoặc Space. Mỗi thẻ có tên loại và một dòng mô tả.
-- Chưa chọn thì không có ô nhập nào; nút "Tiếp tục" disabled.
-- Sau khi chọn, bấm "Tiếp tục" hoặc Enter để sang form. Nút "Đổi loại" có ở đầu form.
-
-### W-LIB-02 Form theo loại (`/library/items/new` sau khi chọn loại, `/library/items/{id}/edit`)
+### W-LIB-06 — Chọn loại: chưa chọn (`/library/items/new`)
 
 ```text
-┌ Sidebar ┬───────────────────────────────────────────────────────────────────────┐
-│         │ ← Thư viện   Từ vựng · [Đổi loại]                                  h1 │
-│         │ ┌─ cột trái ──────────────────────┐ ┌─ cột phải ──────────────────┐ │
-│         │ │ Từ *                            │ │ Ví dụ (0/20)                │ │
-│         │ │ [give up_______________________]│ │ ┌ Ví dụ 1 ───────────────┐  │ │
-│         │ │ Phiên âm                        │ │ │ Câu ví dụ               │  │ │
-│         │ │ [/ˈwɔːtə/_____________________] │ │ │ [Drink some water.____] │  │ │
-│         │ │ ✓ Tự động (Anh-Anh) · Wiktionary [Sửa] │ │ │ Bản dịch                │  │ │
-│         │ │ Nghĩa (không bắt buộc)          │ │ │ [Đừng bỏ cuộc.________] │  │ │
-│         │ │ [từ bỏ_________________________]│ │ │            [🗑 Xóa ví dụ]│  │ │
-│         │ │ Gợi ý: (từ mục của bạn) từ bỏ   │ │ └────────────────────────┘  │ │
-│         │ │        (từ từ điển) bỏ cuộc     │ │ [ + Thêm ví dụ ]            │ │
-│         │ └─────────────────────────────────┘ │ Ghi chú cá nhân             │ │
-│         │                                     │ Nguồn                       │ │
-│         │                                     └─────────────────────────────┘ │
-│         │                                   [ Hủy ]   [ Lưu ] / [ Lưu thay đổi ]│
-└─────────┴───────────────────────────────────────────────────────────────────────┘
+┌──────────────┬────────────────────────────────────────────────────────────────┐
+│Lingozi       │ ← Thư viện     Lưu kiến thức mới   h1                          │
+│              │ Bạn muốn lưu loại nào?   h2                                    │
+│▸ Thư viện    │ ┌────────────────────────────┐  ┌────────────────────────────┐ │
+│▸ Luyện tập   │ │ ( ) Từ vựng                │  │ ( ) Ngữ pháp               │ │
+│              │ │ Một từ hoặc cụm từ ngắn,   │  │ Một điểm ngữ pháp hoặc     │ │
+│              │ │ có nghĩa và phiên âm IPA.  │  │ mẫu câu, có ví dụ.         │ │
+│              │ └────────────────────────────┘  └────────────────────────────┘ │
+│⚙ Cài đặt     │                                                                │
+│              │                 [ Tiếp tục ] (vô hiệu)                         │
+└──────────────┴────────────────────────────────────────────────────────────────┘
 ```
 
-Form của **Ngữ pháp** giống form Từ vựng, trừ:
+- Chỉ có hai loại ở Vòng 1: Từ vựng và Ngữ pháp; chưa có ô nhập nào.
+- Hai thẻ là một `radiogroup`, chọn bằng phím mũi tên hoặc Space; loại không có mặc định.
 
-- Nhãn trường bắt buộc là "Điểm ngữ pháp".
-- Không có ô Phiên âm và không gọi nguồn phiên âm.
+### W-LIB-07 — Chọn loại: đã chọn Từ vựng
 
-| Trạng thái | Hiển thị |
-| --- | --- |
-| Phiên âm từ nguồn | Nhãn "✓ Tự động (Anh-Anh)" kèm dòng nguồn "Wiktionary, CC BY-SA 3.0" và nút "Sửa" (nhãn đổi thành "Bạn đã chỉnh sửa" sau khi sửa) |
-| Phiên âm trống | Gợi ý "Chưa có phiên âm, bạn có thể tự nhập" |
-| Nguồn lỗi | Dòng "Không lấy được phiên âm tự động" (màu `text.muted`, không đỏ) |
-| Ô phiên âm sai ký tự | Lỗi dưới ô (ERR-LIB-400-02) |
-| Gợi ý nghĩa | Chip nhỏ dưới ô Nghĩa, nhãn nguồn bằng chữ; bấm để điền; không tự điền |
-| Không có gợi ý | Không hiện chip và không có thông báo |
-| Lỗi 400-01 (trường bắt buộc) | "Vui lòng nhập từ" hoặc "Vui lòng nhập điểm ngữ pháp" dưới ô |
-| Đổi loại khi đã nhập | Hộp xác nhận nếu sẽ mất phiên âm (khi chuyển sang Ngữ pháp); giữ các trường chung |
-| Đang lưu, 409-01, 422-01, lỗi mạng, rời trang | Như bản trước (giữ nguyên) |
+```text
+┌──────────────┬────────────────────────────────────────────────────────────────┐
+│Lingozi       │ ← Thư viện     Lưu kiến thức mới   h1                          │
+│              │ Bạn muốn lưu loại nào?   h2                                    │
+│▸ Thư viện    │ ┌────────────────────────────┐  ┌────────────────────────────┐ │
+│▸ Luyện tập   │ │ (●) Từ vựng                │  │ ( ) Ngữ pháp               │ │
+│              │ │ Một từ hoặc cụm từ ngắn,   │  │ Một điểm ngữ pháp hoặc     │ │
+│              │ │ có nghĩa và phiên âm IPA.  │  │ mẫu câu, có ví dụ.         │ │
+│              │ └────────────────────────────┘  └────────────────────────────┘ │
+│⚙ Cài đặt     │                                                                │
+│              │                 [ Tiếp tục ]                                   │
+└──────────────┴────────────────────────────────────────────────────────────────┘
+```
+
+- Nút "Tiếp tục" bật sau khi chọn; Enter cũng tiếp tục.
+- Trong form có nút "Đổi loại".
+
+### W-LIB-08 — Form Từ vựng: mặc định (`/library/items/new`, sau khi chọn)
+
+```text
+┌──────────────┬────────────────────────────────────────────────────────────────┐
+│Lingozi       │ ← Thư viện    Từ vựng · [Đổi loại]   h1                        │
+│              │ ┌────────────────────────────┐  ┌────────────────────────────┐ │
+│▸ Thư viện    │ │ Từ *                       │  │ Ví dụ (0/20)               │ │
+│▸ Luyện tập   │ │ [give up__________]        │  │ [ + Thêm ví dụ ]           │ │
+│              │ │ Phiên âm                   │  │                            │ │
+│              │ │ [________________]         │  │ Ghi chú cá nhân            │ │
+│              │ │                            │  │ [________________]         │ │
+│⚙ Cài đặt     │ │ Nghĩa (không bắt buộc)     │  │                            │ │
+│              │ │ [________________]         │  │ Nguồn (gặp ở đâu)          │ │
+│              │ │ [________________]         │  │ [________________]         │ │
+│              │ │ Gợi ý: (chưa có)           │  └────────────────────────────┘ │
+│              │ └────────────────────────────┘                                 │
+│              │                                                                │
+│              │                      [ Hủy ]   [ Lưu ]                         │
+└──────────────┴────────────────────────────────────────────────────────────────┘
+```
+
+- Chỉ "Từ" là bắt buộc; phiên âm, nghĩa, ví dụ, ghi chú, nguồn đều tùy chọn.
+- Đang lưu: nút "Lưu" có spinner, các ô bị khóa, "Hủy" vẫn dùng được.
+- Mỗi lần mở form sinh một `clientRequestId`; bấm Lưu hai lần hoặc gửi lại chỉ tạo một mục.
+- Form 2 cột ở ≥ 1280 px, 1 cột ở < 1024 px.
+
+### W-LIB-09 — Form Ngữ pháp: mặc định
+
+```text
+┌──────────────┬────────────────────────────────────────────────────────────────┐
+│Lingozi       │ ← Thư viện    Ngữ pháp · [Đổi loại]   h1                       │
+│              │ ┌────────────────────────────┐  ┌────────────────────────────┐ │
+│▸ Thư viện    │ │ Điểm ngữ pháp *            │  │ Ví dụ (0/20)               │ │
+│▸ Luyện tập   │ │ [Present perfect___]       │  │ [ + Thêm ví dụ ]           │ │
+│              │ │                            │  │                            │ │
+│              │ │ Nghĩa / giải thích         │  │ Ghi chú cá nhân            │ │
+│              │ │ (không bắt buộc)           │  │ [________________]         │ │
+│⚙ Cài đặt     │ │ [________________]         │  │                            │ │
+│              │ │ [________________]         │  │ Nguồn (gặp ở đâu)          │ │
+│              │ │ Gợi ý: (chưa có)           │  │ [________________]         │ │
+│              │ └────────────────────────────┘  └────────────────────────────┘ │
+│              │                                                                │
+│              │                      [ Hủy ]   [ Lưu ]                         │
+└──────────────┴────────────────────────────────────────────────────────────────┘
+```
+
+- Nhãn bắt buộc là "Điểm ngữ pháp"; không có ô "Phiên âm" và không gọi nguồn phiên âm.
+- Nghĩa chỉ gồm khoảng trắng được lưu là trống.
+
+### W-LIB-10 — Form: lỗi nhập liệu (ERR-LIB-400-01)
+
+```text
+┌──────────────┬────────────────────────────────────────────────────────────────┐
+│Lingozi       │ ← Thư viện    Từ vựng · [Đổi loại]   h1                        │
+│              │ ┌──────────────────────────────────────────────────────────┐   │
+│▸ Thư viện    │ │ (!) Vui lòng kiểm tra lại thông tin đã nhập.             │   │
+│▸ Luyện tập   │ │     Từ · Nghĩa                                           │   │
+│              │ └──────────────────────────────────────────────────────────┘   │
+│              │ ┌────────────────────────────┐  ┌────────────────────────────┐ │
+│              │ │ Từ *                       │  │ Ví dụ (20/20)              │ │
+│⚙ Cài đặt     │ │ [________________]         │  │ [ + Thêm ví dụ ] (vô hiệu) │ │
+│              │ │ (!) Vui lòng nhập từ.      │  │ Tối đa 20 ví dụ.           │ │
+│              │ │ Phiên âm                   │  │                            │ │
+│              │ │ [________________]         │  │ Ghi chú cá nhân            │ │
+│              │ │ Nghĩa                      │  │ [________________]         │ │
+│              │ │ [... 2001 ký tự ...]       │  │                            │ │
+│              │ │ (!) Tối đa 2000 ký tự.     │  │ Nguồn                      │ │
+│              │ └────────────────────────────┘  │ [________________]         │ │
+│              │                                 └────────────────────────────┘ │
+│              │                                                                │
+│              │                      [ Hủy ]   [ Lưu ]                         │
+└──────────────┴────────────────────────────────────────────────────────────────┘
+```
+
+- Lỗi dưới từng ô; tóm tắt phía trên có liên kết tới ô lỗi; focus vào ô lỗi đầu tiên.
+- Nội dung tối đa 1000 ký tự; nghĩa tối đa 2000 ký tự; tối đa 20 ví dụ (nút thêm bị vô hiệu ở ví dụ thứ 20).
+- Đếm ký tự hiện dưới ô khi còn dưới 10% giới hạn.
+- Trường "Từ" hiện "Điểm ngữ pháp" với loại Ngữ pháp (lỗi: "Vui lòng nhập điểm ngữ pháp").
+
+### W-LIB-11 — Form: đã đạt giới hạn số mục (ERR-LIB-422-01)
+
+```text
+┌──────────────┬────────────────────────────────────────────────────────────────┐
+│Lingozi       │ ← Thư viện    Từ vựng   h1                                     │
+│              │ ┌──────────────────────────────────────────────────────────┐   │
+│▸ Thư viện    │ │ (!) Bạn đã đạt giới hạn 10.000 mục.                      │   │
+│▸ Luyện tập   │ └──────────────────────────────────────────────────────────┘   │
+│              │ ┌────────────────────────────┐  ┌────────────────────────────┐ │
+│              │ │ Từ *                       │  │ Ví dụ (0/20)               │ │
+│              │ │ [give up__________]        │  │ [ + Thêm ví dụ ]           │ │
+│⚙ Cài đặt     │ │ Phiên âm                   │  │                            │ │
+│              │ │ [________________]         │  │ Ghi chú cá nhân            │ │
+│              │ │ Nghĩa                      │  │ [________________]         │ │
+│              │ │ [________________]         │  │                            │ │
+│              │ └────────────────────────────┘  │ Nguồn (gặp ở đâu)          │ │
+│              │                                 │ [________________]         │ │
+│              │                                 └────────────────────────────┘ │
+│              │                                                                │
+│              │                      [ Hủy ]   [ Lưu ]                         │
+└──────────────┴────────────────────────────────────────────────────────────────┘
+```
+
+- `InlineAlert` (danger) trên form; mục không được lưu.
+- Lỗi mạng dùng cùng kiểu thông báo "(!) Mất kết nối" với nút "Thử lại"; thử lại gửi cùng `clientRequestId` nên không tạo trùng.
+
+### W-LIB-14 — Chi tiết mục: đầy đủ (`/library/items/{id}`)
+
+```text
+┌──────────────┬────────────────────────────────────────────────────────────────┐
+│Lingozi       │ [ ✓ Đã lưu ]  (toast sau khi lưu)                              │
+│              │ ← Thư viện                            [ Sửa ]  [ x Xóa ]       │
+│▸ Thư viện    │ give up                                         term           │
+│▸ Luyện tập   │ Từ vựng · /ɡɪv ʌp/                                             │
+│              │                                                                │
+│              │ Nghĩa   h2                                                     │
+│              │ từ bỏ                                                          │
+│⚙ Cài đặt     │                                                                │
+│              │ Ví dụ   h2                                                     │
+│              │ 1. Don't give up. — Đừng bỏ cuộc.                              │
+│              │                                                                │
+│              │ Ghi chú · Nguồn: Friends S01E01                                │
+│              │                                                                │
+│              │ Tạo 08/11/2026 14:00 · Sửa 08/11/2026 14:05                    │
+└──────────────┴────────────────────────────────────────────────────────────────┘
+```
+
+- Nội dung hiện cỡ `text.term`; phiên âm chỉ có với Từ vựng, kèm nguồn khi do hệ thống điền.
+- Nút "Xóa" kiểu viền, có icon cảnh báo, không dùng nền đặc giống nút chính.
+- Toast "Đã lưu" (`role="status"`) chỉ hiện ngay sau khi lưu.
 
 ## 5. API
 
@@ -277,18 +388,18 @@ Scenario: AC-10 API từ chối yêu cầu thiếu loại
   Then API trả 400 ERR-LIB-400-01 với lỗi ở trường "kind" và không tạo mục
 ```
 
-| AC | Nội dung | FR | BR | ERR | Test case |
-| --- | --- | --- | --- | --- | --- |
-| AC-01 | Chọn loại trước khi nhập | `FR-LIB-ITEM-007` | `BR-LIB-002`, `BR-LIB-012` | — | TC-LIB-033 |
-| AC-02 | Từ vựng chỉ bắt buộc "Từ" | `FR-LIB-ITEM-001` | `BR-LIB-001`, `BR-LIB-012` | — | TC-LIB-001, TC-LIB-034, TC-LIB-050 |
-| AC-03 | Ngữ pháp chỉ bắt buộc "Điểm ngữ pháp" | `FR-LIB-ITEM-001` | `BR-LIB-012` | `ERR-LIB-400-01` | TC-LIB-003, TC-LIB-035 |
-| AC-04 | Chỉ có hai loại trong Vòng 1 | `FR-LIB-ITEM-007` | `BR-LIB-002` | `ERR-LIB-400-01` | TC-LIB-036 |
-| AC-05 | Nghĩa không bắt buộc, khoảng trắng được coi là trống | `FR-LIB-ITEM-001` | `BR-LIB-001` | — | TC-LIB-003, TC-LIB-005 |
-| AC-06 | Giới hạn độ dài | `FR-LIB-ITEM-001` | `BR-LIB-001` | `ERR-LIB-400-01` | TC-LIB-004 |
-| AC-07 | Ví dụ không bắt buộc | `FR-LIB-ITEM-001` | `BR-LIB-004` | — | TC-LIB-002 |
-| AC-08 | Bấm Lưu hai lần hoặc mạng gửi lại | `FR-LIB-ITEM-001` | `BR-LIB-008` | — | TC-LIB-002 |
-| AC-09 | Đạt giới hạn số mục | `FR-LIB-ITEM-001` | `BR-LIB-005` | `ERR-LIB-422-01` | TC-LIB-006 |
-| AC-10 | API từ chối yêu cầu thiếu loại | `FR-LIB-ITEM-007` | `BR-LIB-002` | `ERR-LIB-400-01` | TC-LIB-037 |
+| AC | Nội dung | FR | BR | ERR | Wireframe | Test case |
+| --- | --- | --- | --- | --- | --- | --- |
+| AC-01 | Chọn loại trước khi nhập | `FR-LIB-ITEM-007` | `BR-LIB-002`, `BR-LIB-012` | — | W-LIB-06, W-LIB-07 | TC-LIB-033 |
+| AC-02 | Từ vựng chỉ bắt buộc "Từ" | `FR-LIB-ITEM-001` | `BR-LIB-001`, `BR-LIB-012` | — | W-LIB-08, W-LIB-14 | TC-LIB-001, TC-LIB-034, TC-LIB-050 |
+| AC-03 | Ngữ pháp chỉ bắt buộc "Điểm ngữ pháp" | `FR-LIB-ITEM-001` | `BR-LIB-012` | `ERR-LIB-400-01` | W-LIB-09, W-LIB-10 | TC-LIB-003, TC-LIB-035 |
+| AC-04 | Chỉ có hai loại trong Vòng 1 | `FR-LIB-ITEM-007` | `BR-LIB-002` | `ERR-LIB-400-01` | W-LIB-10 | TC-LIB-036 |
+| AC-05 | Nghĩa không bắt buộc, khoảng trắng được coi là trống | `FR-LIB-ITEM-001` | `BR-LIB-001` | — | W-LIB-09 | TC-LIB-003, TC-LIB-005 |
+| AC-06 | Giới hạn độ dài | `FR-LIB-ITEM-001` | `BR-LIB-001` | `ERR-LIB-400-01` | W-LIB-10 | TC-LIB-004 |
+| AC-07 | Ví dụ không bắt buộc | `FR-LIB-ITEM-001` | `BR-LIB-004` | — | W-LIB-08, W-LIB-10 | TC-LIB-002 |
+| AC-08 | Bấm Lưu hai lần hoặc mạng gửi lại | `FR-LIB-ITEM-001` | `BR-LIB-008` | — | W-LIB-08, W-LIB-11 | TC-LIB-002 |
+| AC-09 | Đạt giới hạn số mục | `FR-LIB-ITEM-001` | `BR-LIB-005` | `ERR-LIB-422-01` | W-LIB-11 | TC-LIB-006 |
+| AC-10 | API từ chối yêu cầu thiếu loại | `FR-LIB-ITEM-007` | `BR-LIB-002` | `ERR-LIB-400-01` | Không có UI | TC-LIB-037 |
 
 ## 7. Truy vết test case
 

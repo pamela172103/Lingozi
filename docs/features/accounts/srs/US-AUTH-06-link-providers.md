@@ -113,26 +113,111 @@ sequenceDiagram
 
 ## 4. Wireframe
 
-_Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe ASCII là căn cứ cho DoR._
+_Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe ASCII là căn cứ cho DoR. Quy tắc: vẽ đủ mọi màn hình, hộp thoại và trạng thái mà AC của story nhắc tới._
 
-### W-AUTH-06 Cài đặt tài khoản (`/settings/account`, trong app shell có sidebar)
+### W-AUTH-15 — Cài đặt tài khoản: mặc định (`/settings/account`)
 
 ```text
-┌ Sidebar 240 ┬─────────────── nội dung tối đa 1120 ─────────────────┐
-│ Lingozi     │ Cài đặt tài khoản                                 h1 │
-│ ▸ Thư viện  │ ┌ Thông tin ────────────────────────────────────────┐ │
-│ ▸ Luyện tập │ │ Email    an@example.com   ✓ Đã xác minh           │ │
-│ ⚙ Cài đặt   │ └───────────────────────────────────────────────────┘ │
-│             │ ┌ Phương thức đăng nhập ────────────────────────────┐ │
-│             │ │ Email (mã đăng nhập)       ✓ Luôn có             │ │
-│             │ │ Google                     ✓ Đã liên kết         │ │
-│             │ │ Facebook                   [ Liên kết Facebook ] │ │
-│             │ └───────────────────────────────────────────────────┘ │
-│             │ [ Đăng xuất ]                                        │
-└─────────────┴──────────────────────────────────────────────────────┘
+┌──────────────┬──────────────────────────────────────────────────────────────┐
+│Lingozi       │ Cài đặt tài khoản                                            │
+│              │ ┌─ Thông tin ──────────────────────────────────────────────┐ │
+│▸ Thư viện    │ │ Email    an@example.com    ✓ Đã xác minh                 │ │
+│▸ Luyện tập   │ └──────────────────────────────────────────────────────────┘ │
+│              │ ┌─ Phương thức đăng nhập ──────────────────────────────────┐ │
+│              │ │ Email (mã đăng nhập)     ✓ Luôn có                       │ │
+│              │ │ Google                   ✓ Đã liên kết                   │ │
+│⚙ Cài đặt     │ │ Facebook                 [ Liên kết Facebook ]           │ │
+│              │ └──────────────────────────────────────────────────────────┘ │
+│              │                                                              │
+│              │ [ Đăng xuất ]                                                │
+└──────────────┴──────────────────────────────────────────────────────────────┘
 ```
 
-Không có mục đổi hoặc đặt mật khẩu. Các trạng thái: loading (`Skeleton`), `?linked=facebook` (Toast), `?error=409-01` (InlineAlert), lỗi tải (thử lại).
+- Nằm trong khung ứng dụng có sidebar.
+- Phương thức đã liên kết hiện "Đã liên kết" thay cho nút; chưa liên kết thì hiện nút "Liên kết ...".
+- Không có mục đổi hoặc đặt mật khẩu.
+- Nút "Đăng xuất": đang xử lý thì có spinner và giữ nguyên chiều rộng (xem W-AUTH-23).
+
+### W-AUTH-16 — Cài đặt tài khoản: đang tải
+
+```text
+┌──────────────┬──────────────────────────────────────────────────────────────┐
+│Lingozi       │ Cài đặt tài khoản                                            │
+│              │ ┌─ Thông tin ──────────────────────────────────────────────┐ │
+│▸ Thư viện    │ │ ░░░░░░░░░░░░░░░░░░░░░░░░                                 │ │
+│▸ Luyện tập   │ │ ░░░░░░░░░░░░                                             │ │
+│              │ └──────────────────────────────────────────────────────────┘ │
+│              │ ┌─ Phương thức đăng nhập ──────────────────────────────────┐ │
+│              │ │ ░░░░░░░░░░░░░░░░░░░░░░░░                                 │ │
+│⚙ Cài đặt     │ │ ░░░░░░░░░░░░░░░░░░░░                                     │ │
+│              │ │ ░░░░░░░░░░░░░░░░                                         │ │
+│              │ └──────────────────────────────────────────────────────────┘ │
+└──────────────┴──────────────────────────────────────────────────────────────┘
+```
+
+- `Skeleton` cho hai khối trong lúc gọi `/api/auth/me`; `aria-busy="true"`.
+
+### W-AUTH-17 — Cài đặt tài khoản: đã liên kết Facebook (thông báo thành công)
+
+```text
+┌──────────────┬──────────────────────────────────────────────────────────────┐
+│Lingozi       │ [ ✓ Đã liên kết Facebook. ]                                  │
+│              │ Cài đặt tài khoản                                            │
+│▸ Thư viện    │ ┌─ Thông tin ──────────────────────────────────────────────┐ │
+│▸ Luyện tập   │ │ Email    an@example.com    ✓ Đã xác minh                 │ │
+│              │ └──────────────────────────────────────────────────────────┘ │
+│              │ ┌─ Phương thức đăng nhập ──────────────────────────────────┐ │
+│              │ │ Email (mã đăng nhập)     ✓ Luôn có                       │ │
+│⚙ Cài đặt     │ │ Google                   ✓ Đã liên kết                   │ │
+│              │ │ Facebook                 ✓ Đã liên kết                   │ │
+│              │ └──────────────────────────────────────────────────────────┘ │
+│              │                                                              │
+│              │ [ Đăng xuất ]                                                │
+└──────────────┴──────────────────────────────────────────────────────────────┘
+```
+
+- Hiện khi trang mở với `?linked=facebook`; `Toast` có `role="status"`.
+- Cả Google và Facebook đều hiện "Đã liên kết", không còn nút liên kết.
+
+### W-AUTH-18 — Cài đặt tài khoản: tài khoản ngoài đã thuộc người khác (ERR-AUTH-409-01)
+
+```text
+┌──────────────┬──────────────────────────────────────────────────────────────┐
+│Lingozi       │ (!) Tài khoản Facebook này đã liên kết với một               │
+│              │     tài khoản Lingozi khác.                                  │
+│▸ Thư viện    │ Cài đặt tài khoản                                            │
+│▸ Luyện tập   │ ┌─ Thông tin ──────────────────────────────────────────────┐ │
+│              │ │ Email    an@example.com    ✓ Đã xác minh                 │ │
+│              │ └──────────────────────────────────────────────────────────┘ │
+│              │ ┌─ Phương thức đăng nhập ──────────────────────────────────┐ │
+│⚙ Cài đặt     │ │ Email (mã đăng nhập)     ✓ Luôn có                       │ │
+│              │ │ Google                   ✓ Đã liên kết                   │ │
+│              │ │ Facebook                 [ Liên kết Facebook ]           │ │
+│              │ └──────────────────────────────────────────────────────────┘ │
+│              │                                                              │
+│              │ [ Đăng xuất ]                                                │
+└──────────────┴──────────────────────────────────────────────────────────────┘
+```
+
+- Hiện khi trang mở với `?error=409-01`; không liên kết.
+- Người dùng ở lại Cài đặt tài khoản.
+
+### W-AUTH-19 — Cài đặt tài khoản: lỗi tải
+
+```text
+┌──────────────┬──────────────────────────────────────────────────────────────┐
+│Lingozi       │ Cài đặt tài khoản                                            │
+│              │ (!) Không tải được thông tin tài khoản.                      │
+│▸ Thư viện    │ [ Thử lại ]                                                  │
+│▸ Luyện tập   │                                                              │
+│              │                                                              │
+│              │                                                              │
+│              │                                                              │
+│⚙ Cài đặt     │                                                              │
+└──────────────┴──────────────────────────────────────────────────────────────┘
+```
+
+- Hiện khi `/api/auth/me` lỗi (không phải 401). 401 thì chuyển tới đăng nhập.
 
 ## 5. API
 
@@ -167,11 +252,11 @@ Scenario: AC-03 Đã liên kết rồi
   Then nút "Liên kết Google" không hiển thị; thay bằng "Đã liên kết"
 ```
 
-| AC | Nội dung | FR | BR | ERR | Test case |
-| --- | --- | --- | --- | --- | --- |
-| AC-01 | Liên kết thành công | `FR-AUTH-EXT-003` | `BR-AUTH-012` | — | TC-AUTH-025 |
-| AC-02 | Tài khoản ngoài đã thuộc người khác | `FR-AUTH-EXT-003` | `BR-AUTH-012` | `ERR-AUTH-409-01` | TC-AUTH-026 |
-| AC-03 | Đã liên kết rồi | `FR-AUTH-SES-003` | — | — | TC-AUTH-027 |
+| AC | Nội dung | FR | BR | ERR | Wireframe | Test case |
+| --- | --- | --- | --- | --- | --- | --- |
+| AC-01 | Liên kết thành công | `FR-AUTH-EXT-003` | `BR-AUTH-012` | — | W-AUTH-15, W-AUTH-17 | TC-AUTH-025 |
+| AC-02 | Tài khoản ngoài đã thuộc người khác | `FR-AUTH-EXT-003` | `BR-AUTH-012` | `ERR-AUTH-409-01` | W-AUTH-18 | TC-AUTH-026 |
+| AC-03 | Đã liên kết rồi | `FR-AUTH-SES-003` | — | — | W-AUTH-15 | TC-AUTH-027 |
 
 ## 7. Truy vết test case
 

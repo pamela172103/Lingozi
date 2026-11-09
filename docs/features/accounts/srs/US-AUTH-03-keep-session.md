@@ -129,9 +129,66 @@ stateDiagram-v2
 
 ## 4. Wireframe
 
-_Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe ASCII là căn cứ cho DoR._
+_Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe ASCII là căn cứ cho DoR. Quy tắc: vẽ đủ mọi màn hình, hộp thoại và trạng thái mà AC của story nhắc tới._
 
-Story này không có màn hình riêng. Hành vi quan sát được là: mở lại website vẫn còn phiên, hoặc bị chuyển tới trang "Đăng nhập" ([W-AUTH-01](US-AUTH-01-request-email-code.md#4-wireframe)) khi phiên hết hạn. Các trang `/auth/*` không có ô mật khẩu.
+### W-AUTH-01 — Đăng nhập: trạng thái ban đầu (`/auth/login`)
+
+```text
+┌────────────────────────────────────────────────────────────────┐
+│                         [Logo Lingozi]                         │
+│                                                                │
+│         ┌────────────────────────────────────────────┐         │
+│         │ Đăng nhập                                  │         │
+│         │ Đăng nhập hoặc tạo tài khoản mới.          │         │
+│         │                                            │         │
+│         │ [ G   Tiếp tục với Google     ]            │         │
+│         │ [ f   Tiếp tục với Facebook   ]            │         │
+│         │ ────────────── hoặc ──────────────         │         │
+│         │ [     Tiếp tục với email      ]            │         │
+│         └────────────────────────────────────────────┘         │
+│                                                                │
+│            Chính sách quyền riêng tư · Xóa dữ liệu             │
+└────────────────────────────────────────────────────────────────┘
+```
+
+- Ba phương thức theo thứ tự: Google, Facebook, email. Facebook thay cho Apple.
+- Ô email ẩn cho tới khi bấm "Tiếp tục với email".
+- Không có ô mật khẩu và không có liên kết "Quên mật khẩu".
+- Chân trang có liên kết tới `/privacy` và `/data-deletion`.
+- Nút của nhà cung cấp chưa được cấu hình bị ẩn (API `start` trả 404).
+
+### W-AUTH-05 — Nhập mã: trạng thái ban đầu (`/auth/code`)
+
+```text
+┌────────────────────────────────────────────────────────────────┐
+│                         [Logo Lingozi]                         │
+│                                                                │
+│         ┌────────────────────────────────────────────┐         │
+│         │ Nhập mã                                    │         │
+│         │ Chúng tôi đã gửi mã 6 số tới               │         │
+│         │ an@example.com.                            │         │
+│         │ Mã có hiệu lực 10 phút (còn 09:58).        │         │
+│         │                                            │         │
+│         │ [ ] [ ] [ ] [ ] [ ] [ ]                    │         │
+│         │                                            │         │
+│         │ [            Xác nhận            ]         │         │
+│         │                                            │         │
+│         │ Không nhận được mã?   Đổi email            │         │
+│         └────────────────────────────────────────────┘         │
+│                                                                │
+│            Chính sách quyền riêng tư · Xóa dữ liệu             │
+└────────────────────────────────────────────────────────────────┘
+```
+
+- Sáu ô, mỗi ô có nhãn riêng; `autocomplete="one-time-code"`, `inputmode="numeric"`.
+- Dán 6 số vào ô đầu thì điền cả sáu ô; đủ 6 số thì tự gửi xác nhận.
+- Đếm ngược 10 phút theo thời hạn của mã.
+- Không có ô mật khẩu.
+
+### Điều hướng và liên kết màn hình
+
+- Màn hình "Thư viện" mà người dùng vẫn ở lại khi phiên còn hạn: [W-LIB-01](../../knowledge-items/srs/US-LIB-03-list-items.md) (thuộc FEAT-02).
+- Khi phiên hết hạn, người dùng thấy W-AUTH-01 với URL `/auth/login?returnUrl=...`; không có thông báo riêng.
 
 ## 5. API
 
@@ -174,11 +231,11 @@ Scenario: AC-03 Không có ô mật khẩu ở đâu
   Then không có ô nhập mật khẩu và không có liên kết "Quên mật khẩu"
 ```
 
-| AC | Nội dung | FR | BR | ERR | Test case |
-| --- | --- | --- | --- | --- | --- |
-| AC-01 | Phiên còn hạn | `FR-AUTH-SES-001` | `BR-AUTH-008` | — | TC-AUTH-013 |
-| AC-02 | Phiên hết hạn | `FR-AUTH-SES-001` | `BR-AUTH-008` | `ERR-AUTH-401-02` | TC-AUTH-014 |
-| AC-03 | Không có ô mật khẩu ở đâu | `FR-AUTH-SES-001` | `BR-AUTH-010` | — | TC-AUTH-015 |
+| AC | Nội dung | FR | BR | ERR | Wireframe | Test case |
+| --- | --- | --- | --- | --- | --- | --- |
+| AC-01 | Phiên còn hạn | `FR-AUTH-SES-001` | `BR-AUTH-008` | — | [W-LIB-01](../../knowledge-items/srs/US-LIB-03-list-items.md) | TC-AUTH-013 |
+| AC-02 | Phiên hết hạn | `FR-AUTH-SES-001` | `BR-AUTH-008` | `ERR-AUTH-401-02` | W-AUTH-01 | TC-AUTH-014 |
+| AC-03 | Không có ô mật khẩu ở đâu | `FR-AUTH-SES-001` | `BR-AUTH-010` | — | W-AUTH-01, W-AUTH-05 | TC-AUTH-015 |
 
 ## 7. Truy vết test case
 

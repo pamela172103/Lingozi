@@ -119,9 +119,96 @@ sequenceDiagram
 
 ## 4. Wireframe
 
-_Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe ASCII là căn cứ cho DoR._
+_Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe ASCII là căn cứ cho DoR. Quy tắc: vẽ đủ mọi màn hình, hộp thoại và trạng thái mà AC của story nhắc tới._
 
-Dùng lại form [W-LIB-02](US-LIB-01-choose-type-and-save.md#4-wireframe) ở chế độ sửa (tiêu đề "Sửa ..."). Riêng story này thêm: khi gặp ERR-LIB-409-01 hiện `InlineAlert` (warning) "Mục này vừa được sửa ở nơi khác." kèm nút "Tải bản mới nhất", và panel "Bản bạn đang sửa" giữ nội dung đang nhập; khi có thay đổi chưa lưu mà rời trang thì trình duyệt hỏi xác nhận; khi đến từ US-LIB-02, panel "Nội dung bạn vừa nhập" hiện ở đầu form.
+### W-LIB-18 — Form sửa: mặc định (`/library/items/{id}/edit`)
+
+```text
+┌──────────────┬────────────────────────────────────────────────────────────────┐
+│Lingozi       │ ← Thư viện    Sửa "give up" · Từ vựng   h1                     │
+│              │ ┌────────────────────────────┐  ┌────────────────────────────┐ │
+│▸ Thư viện    │ │ Từ *                       │  │ Ví dụ (1/20)               │ │
+│▸ Luyện tập   │ │ [give up__________]        │  │ 1. Don't give up.          │ │
+│              │ │ Phiên âm                   │  │ [ x Xóa ví dụ ]            │ │
+│              │ │ [/ɡɪv ʌp/_________]        │  │ [ + Thêm ví dụ ]           │ │
+│              │ │                            │  │ Ghi chú cá nhân            │ │
+│⚙ Cài đặt     │ │ Nghĩa                      │  │ [________________]         │ │
+│              │ │ [từ bỏ____________]        │  └────────────────────────────┘ │
+│              │ └────────────────────────────┘                                 │
+│              │                                                                │
+│              │                 [ Hủy ]   [ Lưu thay đổi ]                     │
+└──────────────┴────────────────────────────────────────────────────────────────┘
+```
+
+- Điền sẵn dữ liệu hiện tại; thêm, xóa ví dụ bằng bàn phím; xóa ví dụ thì focus sang ví dụ kế bên.
+- Có thay đổi chưa lưu mà rời trang thì trình duyệt hiện hộp thoại xác nhận của chính nó (`beforeunload`).
+- Đang lưu: nút "Lưu thay đổi" có spinner.
+
+### W-LIB-19 — Form sửa: xung đột khi sửa ở hai nơi (ERR-LIB-409-01)
+
+```text
+┌──────────────┬────────────────────────────────────────────────────────────────┐
+│Lingozi       │ ← Thư viện    Sửa "give up"   h1                               │
+│              │ ┌──────────────────────────────────────────────────────────┐   │
+│▸ Thư viện    │ │ (!) Mục này vừa được sửa ở nơi khác.                     │   │
+│▸ Luyện tập   │ └──────────────────────────────────────────────────────────┘   │
+│              │ ┌────────────────────────────┐  ┌────────────────────────────┐ │
+│              │ │ Từ *                       │  │ Bản bạn đang sửa (giữ lại) │ │
+│              │ │ [give up__________]        │  │ Nghĩa: bỏ cuộc             │ │
+│⚙ Cài đặt     │ │ Nghĩa                      │  │                            │ │
+│              │ │ [bỏ cuộc__________]        │  │ [ Tải bản mới nhất ]       │ │
+│              │ └────────────────────────────┘  └────────────────────────────┘ │
+│              │                                                                │
+│              │                 [ Hủy ]   [ Lưu thay đổi ]                     │
+└──────────────┴────────────────────────────────────────────────────────────────┘
+```
+
+- Không ghi đè; nội dung đang nhập được giữ để người dùng tự chép lại.
+- "Tải bản mới nhất" thay form bằng bản mới nhất từ máy chủ.
+
+### W-LIB-14 — Chi tiết mục: đầy đủ (`/library/items/{id}`)
+
+```text
+┌──────────────┬────────────────────────────────────────────────────────────────┐
+│Lingozi       │ [ ✓ Đã lưu ]  (toast sau khi lưu)                              │
+│              │ ← Thư viện                            [ Sửa ]  [ x Xóa ]       │
+│▸ Thư viện    │ give up                                         term           │
+│▸ Luyện tập   │ Từ vựng · /ɡɪv ʌp/                                             │
+│              │                                                                │
+│              │ Nghĩa   h2                                                     │
+│              │ từ bỏ                                                          │
+│⚙ Cài đặt     │                                                                │
+│              │ Ví dụ   h2                                                     │
+│              │ 1. Don't give up. — Đừng bỏ cuộc.                              │
+│              │                                                                │
+│              │ Ghi chú · Nguồn: Friends S01E01                                │
+│              │                                                                │
+│              │ Tạo 08/11/2026 14:00 · Sửa 08/11/2026 14:05                    │
+└──────────────┴────────────────────────────────────────────────────────────────┘
+```
+
+- Nội dung hiện cỡ `text.term`; phiên âm chỉ có với Từ vựng, kèm nguồn khi do hệ thống điền.
+- Nút "Xóa" kiểu viền, có icon cảnh báo, không dùng nền đặc giống nút chính.
+- Toast "Đã lưu" (`role="status"`) chỉ hiện ngay sau khi lưu.
+
+### W-LIB-16 — Chi tiết mục: không tìm thấy (ERR-LIB-404-01)
+
+```text
+┌──────────────┬────────────────────────────────────────────────────────────────┐
+│Lingozi       │ ┌──────────────────────────────────────────────────────────┐   │
+│              │ │                                                          │   │
+│▸ Thư viện    │ │         (hình minh họa, lz-decor)                        │   │
+│▸ Luyện tập   │ │                                                          │   │
+│              │ │        Không tìm thấy mục này.                           │   │
+│              │ │                                                          │   │
+│              │ │          [ Về Thư viện ]                                 │   │
+│⚙ Cài đặt     │ │                                                          │   │
+│              │ └──────────────────────────────────────────────────────────┘   │
+└──────────────┴────────────────────────────────────────────────────────────────┘
+```
+
+- Cùng một màn hình cho mục không tồn tại và mục của người khác (không để lộ sự tồn tại).
+- Body lỗi giống hệt giữa hai trường hợp.
 
 ## 5. API
 
@@ -168,12 +255,12 @@ Scenario: AC-04 Sửa mục của người khác
   Then API trả 404 ERR-LIB-404-01, dữ liệu không đổi
 ```
 
-| AC | Nội dung | FR | BR | ERR | Test case |
-| --- | --- | --- | --- | --- | --- |
-| AC-01 | Sửa thành công | `FR-LIB-ITEM-005` | `BR-LIB-001`, `BR-LIB-004` | — | TC-LIB-019 |
-| AC-02 | Xung đột do sửa ở hai nơi | `FR-LIB-ITEM-005` | `BR-LIB-007` | `ERR-LIB-409-01` | TC-LIB-020 |
-| AC-03 | Rời trang khi chưa lưu | `FR-LIB-ITEM-005` | — | — | TC-LIB-021 |
-| AC-04 | Sửa mục của người khác | `FR-LIB-ITEM-005` | `BR-LIB-006` | `ERR-LIB-404-01` | TC-LIB-022 |
+| AC | Nội dung | FR | BR | ERR | Wireframe | Test case |
+| --- | --- | --- | --- | --- | --- | --- |
+| AC-01 | Sửa thành công | `FR-LIB-ITEM-005` | `BR-LIB-001`, `BR-LIB-004` | — | W-LIB-18, W-LIB-14 | TC-LIB-019 |
+| AC-02 | Xung đột do sửa ở hai nơi | `FR-LIB-ITEM-005` | `BR-LIB-007` | `ERR-LIB-409-01` | W-LIB-19 | TC-LIB-020 |
+| AC-03 | Rời trang khi chưa lưu | `FR-LIB-ITEM-005` | — | — | W-LIB-18 | TC-LIB-021 |
+| AC-04 | Sửa mục của người khác | `FR-LIB-ITEM-005` | `BR-LIB-006` | `ERR-LIB-404-01` | W-LIB-16 | TC-LIB-022 |
 
 ## 7. Truy vết test case
 

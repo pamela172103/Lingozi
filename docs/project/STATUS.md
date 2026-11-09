@@ -2,7 +2,7 @@
 
 - Cập nhật: 2026-11-08.
 - Giai đoạn: **Vòng 1 — Lưu được kiến thức của riêng mình** (2026-11-08 → 2026-11-21), đang ở bước ② Thiết kế. Vòng 0 xong phần việc. Xem [lộ trình](../product/roadmap.md) §5.
-- Phiên gần nhất: [Đổi cấu trúc docs/features: SRS theo từng user story](sessions/2026-11-09-18-srs-per-story.md).
+- Phiên gần nhất: [Wireframe đủ cho từng user story](sessions/2026-11-09-19-wireframes-per-story.md).
 - Đã đọc và gộp 4 commit từ `origin/work` vào `main` theo fast-forward, tới `61514e0`. Bàn giao phiên 05 được lưu cùng commit tài liệu tiếp theo; tra bằng `git log -- docs/project/`.
 
 ## Đã hoàn thành
@@ -102,3 +102,4 @@ Không có công việc triển khai đang dở. Thứ tự dưới đây là đ
 Đọc [quy trình bàn giao](README.md), kiểm tra nhánh và lịch sử Git thực tế, rồi tiếp tục Vòng 0 theo bảng tiến độ trong lộ trình §5 nếu người dùng chưa có ưu tiên khác.
 
 Trong phiên cloud trên môi trường "Lingozi": .NET SDK được setup script cài sẵn (cần kiểm tra lại `dotnet --version` ở phiên mới, vì script chưa được chứng minh trên container mới). Docker daemon không tự chạy; khởi động bằng `nohup dockerd > /tmp/dockerd.log 2>&1 &`, rồi kiểm tra bằng `docker info`. Trạng thái này đi cùng repository; không phụ thuộc lịch sử chat hoặc các tiến trình đang chạy.
+- Phiên 2026-11-09-19: vẽ 74 wireframe ASCII đủ mọi màn hình và trạng thái nêu trong AC của 19 story (W-AUTH-01 → 23, W-LIB-01 → 30); bảng AC có cột Wireframe; quy tắc ghi ở `AGENTS.md` §14 và `docs/features/README.md`; `check_feature_docs.py` kiểm tra tự động (OK). Chưa render trên GitHub.

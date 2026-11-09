@@ -115,9 +115,82 @@ sequenceDiagram
 
 ## 4. Wireframe
 
-_Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe ASCII là căn cứ cho DoR._
+_Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe ASCII là căn cứ cho DoR. Quy tắc: vẽ đủ mọi màn hình, hộp thoại và trạng thái mà AC của story nhắc tới._
 
-Dùng lại màn hình [W-AUTH-01](US-AUTH-01-request-email-code.md#4-wireframe). Riêng story này chỉ thêm: thông báo ERR-AUTH-409-02 (Google) hiện dưới nút Google khi trang mở với `?error=google-unverified`; thông báo ERR-AUTH-502-01 khi `?error=external`. Nút Google ẩn nếu nhà cung cấp chưa được cấu hình (API `start` trả 404). Nút theo hướng dẫn thương hiệu chính thức của Google.
+### W-AUTH-01 — Đăng nhập: trạng thái ban đầu (`/auth/login`)
+
+```text
+┌────────────────────────────────────────────────────────────────┐
+│                         [Logo Lingozi]                         │
+│                                                                │
+│         ┌────────────────────────────────────────────┐         │
+│         │ Đăng nhập                                  │         │
+│         │ Đăng nhập hoặc tạo tài khoản mới.          │         │
+│         │                                            │         │
+│         │ [ G   Tiếp tục với Google     ]            │         │
+│         │ [ f   Tiếp tục với Facebook   ]            │         │
+│         │ ────────────── hoặc ──────────────         │         │
+│         │ [     Tiếp tục với email      ]            │         │
+│         └────────────────────────────────────────────┘         │
+│                                                                │
+│            Chính sách quyền riêng tư · Xóa dữ liệu             │
+└────────────────────────────────────────────────────────────────┘
+```
+
+- Ba phương thức theo thứ tự: Google, Facebook, email. Facebook thay cho Apple.
+- Ô email ẩn cho tới khi bấm "Tiếp tục với email".
+- Không có ô mật khẩu và không có liên kết "Quên mật khẩu".
+- Chân trang có liên kết tới `/privacy` và `/data-deletion`.
+- Nút của nhà cung cấp chưa được cấu hình bị ẩn (API `start` trả 404).
+
+### W-AUTH-10 — Đăng nhập: lỗi nhà cung cấp hoặc phiên chờ hết hạn (ERR-AUTH-502-01, ERR-AUTH-400-04)
+
+```text
+┌────────────────────────────────────────────────────────────────┐
+│                         [Logo Lingozi]                         │
+│                                                                │
+│         ┌────────────────────────────────────────────┐         │
+│         │ Đăng nhập                                  │         │
+│         │ (!) Không đăng nhập được bằng Facebook.    │         │
+│         │     Vui lòng thử lại.                      │         │
+│         │                                            │         │
+│         │ [ G   Tiếp tục với Google     ]            │         │
+│         │ [ f   Tiếp tục với Facebook   ]            │         │
+│         │ ────────────── hoặc ──────────────         │         │
+│         │ [     Tiếp tục với email      ]            │         │
+│         └────────────────────────────────────────────┘         │
+│                                                                │
+│            Chính sách quyền riêng tư · Xóa dữ liệu             │
+└────────────────────────────────────────────────────────────────┘
+```
+
+- Hiện khi trang mở với `?error=external` (hủy hoặc lỗi nhà cung cấp) hoặc khi phiên chờ Facebook hết hạn (400-04: "Phiên đăng nhập bằng Facebook đã hết hạn. Vui lòng thử lại.").
+- Không có tài khoản nào được tạo.
+
+### W-AUTH-11 — Đăng nhập: Google chưa xác minh email (ERR-AUTH-409-02)
+
+```text
+┌────────────────────────────────────────────────────────────────┐
+│                         [Logo Lingozi]                         │
+│                                                                │
+│         ┌────────────────────────────────────────────┐         │
+│         │ Đăng nhập                                  │         │
+│         │ Đăng nhập hoặc tạo tài khoản mới.          │         │
+│         │                                            │         │
+│         │ [ G   Tiếp tục với Google     ]            │         │
+│         │ (!) Email này chưa được Google xác minh.   │         │
+│         │     Hãy dùng Tiếp tục với email.           │         │
+│         │ [ f   Tiếp tục với Facebook   ]            │         │
+│         │ ────────────── hoặc ──────────────         │         │
+│         │ [     Tiếp tục với email      ]            │         │
+│         └────────────────────────────────────────────┘         │
+│                                                                │
+│            Chính sách quyền riêng tư · Xóa dữ liệu             │
+└────────────────────────────────────────────────────────────────┘
+```
+
+- Hiện khi trang mở với `?error=google-unverified`.
+- Thông báo nằm ngay dưới nút Google; không đăng nhập và không tạo tài khoản.
 
 ## 5. API
 
@@ -160,12 +233,12 @@ Scenario: AC-04 Hủy hoặc lỗi ở phía Google
   Then tôi quay về "Đăng nhập" với ERR-AUTH-502-01 và không có tài khoản nào được tạo
 ```
 
-| AC | Nội dung | FR | BR | ERR | Test case |
-| --- | --- | --- | --- | --- | --- |
-| AC-01 | Lần đầu dùng Google | `FR-AUTH-EXT-001` | `BR-AUTH-004`, `BR-AUTH-012` | — | TC-AUTH-016 |
-| AC-02 | Email Google trùng tài khoản sẵn có | `FR-AUTH-EXT-001` | `BR-AUTH-004` | — | TC-AUTH-017 |
-| AC-03 | Google chưa xác minh email | `FR-AUTH-EXT-001` | `BR-AUTH-004` | `ERR-AUTH-409-02` | TC-AUTH-018 |
-| AC-04 | Hủy hoặc lỗi ở phía Google | `FR-AUTH-EXT-001` | — | `ERR-AUTH-502-01` | TC-AUTH-019 |
+| AC | Nội dung | FR | BR | ERR | Wireframe | Test case |
+| --- | --- | --- | --- | --- | --- | --- |
+| AC-01 | Lần đầu dùng Google | `FR-AUTH-EXT-001` | `BR-AUTH-004`, `BR-AUTH-012` | — | W-AUTH-01 | TC-AUTH-016 |
+| AC-02 | Email Google trùng tài khoản sẵn có | `FR-AUTH-EXT-001` | `BR-AUTH-004` | — | W-AUTH-01 | TC-AUTH-017 |
+| AC-03 | Google chưa xác minh email | `FR-AUTH-EXT-001` | `BR-AUTH-004` | `ERR-AUTH-409-02` | W-AUTH-11 | TC-AUTH-018 |
+| AC-04 | Hủy hoặc lỗi ở phía Google | `FR-AUTH-EXT-001` | — | `ERR-AUTH-502-01` | W-AUTH-10 | TC-AUTH-019 |
 
 ## 7. Truy vết test case
 

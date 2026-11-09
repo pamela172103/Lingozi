@@ -95,27 +95,85 @@ sequenceDiagram
 
 ## 4. Wireframe
 
-_Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe ASCII là căn cứ cho DoR._
+_Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe ASCII là căn cứ cho DoR. Quy tắc: vẽ đủ mọi màn hình, hộp thoại và trạng thái mà AC của story nhắc tới._
 
-### W-LIB-04 Chi tiết (`/library/items/{id}`)
+### W-LIB-14 — Chi tiết mục: đầy đủ (`/library/items/{id}`)
 
 ```text
-│ ← Thư viện                                      [ Sửa ]  [ ⚠ Xóa ] (kiểu viền) │
-│ give up                                         text.term (font display)      │
-│ Từ vựng                                                             Badge     │
-│ Nghĩa                                                                     h2  │
-│ từ bỏ                                                           text.body-lg  │
-│ Ví dụ                                                                     h2  │
-│ 1. Don't give up. — Đừng bỏ cuộc.                                             │
-│ Ghi chú · Nguồn  (chỉ hiện khi có dữ liệu)                                    │
-│ Tạo 08/11/2026 14:00 · Sửa 08/11/2026 14:05                       text.caption│
+┌──────────────┬────────────────────────────────────────────────────────────────┐
+│Lingozi       │ [ ✓ Đã lưu ]  (toast sau khi lưu)                              │
+│              │ ← Thư viện                            [ Sửa ]  [ x Xóa ]       │
+│▸ Thư viện    │ give up                                         term           │
+│▸ Luyện tập   │ Từ vựng · /ɡɪv ʌp/                                             │
+│              │                                                                │
+│              │ Nghĩa   h2                                                     │
+│              │ từ bỏ                                                          │
+│⚙ Cài đặt     │                                                                │
+│              │ Ví dụ   h2                                                     │
+│              │ 1. Don't give up. — Đừng bỏ cuộc.                              │
+│              │                                                                │
+│              │ Ghi chú · Nguồn: Friends S01E01                                │
+│              │                                                                │
+│              │ Tạo 08/11/2026 14:00 · Sửa 08/11/2026 14:05                    │
+└──────────────┴────────────────────────────────────────────────────────────────┘
 ```
 
-| Trạng thái | Hiển thị |
-| --- | --- |
-| Loading | `Skeleton` cho term, nghĩa, ví dụ |
-| 404-01 | `EmptyState` "Không tìm thấy mục này" + nút "Về Thư viện" |
-| Error | `InlineAlert` + "Thử lại" |
+- Nội dung hiện cỡ `text.term`; phiên âm chỉ có với Từ vựng, kèm nguồn khi do hệ thống điền.
+- Nút "Xóa" kiểu viền, có icon cảnh báo, không dùng nền đặc giống nút chính.
+- Toast "Đã lưu" (`role="status"`) chỉ hiện ngay sau khi lưu.
+
+### W-LIB-15 — Chi tiết mục: tối thiểu (không có trường tùy chọn)
+
+```text
+┌──────────────┬────────────────────────────────────────────────────────────────┐
+│Lingozi       │ ← Thư viện                            [ Sửa ]  [ x Xóa ]       │
+│              │ in a nutshell                                   term           │
+│▸ Thư viện    │ Ngữ pháp                                                       │
+│▸ Luyện tập   │                                                                │
+│              │ Tạo 08/11/2026 14:00 · Sửa 08/11/2026 14:00                    │
+│              │                                                                │
+│              │ (không có khối Nghĩa, Ví dụ, Ghi chú, Nguồn)                   │
+│⚙ Cài đặt     │                                                                │
+└──────────────┴────────────────────────────────────────────────────────────────┘
+```
+
+- Khối không có dữ liệu không hiển thị và không để khoảng trống.
+
+### W-LIB-16 — Chi tiết mục: không tìm thấy (ERR-LIB-404-01)
+
+```text
+┌──────────────┬────────────────────────────────────────────────────────────────┐
+│Lingozi       │ ┌──────────────────────────────────────────────────────────┐   │
+│              │ │                                                          │   │
+│▸ Thư viện    │ │         (hình minh họa, lz-decor)                        │   │
+│▸ Luyện tập   │ │                                                          │   │
+│              │ │        Không tìm thấy mục này.                           │   │
+│              │ │                                                          │   │
+│              │ │          [ Về Thư viện ]                                 │   │
+│⚙ Cài đặt     │ │                                                          │   │
+│              │ └──────────────────────────────────────────────────────────┘   │
+└──────────────┴────────────────────────────────────────────────────────────────┘
+```
+
+- Cùng một màn hình cho mục không tồn tại và mục của người khác (không để lộ sự tồn tại).
+- Body lỗi giống hệt giữa hai trường hợp.
+
+### W-LIB-17 — Chi tiết mục: đang tải
+
+```text
+┌──────────────┬────────────────────────────────────────────────────────────────┐
+│Lingozi       │ ░░░░░░░░░░░░░░                                                 │
+│              │ ░░░░░░░░                                                       │
+│▸ Thư viện    │                                                                │
+│▸ Luyện tập   │ ░░░░░░░░░░░░░░░░░░░░                                           │
+│              │                                                                │
+│              │ ░░░░░░░░░░░░░░░░░░░░░░░░░░░░                                   │
+│              │                                                                │
+│⚙ Cài đặt     │                                                                │
+└──────────────┴────────────────────────────────────────────────────────────────┘
+```
+
+- `Skeleton` cho nội dung, nghĩa và ví dụ.
 
 ## 5. API
 
@@ -149,11 +207,11 @@ Scenario: AC-03 Mục không có trường tùy chọn
   Then các khối ví dụ, ghi chú, nguồn không hiển thị, không để khối trống
 ```
 
-| AC | Nội dung | FR | BR | ERR | Test case |
-| --- | --- | --- | --- | --- | --- |
-| AC-01 | Xem chi tiết | `FR-LIB-ITEM-004` | `BR-LIB-006` | — | TC-LIB-017 |
-| AC-02 | Mục không tồn tại hoặc của người khác | `FR-LIB-ITEM-004` | `BR-LIB-006` | `ERR-LIB-404-01` | TC-LIB-018 |
-| AC-03 | Mục không có trường tùy chọn | `FR-LIB-ITEM-004` | — | — | TC-LIB-017 |
+| AC | Nội dung | FR | BR | ERR | Wireframe | Test case |
+| --- | --- | --- | --- | --- | --- | --- |
+| AC-01 | Xem chi tiết | `FR-LIB-ITEM-004` | `BR-LIB-006` | — | W-LIB-14 | TC-LIB-017 |
+| AC-02 | Mục không tồn tại hoặc của người khác | `FR-LIB-ITEM-004` | `BR-LIB-006` | `ERR-LIB-404-01` | W-LIB-16 | TC-LIB-018 |
+| AC-03 | Mục không có trường tùy chọn | `FR-LIB-ITEM-004` | — | — | W-LIB-15 | TC-LIB-017 |
 
 ## 7. Truy vết test case
 

@@ -151,36 +151,113 @@ stateDiagram-v2
 
 ## 4. Wireframe
 
-_Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe ASCII là căn cứ cho DoR._
+_Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe ASCII là căn cứ cho DoR. Quy tắc: vẽ đủ mọi màn hình, hộp thoại và trạng thái mà AC của story nhắc tới._
 
-### W-AUTH-02 Nhập mã (`/auth/code?email=`)
+### W-AUTH-05 — Nhập mã: trạng thái ban đầu (`/auth/code`)
 
 ```text
-┌──────────── 440 ───────────────────────────┐
-│ Nhập mã                                 h1 │
-│ Chúng tôi đã gửi mã 6 số tới               │
-│ an@example.com. Mã có hiệu lực 10 phút.    │
-│ [ 4 ][ 7 ][ 1 ][ _ ][ _ ][ _ ]             │
-│ (dán được cả 6 số vào ô đầu)               │
-│ Mã không đúng. Bạn còn 4 lần thử.  (lỗi)   │
-│ [         Xác nhận          ]              │
-│ Không nhận được mã? (W-AUTH-05)            │
-│ Gửi mã mới sau 42 giây                     │
-│ Đổi email                                  │
-└────────────────────────────────────────────┘
+┌────────────────────────────────────────────────────────────────┐
+│                         [Logo Lingozi]                         │
+│                                                                │
+│         ┌────────────────────────────────────────────┐         │
+│         │ Nhập mã                                    │         │
+│         │ Chúng tôi đã gửi mã 6 số tới               │         │
+│         │ an@example.com.                            │         │
+│         │ Mã có hiệu lực 10 phút (còn 09:58).        │         │
+│         │                                            │         │
+│         │ [ ] [ ] [ ] [ ] [ ] [ ]                    │         │
+│         │                                            │         │
+│         │ [            Xác nhận            ]         │         │
+│         │                                            │         │
+│         │ Không nhận được mã?   Đổi email            │         │
+│         └────────────────────────────────────────────┘         │
+│                                                                │
+│            Chính sách quyền riêng tư · Xóa dữ liệu             │
+└────────────────────────────────────────────────────────────────┘
 ```
 
-| Trạng thái | Hiển thị |
-| --- | --- |
-| Đang nhập | Tự chuyển sang ô kế tiếp; Backspace quay lại |
-| Đủ 6 số | Tự gửi xác nhận |
-| Sai (401-01) | Lỗi có icon ✗ và số lần còn lại; xóa cả 6 ô, focus ô đầu |
-| Khóa (403-02) | Ô bị khóa; nút "Gửi mã mới" nổi bật |
-| Hết hạn hoặc đã dùng (400-03) | Lỗi kèm "Gửi mã mới" |
-| Chờ gửi lại | "Gửi mã mới" disabled, đếm ngược 60 giây |
-| Sau Facebook (xem W-AUTH-04) | Thêm dòng thông báo phía trên |
+- Sáu ô, mỗi ô có nhãn riêng; `autocomplete="one-time-code"`, `inputmode="numeric"`.
+- Dán 6 số vào ô đầu thì điền cả sáu ô; đủ 6 số thì tự gửi xác nhận.
+- Đếm ngược 10 phút theo thời hạn của mã.
+- Không có ô mật khẩu.
 
-Ô mã có `autocomplete="one-time-code"`, `inputmode="numeric"` và nhãn cho từng ô (NFR-A11Y-001).
+### W-AUTH-06 — Nhập mã: mã sai (ERR-AUTH-401-01)
+
+```text
+┌────────────────────────────────────────────────────────────────┐
+│                         [Logo Lingozi]                         │
+│                                                                │
+│         ┌────────────────────────────────────────────┐         │
+│         │ Nhập mã                                    │         │
+│         │ Chúng tôi đã gửi mã 6 số tới               │         │
+│         │ an@example.com.                            │         │
+│         │ Mã có hiệu lực 10 phút (còn 09:58).        │         │
+│         │                                            │         │
+│         │ [ ] [ ] [ ] [ ] [ ] [ ]                    │         │
+│         │ (!) Mã không đúng. Bạn còn 4 lần thử.      │         │
+│         │ [            Xác nhận            ]         │         │
+│         │                                            │         │
+│         │ Không nhận được mã?   Đổi email            │         │
+│         └────────────────────────────────────────────┘         │
+│                                                                │
+│            Chính sách quyền riêng tư · Xóa dữ liệu             │
+└────────────────────────────────────────────────────────────────┘
+```
+
+- Cả sáu ô được xóa và focus về ô đầu tiên; thông báo có `role="alert"`.
+- Số lần còn lại giảm theo mỗi lần sai (tối đa 5 lần).
+
+### W-AUTH-07 — Nhập mã: mã bị khóa (ERR-AUTH-403-02)
+
+```text
+┌────────────────────────────────────────────────────────────────┐
+│                         [Logo Lingozi]                         │
+│                                                                │
+│         ┌────────────────────────────────────────────┐         │
+│         │ Nhập mã                                    │         │
+│         │ Mã này đã bị khóa.                         │         │
+│         │                                            │         │
+│         │ [x] [x] [x] [x] [x] [x]  (vô hiệu)         │         │
+│         │ (!) Mã này đã bị khóa do nhập sai          │         │
+│         │     nhiều lần. Hãy yêu cầu mã mới.         │         │
+│         │ [           Gửi mã mới           ]         │         │
+│         │                                            │         │
+│         │ Đổi email                                  │         │
+│         └────────────────────────────────────────────┘         │
+│                                                                │
+│            Chính sách quyền riêng tư · Xóa dữ liệu             │
+└────────────────────────────────────────────────────────────────┘
+```
+
+- Sáu ô bị vô hiệu; nút "Gửi mã mới" nổi bật (tuân thủ giới hạn BR-AUTH-009).
+- Mã đã khóa không dùng được dù nhập đúng.
+
+### W-AUTH-08 — Nhập mã: hết hạn hoặc đã dùng (ERR-AUTH-400-03)
+
+```text
+┌────────────────────────────────────────────────────────────────┐
+│                         [Logo Lingozi]                         │
+│                                                                │
+│         ┌────────────────────────────────────────────┐         │
+│         │ Nhập mã                                    │         │
+│         │                                            │         │
+│         │ [ ] [ ] [ ] [ ] [ ] [ ]                    │         │
+│         │ (!) Mã đã hết hạn hoặc đã dùng.            │         │
+│         │     Hãy yêu cầu mã mới.                    │         │
+│         │ [           Gửi mã mới           ]         │         │
+│         │                                            │         │
+│         │ Đổi email                                  │         │
+│         └────────────────────────────────────────────┘         │
+│                                                                │
+│            Chính sách quyền riêng tư · Xóa dữ liệu             │
+└────────────────────────────────────────────────────────────────┘
+```
+
+- Dùng chung cho mã quá 10 phút, mã đã dùng, và mã bị thay bằng mã mới hơn.
+
+### Điều hướng và liên kết màn hình
+
+- Sau khi đăng nhập, người dùng chuyển tới "Thư viện" [W-LIB-01](../../knowledge-items/srs/US-LIB-03-list-items.md) (thuộc FEAT-02).
 
 ## 5. API
 
@@ -255,15 +332,15 @@ Scenario: AC-07 Mã mới làm mã cũ mất hiệu lực
   Then mã cũ bị từ chối với ERR-AUTH-400-03
 ```
 
-| AC | Nội dung | FR | BR | ERR | Test case |
-| --- | --- | --- | --- | --- | --- |
-| AC-01 | Mã đúng với email mới | `FR-AUTH-CODE-002` | `BR-AUTH-003` | — | TC-AUTH-006 |
-| AC-02 | Mã đúng với email đã có tài khoản | `FR-AUTH-CODE-002` | — | — | TC-AUTH-007 |
-| AC-03 | Mã sai | `FR-AUTH-CODE-002` | `BR-AUTH-002` | `ERR-AUTH-401-01` | TC-AUTH-008 |
-| AC-04 | Sai đủ 5 lần | `FR-AUTH-CODE-002` | `BR-AUTH-002` | `ERR-AUTH-403-02` | TC-AUTH-009 |
-| AC-05 | Mã hết hạn | `FR-AUTH-CODE-002` | `BR-AUTH-006` | `ERR-AUTH-400-03` | TC-AUTH-010 |
-| AC-06 | Mã đã dùng | `FR-AUTH-CODE-002` | `BR-AUTH-001` | `ERR-AUTH-400-03` | TC-AUTH-011 |
-| AC-07 | Mã mới làm mã cũ mất hiệu lực | `FR-AUTH-CODE-002` | `BR-AUTH-009` | `ERR-AUTH-400-03` | TC-AUTH-012 |
+| AC | Nội dung | FR | BR | ERR | Wireframe | Test case |
+| --- | --- | --- | --- | --- | --- | --- |
+| AC-01 | Mã đúng với email mới | `FR-AUTH-CODE-002` | `BR-AUTH-003` | — | W-AUTH-05 | TC-AUTH-006 |
+| AC-02 | Mã đúng với email đã có tài khoản | `FR-AUTH-CODE-002` | — | — | W-AUTH-05 | TC-AUTH-007 |
+| AC-03 | Mã sai | `FR-AUTH-CODE-002` | `BR-AUTH-002` | `ERR-AUTH-401-01` | W-AUTH-06 | TC-AUTH-008 |
+| AC-04 | Sai đủ 5 lần | `FR-AUTH-CODE-002` | `BR-AUTH-002` | `ERR-AUTH-403-02` | W-AUTH-07 | TC-AUTH-009 |
+| AC-05 | Mã hết hạn | `FR-AUTH-CODE-002` | `BR-AUTH-006` | `ERR-AUTH-400-03` | W-AUTH-08 | TC-AUTH-010 |
+| AC-06 | Mã đã dùng | `FR-AUTH-CODE-002` | `BR-AUTH-001` | `ERR-AUTH-400-03` | W-AUTH-08 | TC-AUTH-011 |
+| AC-07 | Mã mới làm mã cũ mất hiệu lực | `FR-AUTH-CODE-002` | `BR-AUTH-009` | `ERR-AUTH-400-03` | W-AUTH-08 | TC-AUTH-012 |
 
 ## 7. Truy vết test case
 

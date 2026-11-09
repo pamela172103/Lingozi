@@ -120,41 +120,140 @@ sequenceDiagram
 
 ## 4. Wireframe
 
-_Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe ASCII là căn cứ cho DoR._
+_Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe ASCII là căn cứ cho DoR. Quy tắc: vẽ đủ mọi màn hình, hộp thoại và trạng thái mà AC của story nhắc tới._
 
-### W-AUTH-01 Đăng nhập hoặc tạo tài khoản (`/auth/login`)
+### W-AUTH-01 — Đăng nhập: trạng thái ban đầu (`/auth/login`)
 
 ```text
-┌────────────────────────── 1440 ──────────────────────────┐
-│                    [Logo Lingozi]                         │
-│              ┌──────────── 440 ────────────┐              │
-│              │ Đăng nhập                 h1 │              │
-│              │ Đăng nhập hoặc tạo tài khoản │              │
-│              │ mới bằng cách dưới đây.      │              │
-│              │                              │              │
-│              │ [G  Tiếp tục với Google    ] │              │
-│              │ [f  Tiếp tục với Facebook  ] │              │
-│              │ ─────────────── hoặc ─────── │              │
-│              │ [  Tiếp tục với email     ]  │              │
-│              │                              │              │
-│              │ (khi bấm, mở ra bên dưới:)   │              │
-│              │ Email *                      │              │
-│              │ [__________________________] │              │
-│              │ [         Gửi mã          ]  │              │
-│              └──────────────────────────────┘              │
-│        Chính sách quyền riêng tư · Xóa dữ liệu             │
-└──────────────────────────────────────────────────────────┘
+┌────────────────────────────────────────────────────────────────┐
+│                         [Logo Lingozi]                         │
+│                                                                │
+│         ┌────────────────────────────────────────────┐         │
+│         │ Đăng nhập                                  │         │
+│         │ Đăng nhập hoặc tạo tài khoản mới.          │         │
+│         │                                            │         │
+│         │ [ G   Tiếp tục với Google     ]            │         │
+│         │ [ f   Tiếp tục với Facebook   ]            │         │
+│         │ ────────────── hoặc ──────────────         │         │
+│         │ [     Tiếp tục với email      ]            │         │
+│         └────────────────────────────────────────────┘         │
+│                                                                │
+│            Chính sách quyền riêng tư · Xóa dữ liệu             │
+└────────────────────────────────────────────────────────────────┘
 ```
 
-| Trạng thái | Hiển thị |
-| --- | --- |
-| Mặc định | Ba nút phương thức; ô email ẩn cho tới khi bấm "Tiếp tục với email" |
-| Loading | "Gửi mã" có spinner, ô email khóa |
-| Lỗi 400-01 | Lỗi dưới ô email: "Email không đúng định dạng." |
-| Lỗi 429-01 | Nút "Gửi mã" disabled, đếm ngược "Vui lòng đợi {giây} giây" |
-| `?error=external` | Thông báo ERR-AUTH-502-01 phía trên nút |
-| `?error=google-unverified` | Thông báo ERR-AUTH-409-02 (Google) dưới nút Google |
-| Nhà cung cấp chưa cấu hình | Ẩn nút đó (API `start` trả 404) |
+- Ba phương thức theo thứ tự: Google, Facebook, email. Facebook thay cho Apple.
+- Ô email ẩn cho tới khi bấm "Tiếp tục với email".
+- Không có ô mật khẩu và không có liên kết "Quên mật khẩu".
+- Chân trang có liên kết tới `/privacy` và `/data-deletion`.
+- Nút của nhà cung cấp chưa được cấu hình bị ẩn (API `start` trả 404).
+
+### W-AUTH-02 — Đăng nhập: bước nhập email
+
+```text
+┌────────────────────────────────────────────────────────────────┐
+│                         [Logo Lingozi]                         │
+│                                                                │
+│         ┌────────────────────────────────────────────┐         │
+│         │ Đăng nhập                                  │         │
+│         │ Đăng nhập hoặc tạo tài khoản mới.          │         │
+│         │                                            │         │
+│         │ [ G   Tiếp tục với Google     ]            │         │
+│         │ [ f   Tiếp tục với Facebook   ]            │         │
+│         │ ────────────── hoặc ──────────────         │         │
+│         │ Email *                                    │         │
+│         │ [__________________________________]       │         │
+│         │ [             Gửi mã             ]         │         │
+│         └────────────────────────────────────────────┘         │
+│                                                                │
+│            Chính sách quyền riêng tư · Xóa dữ liệu             │
+└────────────────────────────────────────────────────────────────┘
+```
+
+- Mở ra khi bấm "Tiếp tục với email"; focus vào ô email.
+- Đang gửi: nút "Gửi mã" có spinner, giữ nguyên chiều rộng, ô email bị khóa.
+- Enter trong ô email tương đương bấm "Gửi mã".
+
+### W-AUTH-03 — Đăng nhập: email sai định dạng (ERR-AUTH-400-01)
+
+```text
+┌────────────────────────────────────────────────────────────────┐
+│                         [Logo Lingozi]                         │
+│                                                                │
+│         ┌────────────────────────────────────────────┐         │
+│         │ Đăng nhập                                  │         │
+│         │ Đăng nhập hoặc tạo tài khoản mới.          │         │
+│         │                                            │         │
+│         │ [ G   Tiếp tục với Google     ]            │         │
+│         │ [ f   Tiếp tục với Facebook   ]            │         │
+│         │ ────────────── hoặc ──────────────         │         │
+│         │ Email *                                    │         │
+│         │ [an@____________________________]          │         │
+│         │ (!) Email không đúng định dạng.            │         │
+│         │ [             Gửi mã             ]         │         │
+│         └────────────────────────────────────────────┘         │
+│                                                                │
+│            Chính sách quyền riêng tư · Xóa dữ liệu             │
+└────────────────────────────────────────────────────────────────┘
+```
+
+- Viền ô email đổi sang màu lỗi; lỗi gắn với ô qua `aria-describedby`, có icon và chữ.
+- Không gửi gì; nội dung đã nhập được giữ lại.
+
+### W-AUTH-04 — Đăng nhập: vượt giới hạn gửi (ERR-AUTH-429-01)
+
+```text
+┌────────────────────────────────────────────────────────────────┐
+│                         [Logo Lingozi]                         │
+│                                                                │
+│         ┌────────────────────────────────────────────┐         │
+│         │ Đăng nhập                                  │         │
+│         │ Đăng nhập hoặc tạo tài khoản mới.          │         │
+│         │                                            │         │
+│         │ [ G   Tiếp tục với Google     ]            │         │
+│         │ [ f   Tiếp tục với Facebook   ]            │         │
+│         │ ────────────── hoặc ──────────────         │         │
+│         │ Email *                                    │         │
+│         │ [an@example.com__________________]         │         │
+│         │ (!) Vui lòng đợi 30 giây trước khi gửi     │         │
+│         │     lại.                                   │         │
+│         │ [      Gửi mã (đợi 30 giây)      ]         │         │
+│         └────────────────────────────────────────────┘         │
+│                                                                │
+│            Chính sách quyền riêng tư · Xóa dữ liệu             │
+└────────────────────────────────────────────────────────────────┘
+```
+
+- Nút "Gửi mã" bị vô hiệu và đếm ngược theo header `Retry-After`.
+- Cùng hiển thị cho giới hạn theo email (1 mã mỗi 60 giây, 5 mã mỗi giờ) và theo IP.
+
+### W-AUTH-05 — Nhập mã: trạng thái ban đầu (`/auth/code`)
+
+```text
+┌────────────────────────────────────────────────────────────────┐
+│                         [Logo Lingozi]                         │
+│                                                                │
+│         ┌────────────────────────────────────────────┐         │
+│         │ Nhập mã                                    │         │
+│         │ Chúng tôi đã gửi mã 6 số tới               │         │
+│         │ an@example.com.                            │         │
+│         │ Mã có hiệu lực 10 phút (còn 09:58).        │         │
+│         │                                            │         │
+│         │ [ ] [ ] [ ] [ ] [ ] [ ]                    │         │
+│         │                                            │         │
+│         │ [            Xác nhận            ]         │         │
+│         │                                            │         │
+│         │ Không nhận được mã?   Đổi email            │         │
+│         └────────────────────────────────────────────┘         │
+│                                                                │
+│            Chính sách quyền riêng tư · Xóa dữ liệu             │
+└────────────────────────────────────────────────────────────────┘
+```
+
+- Sáu ô, mỗi ô có nhãn riêng; `autocomplete="one-time-code"`, `inputmode="numeric"`.
+- Dán 6 số vào ô đầu thì điền cả sáu ô; đủ 6 số thì tự gửi xác nhận.
+- Đếm ngược 10 phút theo thời hạn của mã.
+- Không có ô mật khẩu.
 
 ## 5. API
 
@@ -219,13 +318,13 @@ Scenario: AC-05 Vượt giới hạn trong một giờ
   Then không gửi thêm và trả ERR-AUTH-429-01 (BR-AUTH-009)
 ```
 
-| AC | Nội dung | FR | BR | ERR | Test case |
-| --- | --- | --- | --- | --- | --- |
-| AC-01 | Gửi mã tới email mới | `FR-AUTH-CODE-001` | `BR-AUTH-001` | — | TC-AUTH-001 |
-| AC-02 | Email sai định dạng | `FR-AUTH-CODE-001` | — | `ERR-AUTH-400-01` | TC-AUTH-002 |
-| AC-03 | Gửi lại quá nhanh | `FR-AUTH-CODE-001` | `BR-AUTH-009` | `ERR-AUTH-429-01` | TC-AUTH-003 |
-| AC-04 | Email đã có tài khoản không bị lộ | `FR-AUTH-CODE-001` | `BR-AUTH-007` | — | TC-AUTH-004 |
-| AC-05 | Vượt giới hạn trong một giờ | `FR-AUTH-CODE-001` | `BR-AUTH-009` | `ERR-AUTH-429-01` | TC-AUTH-005 |
+| AC | Nội dung | FR | BR | ERR | Wireframe | Test case |
+| --- | --- | --- | --- | --- | --- | --- |
+| AC-01 | Gửi mã tới email mới | `FR-AUTH-CODE-001` | `BR-AUTH-001` | — | W-AUTH-02, W-AUTH-05 | TC-AUTH-001 |
+| AC-02 | Email sai định dạng | `FR-AUTH-CODE-001` | — | `ERR-AUTH-400-01` | W-AUTH-03 | TC-AUTH-002 |
+| AC-03 | Gửi lại quá nhanh | `FR-AUTH-CODE-001` | `BR-AUTH-009` | `ERR-AUTH-429-01` | W-AUTH-04 | TC-AUTH-003 |
+| AC-04 | Email đã có tài khoản không bị lộ | `FR-AUTH-CODE-001` | `BR-AUTH-007` | — | W-AUTH-05 | TC-AUTH-004 |
+| AC-05 | Vượt giới hạn trong một giờ | `FR-AUTH-CODE-001` | `BR-AUTH-009` | `ERR-AUTH-429-01` | W-AUTH-04 | TC-AUTH-005 |
 
 ## 7. Truy vết test case
 

@@ -91,9 +91,76 @@ sequenceDiagram
 
 ## 4. Wireframe
 
-_Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe ASCII là căn cứ cho DoR._
+_Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe ASCII là căn cứ cho DoR. Quy tắc: vẽ đủ mọi màn hình, hộp thoại và trạng thái mà AC của story nhắc tới._
 
-Dùng nút "Đăng xuất" của [W-AUTH-06](US-AUTH-06-link-providers.md#4-wireframe). Sau khi đăng xuất, chuyển tới [W-AUTH-01](US-AUTH-01-request-email-code.md#4-wireframe).
+### W-AUTH-15 — Cài đặt tài khoản: mặc định (`/settings/account`)
+
+```text
+┌──────────────┬──────────────────────────────────────────────────────────────┐
+│Lingozi       │ Cài đặt tài khoản                                            │
+│              │ ┌─ Thông tin ──────────────────────────────────────────────┐ │
+│▸ Thư viện    │ │ Email    an@example.com    ✓ Đã xác minh                 │ │
+│▸ Luyện tập   │ └──────────────────────────────────────────────────────────┘ │
+│              │ ┌─ Phương thức đăng nhập ──────────────────────────────────┐ │
+│              │ │ Email (mã đăng nhập)     ✓ Luôn có                       │ │
+│              │ │ Google                   ✓ Đã liên kết                   │ │
+│⚙ Cài đặt     │ │ Facebook                 [ Liên kết Facebook ]           │ │
+│              │ └──────────────────────────────────────────────────────────┘ │
+│              │                                                              │
+│              │ [ Đăng xuất ]                                                │
+└──────────────┴──────────────────────────────────────────────────────────────┘
+```
+
+- Nằm trong khung ứng dụng có sidebar.
+- Phương thức đã liên kết hiện "Đã liên kết" thay cho nút; chưa liên kết thì hiện nút "Liên kết ...".
+- Không có mục đổi hoặc đặt mật khẩu.
+- Nút "Đăng xuất": đang xử lý thì có spinner và giữ nguyên chiều rộng (xem W-AUTH-23).
+
+### W-AUTH-23 — Cài đặt tài khoản: đang đăng xuất
+
+```text
+┌──────────────┬──────────────────────────────────────────────────────────────┐
+│Lingozi       │ Cài đặt tài khoản                                            │
+│              │ ┌─ Thông tin ──────────────────────────────────────────────┐ │
+│▸ Thư viện    │ │ Email    an@example.com    ✓ Đã xác minh                 │ │
+│▸ Luyện tập   │ └──────────────────────────────────────────────────────────┘ │
+│              │ ┌─ Phương thức đăng nhập ──────────────────────────────────┐ │
+│              │ │ Email (mã đăng nhập)     ✓ Luôn có                       │ │
+│              │ │ Google                   ✓ Đã liên kết                   │ │
+│⚙ Cài đặt     │ │ Facebook                 [ Liên kết Facebook ]           │ │
+│              │ └──────────────────────────────────────────────────────────┘ │
+│              │                                                              │
+│              │ [ ◌  Đang đăng xuất ]                                        │
+└──────────────┴──────────────────────────────────────────────────────────────┘
+```
+
+- Sau khi xong, chuyển tới W-AUTH-01. Đăng xuất luôn thành công, không hiện lỗi (kể cả khi phiên đã hết hạn).
+
+### W-AUTH-01 — Đăng nhập: trạng thái ban đầu (`/auth/login`)
+
+```text
+┌────────────────────────────────────────────────────────────────┐
+│                         [Logo Lingozi]                         │
+│                                                                │
+│         ┌────────────────────────────────────────────┐         │
+│         │ Đăng nhập                                  │         │
+│         │ Đăng nhập hoặc tạo tài khoản mới.          │         │
+│         │                                            │         │
+│         │ [ G   Tiếp tục với Google     ]            │         │
+│         │ [ f   Tiếp tục với Facebook   ]            │         │
+│         │ ────────────── hoặc ──────────────         │         │
+│         │ [     Tiếp tục với email      ]            │         │
+│         └────────────────────────────────────────────┘         │
+│                                                                │
+│            Chính sách quyền riêng tư · Xóa dữ liệu             │
+└────────────────────────────────────────────────────────────────┘
+```
+
+- Ba phương thức theo thứ tự: Google, Facebook, email. Facebook thay cho Apple.
+- Ô email ẩn cho tới khi bấm "Tiếp tục với email".
+- Không có ô mật khẩu và không có liên kết "Quên mật khẩu".
+- Chân trang có liên kết tới `/privacy` và `/data-deletion`.
+- Nút của nhà cung cấp chưa được cấu hình bị ẩn (API `start` trả 404).
 
 ## 5. API
 
@@ -132,11 +199,11 @@ Scenario: AC-03 Đăng xuất khi phiên đã hết hạn
   Then thao tác vẫn thành công và không hiện lỗi
 ```
 
-| AC | Nội dung | FR | BR | ERR | Test case |
-| --- | --- | --- | --- | --- | --- |
-| AC-01 | Đăng xuất | `FR-AUTH-SES-002` | `BR-AUTH-008` | — | TC-AUTH-031 |
-| AC-02 | Quay lại trang cũ sau khi đăng xuất | `FR-AUTH-SES-002`, `FR-AUTH-SES-003` | `BR-AUTH-008` | `ERR-AUTH-401-02` | TC-AUTH-032 |
-| AC-03 | Đăng xuất khi phiên đã hết hạn | `FR-AUTH-SES-002` | `BR-AUTH-008` | — | TC-AUTH-033 |
+| AC | Nội dung | FR | BR | ERR | Wireframe | Test case |
+| --- | --- | --- | --- | --- | --- | --- |
+| AC-01 | Đăng xuất | `FR-AUTH-SES-002` | `BR-AUTH-008` | — | W-AUTH-15, W-AUTH-23, W-AUTH-01 | TC-AUTH-031 |
+| AC-02 | Quay lại trang cũ sau khi đăng xuất | `FR-AUTH-SES-002`, `FR-AUTH-SES-003` | `BR-AUTH-008` | `ERR-AUTH-401-02` | W-AUTH-01 | TC-AUTH-032 |
+| AC-03 | Đăng xuất khi phiên đã hết hạn | `FR-AUTH-SES-002` | `BR-AUTH-008` | — | W-AUTH-15 | TC-AUTH-033 |
 
 ## 7. Truy vết test case
 

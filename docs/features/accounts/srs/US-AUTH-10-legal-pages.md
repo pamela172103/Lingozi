@@ -64,11 +64,83 @@ flowchart LR
 
 ## 4. Wireframe
 
-_Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe ASCII là căn cứ cho DoR._
+_Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe ASCII là căn cứ cho DoR. Quy tắc: vẽ đủ mọi màn hình, hộp thoại và trạng thái mà AC của story nhắc tới._
 
-### W-AUTH-07 Trang pháp lý (`/privacy`, `/data-deletion`)
+### W-AUTH-20 — Chính sách quyền riêng tư (`/privacy`)
 
-Văn bản một cột, rộng tối đa 72ch, có `h1` và `h2`. Khi nội dung chưa được duyệt, đầu trang có thông báo info: "Bản nháp chờ duyệt".
+```text
+┌────────────────────────────────────────────────────────────────┐
+│                         [Logo Lingozi]                         │
+│                                                                │
+│  Chính sách quyền riêng tư                    h1               │
+│                                                                │
+│  (i) Bản nháp chờ duyệt                 (khi chưa duyệt)       │
+│                                                                │
+│  Dữ liệu chúng tôi thu thập                 h2                 │
+│    ...                                                         │
+│  Cách chúng tôi dùng dữ liệu                h2                 │
+│    ...                                                         │
+│  Quyền của bạn                              h2                 │
+│    ...                                                         │
+│                                                                │
+│  ← Về trang đăng nhập                                          │
+└────────────────────────────────────────────────────────────────┘
+```
+
+- Trang công khai, không cần đăng nhập; văn bản một cột, rộng tối đa 72 ký tự.
+- Khi nội dung chưa được chủ dự án duyệt, đầu trang có thông báo "Bản nháp chờ duyệt".
+
+### W-AUTH-21 — Hướng dẫn xóa dữ liệu (`/data-deletion`)
+
+```text
+┌────────────────────────────────────────────────────────────────┐
+│                         [Logo Lingozi]                         │
+│                                                                │
+│  Hướng dẫn xóa dữ liệu                       h1                │
+│                                                                │
+│  (i) Bản nháp chờ duyệt                 (khi chưa duyệt)       │
+│                                                                │
+│  Cách gửi yêu cầu                           h2                 │
+│    Gửi email tới <địa chỉ nhận yêu cầu>.                       │
+│  Thông tin cần gửi                          h2                 │
+│    Email đăng nhập của bạn.                                    │
+│  Thời hạn xử lý                             h2                 │
+│    Tối đa 30 ngày kể từ khi nhận yêu cầu.                      │
+│  Dữ liệu bị xóa                             h2                 │
+│    Tài khoản và toàn bộ mục kiến thức.                         │
+│                                                                │
+│  ← Về trang đăng nhập                                          │
+└────────────────────────────────────────────────────────────────┘
+```
+
+- Nêu đủ bốn nội dung: email nhận yêu cầu, thông tin cần gửi, thời hạn tối đa 30 ngày (`Q-12`), dữ liệu nào bị xóa.
+- Địa chỉ nhận yêu cầu là biến cấu hình, chưa có giá trị thật; nội dung do chủ dự án duyệt.
+
+### W-AUTH-01 — Đăng nhập: trạng thái ban đầu (`/auth/login`)
+
+```text
+┌────────────────────────────────────────────────────────────────┐
+│                         [Logo Lingozi]                         │
+│                                                                │
+│         ┌────────────────────────────────────────────┐         │
+│         │ Đăng nhập                                  │         │
+│         │ Đăng nhập hoặc tạo tài khoản mới.          │         │
+│         │                                            │         │
+│         │ [ G   Tiếp tục với Google     ]            │         │
+│         │ [ f   Tiếp tục với Facebook   ]            │         │
+│         │ ────────────── hoặc ──────────────         │         │
+│         │ [     Tiếp tục với email      ]            │         │
+│         └────────────────────────────────────────────┘         │
+│                                                                │
+│            Chính sách quyền riêng tư · Xóa dữ liệu             │
+└────────────────────────────────────────────────────────────────┘
+```
+
+- Ba phương thức theo thứ tự: Google, Facebook, email. Facebook thay cho Apple.
+- Ô email ẩn cho tới khi bấm "Tiếp tục với email".
+- Không có ô mật khẩu và không có liên kết "Quên mật khẩu".
+- Chân trang có liên kết tới `/privacy` và `/data-deletion`.
+- Nút của nhà cung cấp chưa được cấu hình bị ẩn (API `start` trả 404).
 
 ## 5. API
 
@@ -94,11 +166,11 @@ Scenario: AC-03 Liên kết ở trang đăng nhập
   Then có liên kết tới "/privacy" và "/data-deletion" ở chân trang
 ```
 
-| AC | Nội dung | FR | BR | ERR | Test case |
-| --- | --- | --- | --- | --- | --- |
-| AC-01 | Trang công khai | `FR-AUTH-LEG-001` | — | — | TC-AUTH-037 |
-| AC-02 | Hướng dẫn xóa dữ liệu | `FR-AUTH-LEG-001` | — | — | TC-AUTH-037 |
-| AC-03 | Liên kết ở trang đăng nhập | `FR-AUTH-LEG-001` | — | — | TC-AUTH-037 |
+| AC | Nội dung | FR | BR | ERR | Wireframe | Test case |
+| --- | --- | --- | --- | --- | --- | --- |
+| AC-01 | Trang công khai | `FR-AUTH-LEG-001` | — | — | W-AUTH-20, W-AUTH-21 | TC-AUTH-037 |
+| AC-02 | Hướng dẫn xóa dữ liệu | `FR-AUTH-LEG-001` | — | — | W-AUTH-21 | TC-AUTH-037 |
+| AC-03 | Liên kết ở trang đăng nhập | `FR-AUTH-LEG-001` | — | — | W-AUTH-01 | TC-AUTH-037 |
 
 ## 7. Truy vết test case
 

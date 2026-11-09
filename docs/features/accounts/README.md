@@ -47,7 +47,7 @@
 | --- | --- |
 | User story có ID và AC Gherkin | Có (39 AC), chờ duyệt |
 | BR và mã lỗi | Có (BR-AUTH-001 → 013), chờ duyệt |
-| Màn hình đã duyệt | Wireframe ASCII trong SRS từng story (W-AUTH-01 → 07); Figma chưa dựng màn hình (`DES-01`) |
+| Màn hình đã duyệt | Wireframe ASCII đủ mọi màn hình và trạng thái của AC, trong SRS từng story (W-AUTH-01 → 23); Figma chưa dựng màn hình (`DES-01`) |
 | API contract và ERD | Có; ERD cần bảng `EmailLoginCodes` (đã ghi, chờ duyệt) |
 | Test case truy vết về AC | Có (43 TC) |
 | Quyết định bảo mật của mã | Đã xác nhận 2026-11-09: 6 số, 10 phút, dùng một lần, 5 lần sai, giới hạn gửi (BR-AUTH-001, 002, 009) |

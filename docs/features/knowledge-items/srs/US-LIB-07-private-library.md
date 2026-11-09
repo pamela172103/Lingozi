@@ -93,9 +93,51 @@ sequenceDiagram
 
 ## 4. Wireframe
 
-_Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe ASCII là căn cứ cho DoR._
+_Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe ASCII là căn cứ cho DoR. Quy tắc: vẽ đủ mọi màn hình, hộp thoại và trạng thái mà AC của story nhắc tới._
 
-Story này không có màn hình riêng; hành vi nằm ở API. Người dùng thấy cùng màn hình "Không tìm thấy mục này" ([W-LIB-04](US-LIB-04-view-item.md#4-wireframe)) cho mục không tồn tại và mục của người khác.
+### W-LIB-01 — Danh sách thư viện: có dữ liệu (`/library`)
+
+```text
+┌──────────────┬────────────────────────────────────────────────────────────────┐
+│Lingozi       │                                   [ + Lưu kiến thức (N) ]      │
+│              │ Thư viện                         25 mục   h1                   │
+│▸ Thư viện    │ ┌────────────────────────────┐  ┌────────────────────────────┐ │
+│▸ Luyện tập   │ │ give up         Từ vựng    │  │ Present perfect Ngữ pháp   │ │
+│              │ │ từ bỏ                      │  │ Thì hiện tại hoàn thành    │ │
+│              │ │                 08/11/2026 │  │                 07/11/2026 │ │
+│              │ └────────────────────────────┘  └────────────────────────────┘ │
+│⚙ Cài đặt     │ ┌────────────────────────────┐  ┌────────────────────────────┐ │
+│              │ │ break the ice   Từ vựng    │  │ Used to V       Ngữ pháp   │ │
+│              │ │ phá vỡ sự ngại ngùng ban   │  │ đã từng làm gì             │ │
+│              │ │                 06/11/2026 │  │                 05/11/2026 │ │
+│              │ └────────────────────────────┘  └────────────────────────────┘ │
+│              │                                                                │
+│              │         ‹ Trước     Trang 1 / 2     Sau ›                      │
+└──────────────┴────────────────────────────────────────────────────────────────┘
+```
+
+- Mới nhất trước, 20 mục mỗi trang (tối đa 50); lưới 2 cột ở ≥ 1280 px, 1 cột ở < 1024 px.
+- Mỗi thẻ là một liên kết tới trang chi tiết: nội dung (h3), loại (`Badge`), nghĩa cắt ở 2 dòng, ngày tạo trong thẻ `<time>`.
+- Chưa có ô tìm kiếm (Vòng 2).
+
+### W-LIB-16 — Chi tiết mục: không tìm thấy (ERR-LIB-404-01)
+
+```text
+┌──────────────┬────────────────────────────────────────────────────────────────┐
+│Lingozi       │ ┌──────────────────────────────────────────────────────────┐   │
+│              │ │                                                          │   │
+│▸ Thư viện    │ │         (hình minh họa, lz-decor)                        │   │
+│▸ Luyện tập   │ │                                                          │   │
+│              │ │        Không tìm thấy mục này.                           │   │
+│              │ │                                                          │   │
+│              │ │          [ Về Thư viện ]                                 │   │
+│⚙ Cài đặt     │ │                                                          │   │
+│              │ └──────────────────────────────────────────────────────────┘   │
+└──────────────┴────────────────────────────────────────────────────────────────┘
+```
+
+- Cùng một màn hình cho mục không tồn tại và mục của người khác (không để lộ sự tồn tại).
+- Body lỗi giống hệt giữa hai trường hợp.
 
 ## 5. API
 
@@ -130,11 +172,11 @@ Scenario: AC-03 Không tin UserId từ client
   Then trường đó bị bỏ qua; mục luôn thuộc người đang đăng nhập
 ```
 
-| AC | Nội dung | FR | BR | ERR | Test case |
-| --- | --- | --- | --- | --- | --- |
-| AC-01 | Không thấy dữ liệu người khác | `FR-LIB-SEC-001` | `BR-LIB-006` | — | TC-LIB-026 |
-| AC-02 | Mọi thao tác với ID của người khác | `FR-LIB-SEC-001` | `BR-LIB-006` | `ERR-LIB-404-01` | TC-LIB-022 |
-| AC-03 | Không tin UserId từ client | `FR-LIB-SEC-001` | `BR-LIB-006` | — | TC-LIB-027 |
+| AC | Nội dung | FR | BR | ERR | Wireframe | Test case |
+| --- | --- | --- | --- | --- | --- | --- |
+| AC-01 | Không thấy dữ liệu người khác | `FR-LIB-SEC-001` | `BR-LIB-006` | — | W-LIB-01 | TC-LIB-026 |
+| AC-02 | Mọi thao tác với ID của người khác | `FR-LIB-SEC-001` | `BR-LIB-006` | `ERR-LIB-404-01` | W-LIB-16 | TC-LIB-022 |
+| AC-03 | Không tin UserId từ client | `FR-LIB-SEC-001` | `BR-LIB-006` | — | Không có UI | TC-LIB-027 |
 
 ## 7. Truy vết test case
 

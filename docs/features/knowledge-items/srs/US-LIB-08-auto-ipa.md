@@ -148,7 +148,70 @@ stateDiagram-v2
 | AutoFilled | Sửa nội dung | Khác giá trị gợi ý | UserEdited | Người dùng |
 | AutoFilled, UserEdited, UserEntered | Xóa hết | — | Empty | Người dùng |
 
-## 4. Wireframe
+## 4. Acceptance criteria
+
+_Skill `ac`. Văn bản Gherkin trùng với [user story](../requirements/user-stories.md) (nguồn chính thức); sửa ở đó rồi cập nhật lại đây. Script `tools/feature-docs/check_feature_docs.py` kiểm tra hai bản khớp nhau._
+
+```gherkin
+Scenario: AC-01 Tự điền phiên âm Anh-Anh
+  Given tôi chọn "Từ vựng" và nhập "water"
+  When tôi rời ô "Từ" (hoặc sau 500 ms không gõ)
+  Then ô "Phiên âm" được điền "/ˈwɔːtə/" với nhãn "Tự động từ điển (Anh-Anh)" và "Nguồn: Wiktionary, CC BY-SA 3.0"
+  And tôi có thể lưu mà không sửa gì
+
+Scenario: AC-01a Chỉ điền khi có phiên âm Anh-Anh được gắn nhãn
+  Given tôi nhập "learn", nguồn có phiên âm nhưng không có bản Anh-Anh được gắn nhãn
+  Then ô "Phiên âm" trống, không điền phiên âm Anh-Mỹ hay không nhãn vào ô này
+
+Scenario: AC-02 Sửa phiên âm do máy điền
+  Given ô phiên âm đang có giá trị từ điển
+  When tôi sửa thành "/ˈwɔːtə/ (ghi chú của tôi)" hoặc thay bằng giá trị khác rồi lưu
+  Then mục lưu IpaSource = 2 (người dùng) và nhãn chuyển thành "Bạn đã chỉnh sửa"
+
+Scenario: AC-03 Không có phiên âm từ nguồn
+  Given nguồn không có phiên âm Anh-Anh cho "learn"
+  When tôi nhập "learn"
+  Then ô phiên âm trống với gợi ý "Chưa có phiên âm Anh-Anh, bạn có thể tự nhập"
+  And tôi lưu được mục với Ipa là null
+
+Scenario: AC-04 Tự nhập phiên âm
+  Given ô phiên âm trống
+  When tôi nhập "/ˈzɪzli/" rồi lưu
+  Then mục lưu Ipa = "/ˈzɪzli/" và IpaSource = 2
+
+Scenario: AC-05 Phiên âm sai ký tự
+  When tôi nhập "<b>give</b>" vào ô phiên âm
+  Then không lưu được và thấy ERR-LIB-400-02 "Phiên âm chỉ được chứa ký tự IPA"
+
+Scenario: AC-06 Nguồn lỗi hoặc quá thời gian
+  Given nguồn không phản hồi trong 3 giây
+  When tôi nhập "give up"
+  Then form vẫn dùng được, ô phiên âm trống
+  And có dòng "Không lấy được phiên âm tự động" (BR-LIB-015), không hiện lỗi đỏ
+
+Scenario: AC-07 Xóa phiên âm
+  Given ô phiên âm có giá trị
+  When tôi xóa hết và lưu
+  Then mục lưu Ipa = null và IpaSource = null
+
+Scenario: AC-08 Không có ô phiên âm cho Ngữ pháp
+  When tôi chọn "Ngữ pháp"
+  Then không có ô phiên âm và không gọi nguồn phiên âm
+```
+
+| AC | Nội dung | FR | BR | ERR | Wireframe | Test case |
+| --- | --- | --- | --- | --- | --- | --- |
+| AC-01 | Tự điền phiên âm Anh-Anh | `FR-LIB-ITEM-008` | `BR-LIB-013` | — | W-LIB-22 | TC-LIB-038 |
+| AC-01a | Chỉ điền khi có phiên âm Anh-Anh được gắn nhãn | `FR-LIB-ITEM-008` | `BR-LIB-013` | — | W-LIB-24 | TC-LIB-038 |
+| AC-02 | Sửa phiên âm do máy điền | `FR-LIB-ITEM-008` | `BR-LIB-013` | — | W-LIB-23 | TC-LIB-039 |
+| AC-03 | Không có phiên âm từ nguồn | `FR-LIB-ITEM-008` | `BR-LIB-013`, `BR-LIB-015` | — | W-LIB-24 | TC-LIB-040 |
+| AC-04 | Tự nhập phiên âm | `FR-LIB-ITEM-008` | `BR-LIB-013` | — | W-LIB-23 | TC-LIB-040 |
+| AC-05 | Phiên âm sai ký tự | `FR-LIB-ITEM-008` | `BR-LIB-013` | `ERR-LIB-400-02` | W-LIB-26 | TC-LIB-041 |
+| AC-06 | Nguồn lỗi hoặc quá thời gian | `FR-LIB-ITEM-008` | `BR-LIB-015` | — | W-LIB-25 | TC-LIB-042 |
+| AC-07 | Xóa phiên âm | `FR-LIB-ITEM-008` | `BR-LIB-013` | — | W-LIB-24 | TC-LIB-043 |
+| AC-08 | Không có ô phiên âm cho Ngữ pháp | `FR-LIB-ITEM-008` | `BR-LIB-013` | — | W-LIB-09 | TC-LIB-044, TC-LIB-050 |
+
+## 5. Wireframe
 
 _Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe ASCII là căn cứ cho DoR. Quy tắc: vẽ đủ mọi màn hình, hộp thoại và trạng thái mà AC của story nhắc tới._
 
@@ -248,7 +311,7 @@ _Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe A
 - Nhãn bắt buộc là "Điểm ngữ pháp"; không có ô "Phiên âm" và không gọi nguồn phiên âm.
 - Nghĩa chỉ gồm khoảng trắng được lưu là trống.
 
-## 5. API
+## 6. API
 
 _Skill `api-design`; lỗi theo Problem Details (RFC 9457) như ADR 0002. Quy ước chung ở [README.md](README.md)._
 
@@ -267,69 +330,6 @@ Phản hồi:
 ```
 
 Khi lưu, client gửi `ipa` và `ipaSource`; server đặt lại `ipaSource` theo BR-LIB-013 (khớp gợi ý nhận được thì `dictionary`, còn lại `user`).
-
-## 6. Acceptance criteria
-
-_Skill `ac`. Văn bản Gherkin trùng với [user story](../requirements/user-stories.md) (nguồn chính thức); sửa ở đó rồi cập nhật lại đây. Script `tools/feature-docs/check_feature_docs.py` kiểm tra hai bản khớp nhau._
-
-```gherkin
-Scenario: AC-01 Tự điền phiên âm Anh-Anh
-  Given tôi chọn "Từ vựng" và nhập "water"
-  When tôi rời ô "Từ" (hoặc sau 500 ms không gõ)
-  Then ô "Phiên âm" được điền "/ˈwɔːtə/" với nhãn "Tự động từ điển (Anh-Anh)" và "Nguồn: Wiktionary, CC BY-SA 3.0"
-  And tôi có thể lưu mà không sửa gì
-
-Scenario: AC-01a Chỉ điền khi có phiên âm Anh-Anh được gắn nhãn
-  Given tôi nhập "learn", nguồn có phiên âm nhưng không có bản Anh-Anh được gắn nhãn
-  Then ô "Phiên âm" trống, không điền phiên âm Anh-Mỹ hay không nhãn vào ô này
-
-Scenario: AC-02 Sửa phiên âm do máy điền
-  Given ô phiên âm đang có giá trị từ điển
-  When tôi sửa thành "/ˈwɔːtə/ (ghi chú của tôi)" hoặc thay bằng giá trị khác rồi lưu
-  Then mục lưu IpaSource = 2 (người dùng) và nhãn chuyển thành "Bạn đã chỉnh sửa"
-
-Scenario: AC-03 Không có phiên âm từ nguồn
-  Given nguồn không có phiên âm Anh-Anh cho "learn"
-  When tôi nhập "learn"
-  Then ô phiên âm trống với gợi ý "Chưa có phiên âm Anh-Anh, bạn có thể tự nhập"
-  And tôi lưu được mục với Ipa là null
-
-Scenario: AC-04 Tự nhập phiên âm
-  Given ô phiên âm trống
-  When tôi nhập "/ˈzɪzli/" rồi lưu
-  Then mục lưu Ipa = "/ˈzɪzli/" và IpaSource = 2
-
-Scenario: AC-05 Phiên âm sai ký tự
-  When tôi nhập "<b>give</b>" vào ô phiên âm
-  Then không lưu được và thấy ERR-LIB-400-02 "Phiên âm chỉ được chứa ký tự IPA"
-
-Scenario: AC-06 Nguồn lỗi hoặc quá thời gian
-  Given nguồn không phản hồi trong 3 giây
-  When tôi nhập "give up"
-  Then form vẫn dùng được, ô phiên âm trống
-  And có dòng "Không lấy được phiên âm tự động" (BR-LIB-015), không hiện lỗi đỏ
-
-Scenario: AC-07 Xóa phiên âm
-  Given ô phiên âm có giá trị
-  When tôi xóa hết và lưu
-  Then mục lưu Ipa = null và IpaSource = null
-
-Scenario: AC-08 Không có ô phiên âm cho Ngữ pháp
-  When tôi chọn "Ngữ pháp"
-  Then không có ô phiên âm và không gọi nguồn phiên âm
-```
-
-| AC | Nội dung | FR | BR | ERR | Wireframe | Test case |
-| --- | --- | --- | --- | --- | --- | --- |
-| AC-01 | Tự điền phiên âm Anh-Anh | `FR-LIB-ITEM-008` | `BR-LIB-013` | — | W-LIB-22 | TC-LIB-038 |
-| AC-01a | Chỉ điền khi có phiên âm Anh-Anh được gắn nhãn | `FR-LIB-ITEM-008` | `BR-LIB-013` | — | W-LIB-24 | TC-LIB-038 |
-| AC-02 | Sửa phiên âm do máy điền | `FR-LIB-ITEM-008` | `BR-LIB-013` | — | W-LIB-23 | TC-LIB-039 |
-| AC-03 | Không có phiên âm từ nguồn | `FR-LIB-ITEM-008` | `BR-LIB-013`, `BR-LIB-015` | — | W-LIB-24 | TC-LIB-040 |
-| AC-04 | Tự nhập phiên âm | `FR-LIB-ITEM-008` | `BR-LIB-013` | — | W-LIB-23 | TC-LIB-040 |
-| AC-05 | Phiên âm sai ký tự | `FR-LIB-ITEM-008` | `BR-LIB-013` | `ERR-LIB-400-02` | W-LIB-26 | TC-LIB-041 |
-| AC-06 | Nguồn lỗi hoặc quá thời gian | `FR-LIB-ITEM-008` | `BR-LIB-015` | — | W-LIB-25 | TC-LIB-042 |
-| AC-07 | Xóa phiên âm | `FR-LIB-ITEM-008` | `BR-LIB-013` | — | W-LIB-24 | TC-LIB-043 |
-| AC-08 | Không có ô phiên âm cho Ngữ pháp | `FR-LIB-ITEM-008` | `BR-LIB-013` | — | W-LIB-09 | TC-LIB-044, TC-LIB-050 |
 
 ## 7. Truy vết test case
 

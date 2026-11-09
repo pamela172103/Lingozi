@@ -182,7 +182,49 @@ stateDiagram-v2
 | CodeSent | Sai đủ 5 lần | `Attempts` = 5 | Failed | Hệ thống |
 | Pending, EmailEntered, CodeSent | Quá 10 phút | Cookie chờ hết hạn | Expired | Hệ thống |
 
-## 4. Wireframe
+## 4. Acceptance criteria
+
+_Skill `ac`. Văn bản Gherkin trùng với [user story](../requirements/user-stories.md) (nguồn chính thức); sửa ở đó rồi cập nhật lại đây. Script `tools/feature-docs/check_feature_docs.py` kiểm tra hai bản khớp nhau._
+
+```gherkin
+Scenario: AC-01 Facebook trả email chưa có tài khoản
+  Given Facebook trả email "chi@example.com" chưa có tài khoản Lingozi
+  When tôi tiếp tục với Facebook
+  Then hệ thống gửi mã tới "chi@example.com" và hiển thị "Nhập mã" (BR-AUTH-005)
+  And sau khi nhập đúng mã, tài khoản được tạo với Facebook đã liên kết
+
+Scenario: AC-02 Facebook không trả email
+  Given Facebook không trả email
+  When tôi tiếp tục với Facebook
+  Then tôi thấy "Nhập email để tiếp tục"
+  And sau khi nhập email, hệ thống gửi mã như AC-01 (ERR-AUTH-400-01 nếu email sai định dạng)
+
+Scenario: AC-03 Email trùng tài khoản đã có
+  Given đã có tài khoản Lingozi "chi@example.com"
+  When tôi tiếp tục với Facebook có email "chi@example.com"
+  Then hệ thống không tạo tài khoản mới và không liên kết ngay
+  And hệ thống gửi mã tới "chi@example.com"; sau khi nhập đúng mã, Facebook được liên kết vào tài khoản đó (ERR-AUTH-409-02 hiển thị kèm lý do)
+
+Scenario: AC-04 Facebook đã liên kết
+  Given tài khoản Facebook của tôi đã liên kết với một tài khoản Lingozi
+  When tôi tiếp tục với Facebook
+  Then tôi được đăng nhập vào đúng tài khoản đó, không cần mã, dù email Facebook đã đổi
+
+Scenario: AC-05 Hết thời gian chờ
+  Given tôi đang ở bước nhập mã sau Facebook quá 10 phút
+  When tôi nhập mã
+  Then tôi thấy ERR-AUTH-400-04 và được đưa về "Đăng nhập" để bắt đầu lại
+```
+
+| AC | Nội dung | FR | BR | ERR | Wireframe | Test case |
+| --- | --- | --- | --- | --- | --- | --- |
+| AC-01 | Facebook trả email chưa có tài khoản | `FR-AUTH-EXT-002`, `FR-AUTH-CODE-002` | `BR-AUTH-005`, `BR-AUTH-006` | — | W-AUTH-13, W-AUTH-05 | TC-AUTH-020 |
+| AC-02 | Facebook không trả email | `FR-AUTH-EXT-002` | `BR-AUTH-005` | `ERR-AUTH-400-01` | W-AUTH-12 | TC-AUTH-021 |
+| AC-03 | Email trùng tài khoản đã có | `FR-AUTH-EXT-002` | `BR-AUTH-005` | `ERR-AUTH-409-02` | W-AUTH-14 | TC-AUTH-022 |
+| AC-04 | Facebook đã liên kết | `FR-AUTH-EXT-002` | `BR-AUTH-012` | — | W-AUTH-01 | TC-AUTH-023 |
+| AC-05 | Hết thời gian chờ | `FR-AUTH-EXT-002` | `BR-AUTH-006` | `ERR-AUTH-400-04` | W-AUTH-10 | TC-AUTH-024 |
+
+## 5. Wireframe
 
 _Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe ASCII là căn cứ cho DoR. Quy tắc: vẽ đủ mọi màn hình, hộp thoại và trạng thái mà AC của story nhắc tới._
 
@@ -349,7 +391,7 @@ _Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe A
 
 - Sau khi nhập đúng mã, người dùng chuyển tới "Thư viện" [W-LIB-01](../../knowledge-items/srs/US-LIB-03-list-items.md) (thuộc FEAT-02).
 
-## 5. API
+## 6. API
 
 _Skill `api-design`; lỗi theo Problem Details (RFC 9457) như ADR 0002. Quy ước chung ở [README.md](README.md)._
 
@@ -379,48 +421,6 @@ X-XSRF-TOKEN: <token>
 ```
 
 Phản hồi thành công: `{ "redirectTo": "/library" }` kèm cookie phiên.
-
-## 6. Acceptance criteria
-
-_Skill `ac`. Văn bản Gherkin trùng với [user story](../requirements/user-stories.md) (nguồn chính thức); sửa ở đó rồi cập nhật lại đây. Script `tools/feature-docs/check_feature_docs.py` kiểm tra hai bản khớp nhau._
-
-```gherkin
-Scenario: AC-01 Facebook trả email chưa có tài khoản
-  Given Facebook trả email "chi@example.com" chưa có tài khoản Lingozi
-  When tôi tiếp tục với Facebook
-  Then hệ thống gửi mã tới "chi@example.com" và hiển thị "Nhập mã" (BR-AUTH-005)
-  And sau khi nhập đúng mã, tài khoản được tạo với Facebook đã liên kết
-
-Scenario: AC-02 Facebook không trả email
-  Given Facebook không trả email
-  When tôi tiếp tục với Facebook
-  Then tôi thấy "Nhập email để tiếp tục"
-  And sau khi nhập email, hệ thống gửi mã như AC-01 (ERR-AUTH-400-01 nếu email sai định dạng)
-
-Scenario: AC-03 Email trùng tài khoản đã có
-  Given đã có tài khoản Lingozi "chi@example.com"
-  When tôi tiếp tục với Facebook có email "chi@example.com"
-  Then hệ thống không tạo tài khoản mới và không liên kết ngay
-  And hệ thống gửi mã tới "chi@example.com"; sau khi nhập đúng mã, Facebook được liên kết vào tài khoản đó (ERR-AUTH-409-02 hiển thị kèm lý do)
-
-Scenario: AC-04 Facebook đã liên kết
-  Given tài khoản Facebook của tôi đã liên kết với một tài khoản Lingozi
-  When tôi tiếp tục với Facebook
-  Then tôi được đăng nhập vào đúng tài khoản đó, không cần mã, dù email Facebook đã đổi
-
-Scenario: AC-05 Hết thời gian chờ
-  Given tôi đang ở bước nhập mã sau Facebook quá 10 phút
-  When tôi nhập mã
-  Then tôi thấy ERR-AUTH-400-04 và được đưa về "Đăng nhập" để bắt đầu lại
-```
-
-| AC | Nội dung | FR | BR | ERR | Wireframe | Test case |
-| --- | --- | --- | --- | --- | --- | --- |
-| AC-01 | Facebook trả email chưa có tài khoản | `FR-AUTH-EXT-002`, `FR-AUTH-CODE-002` | `BR-AUTH-005`, `BR-AUTH-006` | — | W-AUTH-13, W-AUTH-05 | TC-AUTH-020 |
-| AC-02 | Facebook không trả email | `FR-AUTH-EXT-002` | `BR-AUTH-005` | `ERR-AUTH-400-01` | W-AUTH-12 | TC-AUTH-021 |
-| AC-03 | Email trùng tài khoản đã có | `FR-AUTH-EXT-002` | `BR-AUTH-005` | `ERR-AUTH-409-02` | W-AUTH-14 | TC-AUTH-022 |
-| AC-04 | Facebook đã liên kết | `FR-AUTH-EXT-002` | `BR-AUTH-012` | — | W-AUTH-01 | TC-AUTH-023 |
-| AC-05 | Hết thời gian chờ | `FR-AUTH-EXT-002` | `BR-AUTH-006` | `ERR-AUTH-400-04` | W-AUTH-10 | TC-AUTH-024 |
 
 ## 7. Truy vết test case
 

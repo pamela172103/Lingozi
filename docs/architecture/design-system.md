@@ -189,7 +189,7 @@ Figma hiện **BLOCKED** (DES-01): phiên làm việc chưa có quyền truy c�
 2. **Text styles** theo §3.3; **Effect styles** cho `shadow.card` và `shadow.overlay`.
 3. **Component** theo §6, dùng auto-layout, có variant cho từng trạng thái.
 4. **Frame** chuẩn: 1440 và 1280 cho thiết kế chính, 768 và 375 để kiểm tra responsive.
-5. **Bàn giao:** link file Figma, node của màn hình, danh sách trạng thái và component dùng được ghi ở mục 4 (Wireframe) của SRS từng story, `docs/features/<feature>/srs/US-*.md`; mẫu tham chiếu `tools/openba-kit/_templates/34-figma-spec.md`.
+5. **Bàn giao:** link file Figma, node của màn hình, danh sách trạng thái và component dùng được ghi ở mục 5 (Wireframe) của SRS từng story, `docs/features/<feature>/srs/US-*.md`; mẫu tham chiếu `tools/openba-kit/_templates/34-figma-spec.md`.
 
 Nếu Figma được kết nối cho môi trường làm việc, có thể dùng skill `figma` của OpenBA để dựng các bước 1–3 tự động.
 

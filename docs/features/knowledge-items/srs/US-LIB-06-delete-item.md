@@ -103,7 +103,33 @@ sequenceDiagram
     end
 ```
 
-## 4. Wireframe
+## 4. Acceptance criteria
+
+_Skill `ac`. Văn bản Gherkin trùng với [user story](../requirements/user-stories.md) (nguồn chính thức); sửa ở đó rồi cập nhật lại đây. Script `tools/feature-docs/check_feature_docs.py` kiểm tra hai bản khớp nhau._
+
+```gherkin
+Scenario: AC-01 Xóa có xác nhận
+  When tôi chọn "Xóa" ở một mục
+  Then hộp thoại "Xóa mục 'give up'? Hành động này không thể hoàn tác." hiện ra, focus mặc định ở nút "Hủy"
+  And khi tôi chọn "Xóa" (nút kiểu viền, có icon cảnh báo, theo design system) thì mục và các ví dụ bị xóa
+  And tôi về Thư viện với thông báo "Đã xóa"
+
+Scenario: AC-02 Hủy xóa
+  When tôi chọn "Hủy" hoặc nhấn Esc
+  Then mục không bị xóa và focus quay về nút "Xóa"
+
+Scenario: AC-03 Xóa mục đã bị xóa ở nơi khác
+  When tôi xác nhận xóa một mục vừa bị xóa ở tab khác
+  Then tôi thấy "Mục này không còn tồn tại" và được đưa về Thư viện (không hiện lỗi hệ thống)
+```
+
+| AC | Nội dung | FR | BR | ERR | Wireframe | Test case |
+| --- | --- | --- | --- | --- | --- | --- |
+| AC-01 | Xóa có xác nhận | `FR-LIB-ITEM-006` | `BR-LIB-009` | — | W-LIB-20, W-LIB-21 | TC-LIB-023 |
+| AC-02 | Hủy xóa | `FR-LIB-ITEM-006` | — | — | W-LIB-20 | TC-LIB-024 |
+| AC-03 | Xóa mục đã bị xóa ở nơi khác | `FR-LIB-ITEM-006` | `BR-LIB-009` | `ERR-LIB-404-01` | W-LIB-21 | TC-LIB-025 |
+
+## 5. Wireframe
 
 _Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe ASCII là căn cứ cho DoR. Quy tắc: vẽ đủ mọi màn hình, hộp thoại và trạng thái mà AC của story nhắc tới._
 
@@ -171,7 +197,7 @@ _Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe A
 - Xóa thành công: về Thư viện với toast "Đã xóa".
 - Mục đã bị xóa ở nơi khác: hiện "Mục này không còn tồn tại" và về Thư viện; không hiện lỗi hệ thống.
 
-## 5. API
+## 6. API
 
 _Skill `api-design`; lỗi theo Problem Details (RFC 9457) như ADR 0002. Quy ước chung ở [README.md](README.md)._
 
@@ -185,32 +211,6 @@ X-XSRF-TOKEN: <token>
 ```
 
 Phản hồi `204`. Mục không tồn tại hoặc đã bị xóa: `404 ERR-LIB-404-01`.
-
-## 6. Acceptance criteria
-
-_Skill `ac`. Văn bản Gherkin trùng với [user story](../requirements/user-stories.md) (nguồn chính thức); sửa ở đó rồi cập nhật lại đây. Script `tools/feature-docs/check_feature_docs.py` kiểm tra hai bản khớp nhau._
-
-```gherkin
-Scenario: AC-01 Xóa có xác nhận
-  When tôi chọn "Xóa" ở một mục
-  Then hộp thoại "Xóa mục 'give up'? Hành động này không thể hoàn tác." hiện ra, focus mặc định ở nút "Hủy"
-  And khi tôi chọn "Xóa" (nút kiểu viền, có icon cảnh báo, theo design system) thì mục và các ví dụ bị xóa
-  And tôi về Thư viện với thông báo "Đã xóa"
-
-Scenario: AC-02 Hủy xóa
-  When tôi chọn "Hủy" hoặc nhấn Esc
-  Then mục không bị xóa và focus quay về nút "Xóa"
-
-Scenario: AC-03 Xóa mục đã bị xóa ở nơi khác
-  When tôi xác nhận xóa một mục vừa bị xóa ở tab khác
-  Then tôi thấy "Mục này không còn tồn tại" và được đưa về Thư viện (không hiện lỗi hệ thống)
-```
-
-| AC | Nội dung | FR | BR | ERR | Wireframe | Test case |
-| --- | --- | --- | --- | --- | --- | --- |
-| AC-01 | Xóa có xác nhận | `FR-LIB-ITEM-006` | `BR-LIB-009` | — | W-LIB-20, W-LIB-21 | TC-LIB-023 |
-| AC-02 | Hủy xóa | `FR-LIB-ITEM-006` | — | — | W-LIB-20 | TC-LIB-024 |
-| AC-03 | Xóa mục đã bị xóa ở nơi khác | `FR-LIB-ITEM-006` | `BR-LIB-009` | `ERR-LIB-404-01` | W-LIB-21 | TC-LIB-025 |
 
 ## 7. Truy vết test case
 

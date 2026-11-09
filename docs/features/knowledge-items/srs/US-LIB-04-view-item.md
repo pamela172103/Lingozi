@@ -93,7 +93,31 @@ sequenceDiagram
     end
 ```
 
-## 4. Wireframe
+## 4. Acceptance criteria
+
+_Skill `ac`. Văn bản Gherkin trùng với [user story](../requirements/user-stories.md) (nguồn chính thức); sửa ở đó rồi cập nhật lại đây. Script `tools/feature-docs/check_feature_docs.py` kiểm tra hai bản khớp nhau._
+
+```gherkin
+Scenario: AC-01 Xem chi tiết
+  When tôi mở một mục của mình
+  Then tôi thấy nội dung (cỡ chữ term), loại, nghĩa, các ví dụ theo thứ tự, ghi chú, nguồn, ngày tạo và ngày sửa
+
+Scenario: AC-02 Mục không tồn tại hoặc của người khác
+  When tôi mở đường dẫn tới mục không tồn tại, hoặc mục của người khác
+  Then tôi thấy cùng màn hình "Không tìm thấy mục này" (ERR-LIB-404-01)
+
+Scenario: AC-03 Mục không có trường tùy chọn
+  Given mục chỉ có nội dung và nghĩa
+  Then các khối ví dụ, ghi chú, nguồn không hiển thị, không để khối trống
+```
+
+| AC | Nội dung | FR | BR | ERR | Wireframe | Test case |
+| --- | --- | --- | --- | --- | --- | --- |
+| AC-01 | Xem chi tiết | `FR-LIB-ITEM-004` | `BR-LIB-006` | — | W-LIB-14 | TC-LIB-017 |
+| AC-02 | Mục không tồn tại hoặc của người khác | `FR-LIB-ITEM-004` | `BR-LIB-006` | `ERR-LIB-404-01` | W-LIB-16 | TC-LIB-018 |
+| AC-03 | Mục không có trường tùy chọn | `FR-LIB-ITEM-004` | — | — | W-LIB-15 | TC-LIB-017 |
+
+## 5. Wireframe
 
 _Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe ASCII là căn cứ cho DoR. Quy tắc: vẽ đủ mọi màn hình, hộp thoại và trạng thái mà AC của story nhắc tới._
 
@@ -175,7 +199,7 @@ _Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe A
 
 - `Skeleton` cho nội dung, nghĩa và ví dụ.
 
-## 5. API
+## 6. API
 
 _Skill `api-design`; lỗi theo Problem Details (RFC 9457) như ADR 0002. Quy ước chung ở [README.md](README.md)._
 
@@ -188,30 +212,6 @@ GET /api/library/items/{id}
 ```
 
 Phản hồi `200` là chi tiết mục (gồm `ipa`, `ipaSource`, `examples`, `createdAt`, `updatedAt`, `version`). Không tồn tại, của người khác hoặc `id` sai định dạng đều trả `404 ERR-LIB-404-01` với body giống hệt.
-
-## 6. Acceptance criteria
-
-_Skill `ac`. Văn bản Gherkin trùng với [user story](../requirements/user-stories.md) (nguồn chính thức); sửa ở đó rồi cập nhật lại đây. Script `tools/feature-docs/check_feature_docs.py` kiểm tra hai bản khớp nhau._
-
-```gherkin
-Scenario: AC-01 Xem chi tiết
-  When tôi mở một mục của mình
-  Then tôi thấy nội dung (cỡ chữ term), loại, nghĩa, các ví dụ theo thứ tự, ghi chú, nguồn, ngày tạo và ngày sửa
-
-Scenario: AC-02 Mục không tồn tại hoặc của người khác
-  When tôi mở đường dẫn tới mục không tồn tại, hoặc mục của người khác
-  Then tôi thấy cùng màn hình "Không tìm thấy mục này" (ERR-LIB-404-01)
-
-Scenario: AC-03 Mục không có trường tùy chọn
-  Given mục chỉ có nội dung và nghĩa
-  Then các khối ví dụ, ghi chú, nguồn không hiển thị, không để khối trống
-```
-
-| AC | Nội dung | FR | BR | ERR | Wireframe | Test case |
-| --- | --- | --- | --- | --- | --- | --- |
-| AC-01 | Xem chi tiết | `FR-LIB-ITEM-004` | `BR-LIB-006` | — | W-LIB-14 | TC-LIB-017 |
-| AC-02 | Mục không tồn tại hoặc của người khác | `FR-LIB-ITEM-004` | `BR-LIB-006` | `ERR-LIB-404-01` | W-LIB-16 | TC-LIB-018 |
-| AC-03 | Mục không có trường tùy chọn | `FR-LIB-ITEM-004` | — | — | W-LIB-15 | TC-LIB-017 |
 
 ## 7. Truy vết test case
 

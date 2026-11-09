@@ -62,7 +62,31 @@ flowchart LR
 | Lỗi | Không áp dụng. |
 | Mất kết nối | Trang tĩnh; nếu đã tải thì vẫn đọc được. |
 
-## 4. Wireframe
+## 4. Acceptance criteria
+
+_Skill `ac`. Văn bản Gherkin trùng với [user story](../requirements/user-stories.md) (nguồn chính thức); sửa ở đó rồi cập nhật lại đây. Script `tools/feature-docs/check_feature_docs.py` kiểm tra hai bản khớp nhau._
+
+```gherkin
+Scenario: AC-01 Trang công khai
+  When tôi mở "/privacy" hoặc "/data-deletion" khi chưa đăng nhập
+  Then tôi đọc được nội dung, không cần đăng nhập
+
+Scenario: AC-02 Hướng dẫn xóa dữ liệu
+  When tôi đọc "/data-deletion"
+  Then trang nêu email nhận yêu cầu, thông tin cần gửi, thời hạn tối đa 30 ngày (Q-12), và dữ liệu nào bị xóa
+
+Scenario: AC-03 Liên kết ở trang đăng nhập
+  When tôi ở trang "Đăng nhập"
+  Then có liên kết tới "/privacy" và "/data-deletion" ở chân trang
+```
+
+| AC | Nội dung | FR | BR | ERR | Wireframe | Test case |
+| --- | --- | --- | --- | --- | --- | --- |
+| AC-01 | Trang công khai | `FR-AUTH-LEG-001` | — | — | W-AUTH-20, W-AUTH-21 | TC-AUTH-037 |
+| AC-02 | Hướng dẫn xóa dữ liệu | `FR-AUTH-LEG-001` | — | — | W-AUTH-21 | TC-AUTH-037 |
+| AC-03 | Liên kết ở trang đăng nhập | `FR-AUTH-LEG-001` | — | — | W-AUTH-01 | TC-AUTH-037 |
+
+## 5. Wireframe
 
 _Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe ASCII là căn cứ cho DoR. Quy tắc: vẽ đủ mọi màn hình, hộp thoại và trạng thái mà AC của story nhắc tới._
 
@@ -142,35 +166,11 @@ _Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe A
 - Chân trang có liên kết tới `/privacy` và `/data-deletion`.
 - Nút của nhà cung cấp chưa được cấu hình bị ẩn (API `start` trả 404).
 
-## 5. API
+## 6. API
 
 _Skill `api-design`; lỗi theo Problem Details (RFC 9457) như ADR 0002. Quy ước chung ở [README.md](README.md)._
 
 Không có API. Hai trang là trang tĩnh của Next.js.
-
-## 6. Acceptance criteria
-
-_Skill `ac`. Văn bản Gherkin trùng với [user story](../requirements/user-stories.md) (nguồn chính thức); sửa ở đó rồi cập nhật lại đây. Script `tools/feature-docs/check_feature_docs.py` kiểm tra hai bản khớp nhau._
-
-```gherkin
-Scenario: AC-01 Trang công khai
-  When tôi mở "/privacy" hoặc "/data-deletion" khi chưa đăng nhập
-  Then tôi đọc được nội dung, không cần đăng nhập
-
-Scenario: AC-02 Hướng dẫn xóa dữ liệu
-  When tôi đọc "/data-deletion"
-  Then trang nêu email nhận yêu cầu, thông tin cần gửi, thời hạn tối đa 30 ngày (Q-12), và dữ liệu nào bị xóa
-
-Scenario: AC-03 Liên kết ở trang đăng nhập
-  When tôi ở trang "Đăng nhập"
-  Then có liên kết tới "/privacy" và "/data-deletion" ở chân trang
-```
-
-| AC | Nội dung | FR | BR | ERR | Wireframe | Test case |
-| --- | --- | --- | --- | --- | --- | --- |
-| AC-01 | Trang công khai | `FR-AUTH-LEG-001` | — | — | W-AUTH-20, W-AUTH-21 | TC-AUTH-037 |
-| AC-02 | Hướng dẫn xóa dữ liệu | `FR-AUTH-LEG-001` | — | — | W-AUTH-21 | TC-AUTH-037 |
-| AC-03 | Liên kết ở trang đăng nhập | `FR-AUTH-LEG-001` | — | — | W-AUTH-01 | TC-AUTH-037 |
 
 ## 7. Truy vết test case
 

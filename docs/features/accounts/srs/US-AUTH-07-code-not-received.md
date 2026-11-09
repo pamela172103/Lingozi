@@ -101,7 +101,33 @@ sequenceDiagram
     end
 ```
 
-## 4. Wireframe
+## 4. Acceptance criteria
+
+_Skill `ac`. Văn bản Gherkin trùng với [user story](../requirements/user-stories.md) (nguồn chính thức); sửa ở đó rồi cập nhật lại đây. Script `tools/feature-docs/check_feature_docs.py` kiểm tra hai bản khớp nhau._
+
+```gherkin
+Scenario: AC-01 Gửi lại mã sau thời gian chờ
+  Given tôi đã chờ 60 giây kể từ lần gửi trước
+  When tôi bấm "Gửi mã mới"
+  Then một mã mới được gửi và mã cũ bị vô hiệu (US-AUTH-02 AC-07)
+
+Scenario: AC-02 Không thấy thư
+  When tôi bấm "Không nhận được mã?"
+  Then tôi thấy hướng dẫn kiểm tra mục Spam, và thời gian chờ để gửi lại
+
+Scenario: AC-03 Email không có tài khoản
+  Given "chua-co@example.com" chưa có tài khoản
+  When tôi yêu cầu mã cho email đó
+  Then màn hình và thời gian chờ giống hệt trường hợp email đã có tài khoản (BR-AUTH-007)
+```
+
+| AC | Nội dung | FR | BR | ERR | Wireframe | Test case |
+| --- | --- | --- | --- | --- | --- | --- |
+| AC-01 | Gửi lại mã sau thời gian chờ | `FR-AUTH-CODE-001` | `BR-AUTH-009` | — | W-AUTH-09 | TC-AUTH-028 |
+| AC-02 | Không thấy thư | `FR-AUTH-CODE-001` | `BR-AUTH-009` | — | W-AUTH-09 | TC-AUTH-029 |
+| AC-03 | Email không có tài khoản | `FR-AUTH-CODE-001` | `BR-AUTH-007` | — | W-AUTH-05, W-AUTH-09 | TC-AUTH-030 |
+
+## 5. Wireframe
 
 _Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe ASCII là căn cứ cho DoR. Quy tắc: vẽ đủ mọi màn hình, hộp thoại và trạng thái mà AC của story nhắc tới._
 
@@ -164,7 +190,7 @@ _Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe A
 - Gửi mã mới làm mã cũ mất hiệu lực.
 - Hướng dẫn và thời gian chờ giống hệt cho email có và không có tài khoản (BR-AUTH-007).
 
-## 5. API
+## 6. API
 
 _Skill `api-design`; lỗi theo Problem Details (RFC 9457) như ADR 0002. Quy ước chung ở [README.md](README.md)._
 
@@ -172,33 +198,7 @@ _Skill `api-design`; lỗi theo Problem Details (RFC 9457) như ADR 0002. Quy ư
 | --- | --- | --- | --- | --- |
 | `POST /api/auth/email-code/request` | Công khai | `{ email }` | 202 `{ status: "check-email", resendAfterSeconds: 60 }`, luôn giống nhau (BR-AUTH-007) | 400-01, 429-01 |
 
-Dùng lại endpoint của [US-AUTH-01](US-AUTH-01-request-email-code.md#5-api): `POST /api/auth/email-code/request`. Phản hồi và thời gian chờ giống hệt với email chưa có tài khoản (BR-AUTH-007).
-
-## 6. Acceptance criteria
-
-_Skill `ac`. Văn bản Gherkin trùng với [user story](../requirements/user-stories.md) (nguồn chính thức); sửa ở đó rồi cập nhật lại đây. Script `tools/feature-docs/check_feature_docs.py` kiểm tra hai bản khớp nhau._
-
-```gherkin
-Scenario: AC-01 Gửi lại mã sau thời gian chờ
-  Given tôi đã chờ 60 giây kể từ lần gửi trước
-  When tôi bấm "Gửi mã mới"
-  Then một mã mới được gửi và mã cũ bị vô hiệu (US-AUTH-02 AC-07)
-
-Scenario: AC-02 Không thấy thư
-  When tôi bấm "Không nhận được mã?"
-  Then tôi thấy hướng dẫn kiểm tra mục Spam, và thời gian chờ để gửi lại
-
-Scenario: AC-03 Email không có tài khoản
-  Given "chua-co@example.com" chưa có tài khoản
-  When tôi yêu cầu mã cho email đó
-  Then màn hình và thời gian chờ giống hệt trường hợp email đã có tài khoản (BR-AUTH-007)
-```
-
-| AC | Nội dung | FR | BR | ERR | Wireframe | Test case |
-| --- | --- | --- | --- | --- | --- | --- |
-| AC-01 | Gửi lại mã sau thời gian chờ | `FR-AUTH-CODE-001` | `BR-AUTH-009` | — | W-AUTH-09 | TC-AUTH-028 |
-| AC-02 | Không thấy thư | `FR-AUTH-CODE-001` | `BR-AUTH-009` | — | W-AUTH-09 | TC-AUTH-029 |
-| AC-03 | Email không có tài khoản | `FR-AUTH-CODE-001` | `BR-AUTH-007` | — | W-AUTH-05, W-AUTH-09 | TC-AUTH-030 |
+Dùng lại endpoint của [US-AUTH-01](US-AUTH-01-request-email-code.md#6-api): `POST /api/auth/email-code/request`. Phản hồi và thời gian chờ giống hệt với email chưa có tài khoản (BR-AUTH-007).
 
 ## 7. Truy vết test case
 

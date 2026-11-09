@@ -99,7 +99,39 @@ sequenceDiagram
     end
 ```
 
-## 4. Wireframe
+## 4. Acceptance criteria
+
+_Skill `ac`. Văn bản Gherkin trùng với [user story](../requirements/user-stories.md) (nguồn chính thức); sửa ở đó rồi cập nhật lại đây. Script `tools/feature-docs/check_feature_docs.py` kiểm tra hai bản khớp nhau._
+
+```gherkin
+Scenario: AC-01 Danh sách có dữ liệu
+  Given tôi có 25 mục
+  When tôi mở Thư viện
+  Then tôi thấy 20 mục mới nhất, mỗi mục hiện nội dung, nghĩa (cắt ở 2 dòng), loại và ngày tạo
+  And có phân trang để xem 5 mục còn lại
+
+Scenario: AC-02 Thư viện trống
+  Given tôi chưa có mục nào
+  Then tôi thấy trạng thái trống "Thư viện của bạn đang trống" kèm nút "Lưu kiến thức đầu tiên"
+
+Scenario: AC-03 Lỗi tải
+  When API trả lỗi hoặc mạng mất
+  Then tôi thấy "Không tải được thư viện" kèm nút "Thử lại", và không hiện dữ liệu cũ của người khác
+
+Scenario: AC-04 Tham số trang ngoài giới hạn
+  When tôi mở trang 999 hoặc pageSize 1000 qua URL
+  Then trang ngoài phạm vi hiện danh sách trống kèm link về trang 1
+  And pageSize lớn hơn 50 được giới hạn về 50
+```
+
+| AC | Nội dung | FR | BR | ERR | Wireframe | Test case |
+| --- | --- | --- | --- | --- | --- | --- |
+| AC-01 | Danh sách có dữ liệu | `FR-LIB-ITEM-003` | `BR-LIB-011` | — | W-LIB-01 | TC-LIB-013 |
+| AC-02 | Thư viện trống | `FR-LIB-ITEM-003` | — | — | W-LIB-02 | TC-LIB-014 |
+| AC-03 | Lỗi tải | `FR-LIB-ITEM-003` | — | — | W-LIB-03 | TC-LIB-015 |
+| AC-04 | Tham số trang ngoài giới hạn | `FR-LIB-ITEM-003` | `BR-LIB-011` | — | W-LIB-04 | TC-LIB-016 |
+
+## 5. Wireframe
 
 _Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe ASCII là căn cứ cho DoR. Quy tắc: vẽ đủ mọi màn hình, hộp thoại và trạng thái mà AC của story nhắc tới._
 
@@ -211,7 +243,7 @@ _Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe A
 
 - 6 `Skeleton` dạng thẻ; danh sách có `aria-busy="true"`.
 
-## 5. API
+## 6. API
 
 _Skill `api-design`; lỗi theo Problem Details (RFC 9457) như ADR 0002. Quy ước chung ở [README.md](README.md)._
 
@@ -231,38 +263,6 @@ Phản hồi:
 ```
 
 `pageSize` lớn hơn 50 được giới hạn về 50; trang vượt phạm vi trả `items` rỗng; `page` hoặc `pageSize` không phải số trả `400 ERR-LIB-400-01`.
-
-## 6. Acceptance criteria
-
-_Skill `ac`. Văn bản Gherkin trùng với [user story](../requirements/user-stories.md) (nguồn chính thức); sửa ở đó rồi cập nhật lại đây. Script `tools/feature-docs/check_feature_docs.py` kiểm tra hai bản khớp nhau._
-
-```gherkin
-Scenario: AC-01 Danh sách có dữ liệu
-  Given tôi có 25 mục
-  When tôi mở Thư viện
-  Then tôi thấy 20 mục mới nhất, mỗi mục hiện nội dung, nghĩa (cắt ở 2 dòng), loại và ngày tạo
-  And có phân trang để xem 5 mục còn lại
-
-Scenario: AC-02 Thư viện trống
-  Given tôi chưa có mục nào
-  Then tôi thấy trạng thái trống "Thư viện của bạn đang trống" kèm nút "Lưu kiến thức đầu tiên"
-
-Scenario: AC-03 Lỗi tải
-  When API trả lỗi hoặc mạng mất
-  Then tôi thấy "Không tải được thư viện" kèm nút "Thử lại", và không hiện dữ liệu cũ của người khác
-
-Scenario: AC-04 Tham số trang ngoài giới hạn
-  When tôi mở trang 999 hoặc pageSize 1000 qua URL
-  Then trang ngoài phạm vi hiện danh sách trống kèm link về trang 1
-  And pageSize lớn hơn 50 được giới hạn về 50
-```
-
-| AC | Nội dung | FR | BR | ERR | Wireframe | Test case |
-| --- | --- | --- | --- | --- | --- | --- |
-| AC-01 | Danh sách có dữ liệu | `FR-LIB-ITEM-003` | `BR-LIB-011` | — | W-LIB-01 | TC-LIB-013 |
-| AC-02 | Thư viện trống | `FR-LIB-ITEM-003` | — | — | W-LIB-02 | TC-LIB-014 |
-| AC-03 | Lỗi tải | `FR-LIB-ITEM-003` | — | — | W-LIB-03 | TC-LIB-015 |
-| AC-04 | Tham số trang ngoài giới hạn | `FR-LIB-ITEM-003` | `BR-LIB-011` | — | W-LIB-04 | TC-LIB-016 |
 
 ## 7. Truy vết test case
 

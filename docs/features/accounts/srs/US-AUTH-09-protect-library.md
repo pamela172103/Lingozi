@@ -104,7 +104,33 @@ sequenceDiagram
     A-->>U: 400 ERR-AUTH-400-05
 ```
 
-## 4. Wireframe
+## 4. Acceptance criteria
+
+_Skill `ac`. Văn bản Gherkin trùng với [user story](../requirements/user-stories.md) (nguồn chính thức); sửa ở đó rồi cập nhật lại đây. Script `tools/feature-docs/check_feature_docs.py` kiểm tra hai bản khớp nhau._
+
+```gherkin
+Scenario: AC-01 Chưa đăng nhập
+  When tôi mở một trang trong "Thư viện" khi chưa đăng nhập
+  Then tôi được chuyển tới "Đăng nhập", rồi quay lại đúng trang đó sau khi đăng nhập
+  And mọi API thư viện trả 401 ERR-AUTH-401-02
+
+Scenario: AC-02 Request thay đổi dữ liệu thiếu token antiforgery
+  Given tôi đang đăng nhập
+  When một request POST/PUT/DELETE không có header antiforgery hợp lệ
+  Then API trả 400 ERR-AUTH-400-05 và không thay đổi dữ liệu
+
+Scenario: AC-03 Không chuyển hướng ra ngoài
+  When tôi mở đăng nhập với returnUrl trỏ tới domain khác
+  Then sau khi đăng nhập tôi về "Thư viện", không bị chuyển ra domain đó (BR-AUTH-011)
+```
+
+| AC | Nội dung | FR | BR | ERR | Wireframe | Test case |
+| --- | --- | --- | --- | --- | --- | --- |
+| AC-01 | Chưa đăng nhập | `FR-AUTH-SEC-001` | — | `ERR-AUTH-401-02` | W-AUTH-01 | TC-AUTH-034 |
+| AC-02 | Request thay đổi dữ liệu thiếu token antiforgery | `FR-AUTH-SEC-001` | — | `ERR-AUTH-400-05` | W-AUTH-22 | TC-AUTH-035 |
+| AC-03 | Không chuyển hướng ra ngoài | `FR-AUTH-SEC-001` | `BR-AUTH-011` | — | W-AUTH-01 | TC-AUTH-036 |
+
+## 5. Wireframe
 
 _Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe ASCII là căn cứ cho DoR. Quy tắc: vẽ đủ mọi màn hình, hộp thoại và trạng thái mà AC của story nhắc tới._
 
@@ -156,7 +182,7 @@ _Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe A
 
 - Trang đích sau khi đăng nhập là trang người dùng định mở trước đó (`returnUrl`), ví dụ [W-LIB-01](../../knowledge-items/srs/US-LIB-03-list-items.md).
 
-## 5. API
+## 6. API
 
 _Skill `api-design`; lỗi theo Problem Details (RFC 9457) như ADR 0002. Quy ước chung ở [README.md](README.md)._
 
@@ -172,32 +198,6 @@ Thiếu hoặc sai token:
 ```json
 { "status": 400, "code": "ERR-AUTH-400-05" }
 ```
-
-## 6. Acceptance criteria
-
-_Skill `ac`. Văn bản Gherkin trùng với [user story](../requirements/user-stories.md) (nguồn chính thức); sửa ở đó rồi cập nhật lại đây. Script `tools/feature-docs/check_feature_docs.py` kiểm tra hai bản khớp nhau._
-
-```gherkin
-Scenario: AC-01 Chưa đăng nhập
-  When tôi mở một trang trong "Thư viện" khi chưa đăng nhập
-  Then tôi được chuyển tới "Đăng nhập", rồi quay lại đúng trang đó sau khi đăng nhập
-  And mọi API thư viện trả 401 ERR-AUTH-401-02
-
-Scenario: AC-02 Request thay đổi dữ liệu thiếu token antiforgery
-  Given tôi đang đăng nhập
-  When một request POST/PUT/DELETE không có header antiforgery hợp lệ
-  Then API trả 400 ERR-AUTH-400-05 và không thay đổi dữ liệu
-
-Scenario: AC-03 Không chuyển hướng ra ngoài
-  When tôi mở đăng nhập với returnUrl trỏ tới domain khác
-  Then sau khi đăng nhập tôi về "Thư viện", không bị chuyển ra domain đó (BR-AUTH-011)
-```
-
-| AC | Nội dung | FR | BR | ERR | Wireframe | Test case |
-| --- | --- | --- | --- | --- | --- | --- |
-| AC-01 | Chưa đăng nhập | `FR-AUTH-SEC-001` | — | `ERR-AUTH-401-02` | W-AUTH-01 | TC-AUTH-034 |
-| AC-02 | Request thay đổi dữ liệu thiếu token antiforgery | `FR-AUTH-SEC-001` | — | `ERR-AUTH-400-05` | W-AUTH-22 | TC-AUTH-035 |
-| AC-03 | Không chuyển hướng ra ngoài | `FR-AUTH-SEC-001` | `BR-AUTH-011` | — | W-AUTH-01 | TC-AUTH-036 |
 
 ## 7. Truy vết test case
 

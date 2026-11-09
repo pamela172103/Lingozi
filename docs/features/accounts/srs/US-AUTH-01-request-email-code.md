@@ -118,7 +118,47 @@ sequenceDiagram
     end
 ```
 
-## 4. Wireframe
+## 4. Acceptance criteria
+
+_Skill `ac`. Văn bản Gherkin trùng với [user story](../requirements/user-stories.md) (nguồn chính thức); sửa ở đó rồi cập nhật lại đây. Script `tools/feature-docs/check_feature_docs.py` kiểm tra hai bản khớp nhau._
+
+```gherkin
+Scenario: AC-01 Gửi mã tới email mới
+  Given tôi mở "Đăng nhập" và chọn "Tiếp tục với email"
+  When tôi nhập "an@example.com" và bấm "Gửi mã"
+  Then hệ thống gửi một mã 6 số tới "an@example.com" (BR-AUTH-001)
+  And tôi thấy màn hình "Nhập mã" có 6 ô và đếm ngược 10 phút
+
+Scenario: AC-02 Email sai định dạng
+  When tôi nhập "an@" và bấm "Gửi mã"
+  Then không gửi gì và ô email hiện "Email không đúng định dạng" (ERR-AUTH-400-01)
+
+Scenario: AC-03 Gửi lại quá nhanh
+  Given tôi vừa yêu cầu mã cách đây 30 giây
+  When tôi bấm "Gửi mã" lần nữa
+  Then không có thư mới được gửi và thấy "Vui lòng đợi 30 giây trước khi gửi lại" (ERR-AUTH-429-01)
+
+Scenario: AC-04 Email đã có tài khoản không bị lộ
+  Given đã có tài khoản "an@example.com"
+  When ai đó yêu cầu mã cho "an@example.com"
+  Then tôi thấy đúng màn hình "Nhập mã" như AC-01, và cùng phản hồi HTTP
+  And mã đăng nhập vẫn được gửi (BR-AUTH-007)
+
+Scenario: AC-05 Vượt giới hạn trong một giờ
+  Given email "an@example.com" đã nhận 5 mã trong giờ này
+  When có yêu cầu thứ sáu
+  Then không gửi thêm và trả ERR-AUTH-429-01 (BR-AUTH-009)
+```
+
+| AC | Nội dung | FR | BR | ERR | Wireframe | Test case |
+| --- | --- | --- | --- | --- | --- | --- |
+| AC-01 | Gửi mã tới email mới | `FR-AUTH-CODE-001` | `BR-AUTH-001` | — | W-AUTH-02, W-AUTH-05 | TC-AUTH-001 |
+| AC-02 | Email sai định dạng | `FR-AUTH-CODE-001` | — | `ERR-AUTH-400-01` | W-AUTH-03 | TC-AUTH-002 |
+| AC-03 | Gửi lại quá nhanh | `FR-AUTH-CODE-001` | `BR-AUTH-009` | `ERR-AUTH-429-01` | W-AUTH-04 | TC-AUTH-003 |
+| AC-04 | Email đã có tài khoản không bị lộ | `FR-AUTH-CODE-001` | `BR-AUTH-007` | — | W-AUTH-05 | TC-AUTH-004 |
+| AC-05 | Vượt giới hạn trong một giờ | `FR-AUTH-CODE-001` | `BR-AUTH-009` | `ERR-AUTH-429-01` | W-AUTH-04 | TC-AUTH-005 |
+
+## 5. Wireframe
 
 _Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe ASCII là căn cứ cho DoR. Quy tắc: vẽ đủ mọi màn hình, hộp thoại và trạng thái mà AC của story nhắc tới._
 
@@ -255,7 +295,7 @@ _Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe A
 - Đếm ngược 10 phút theo thời hạn của mã.
 - Không có ô mật khẩu.
 
-## 5. API
+## 6. API
 
 _Skill `api-design`; lỗi theo Problem Details (RFC 9457) như ADR 0002. Quy ước chung ở [README.md](README.md)._
 
@@ -285,46 +325,6 @@ Lỗi (`application/problem+json`):
 ```json
 { "type": "about:blank", "title": "Too Many Requests", "status": 429, "code": "ERR-AUTH-429-01" }
 ```
-
-## 6. Acceptance criteria
-
-_Skill `ac`. Văn bản Gherkin trùng với [user story](../requirements/user-stories.md) (nguồn chính thức); sửa ở đó rồi cập nhật lại đây. Script `tools/feature-docs/check_feature_docs.py` kiểm tra hai bản khớp nhau._
-
-```gherkin
-Scenario: AC-01 Gửi mã tới email mới
-  Given tôi mở "Đăng nhập" và chọn "Tiếp tục với email"
-  When tôi nhập "an@example.com" và bấm "Gửi mã"
-  Then hệ thống gửi một mã 6 số tới "an@example.com" (BR-AUTH-001)
-  And tôi thấy màn hình "Nhập mã" có 6 ô và đếm ngược 10 phút
-
-Scenario: AC-02 Email sai định dạng
-  When tôi nhập "an@" và bấm "Gửi mã"
-  Then không gửi gì và ô email hiện "Email không đúng định dạng" (ERR-AUTH-400-01)
-
-Scenario: AC-03 Gửi lại quá nhanh
-  Given tôi vừa yêu cầu mã cách đây 30 giây
-  When tôi bấm "Gửi mã" lần nữa
-  Then không có thư mới được gửi và thấy "Vui lòng đợi 30 giây trước khi gửi lại" (ERR-AUTH-429-01)
-
-Scenario: AC-04 Email đã có tài khoản không bị lộ
-  Given đã có tài khoản "an@example.com"
-  When ai đó yêu cầu mã cho "an@example.com"
-  Then tôi thấy đúng màn hình "Nhập mã" như AC-01, và cùng phản hồi HTTP
-  And mã đăng nhập vẫn được gửi (BR-AUTH-007)
-
-Scenario: AC-05 Vượt giới hạn trong một giờ
-  Given email "an@example.com" đã nhận 5 mã trong giờ này
-  When có yêu cầu thứ sáu
-  Then không gửi thêm và trả ERR-AUTH-429-01 (BR-AUTH-009)
-```
-
-| AC | Nội dung | FR | BR | ERR | Wireframe | Test case |
-| --- | --- | --- | --- | --- | --- | --- |
-| AC-01 | Gửi mã tới email mới | `FR-AUTH-CODE-001` | `BR-AUTH-001` | — | W-AUTH-02, W-AUTH-05 | TC-AUTH-001 |
-| AC-02 | Email sai định dạng | `FR-AUTH-CODE-001` | — | `ERR-AUTH-400-01` | W-AUTH-03 | TC-AUTH-002 |
-| AC-03 | Gửi lại quá nhanh | `FR-AUTH-CODE-001` | `BR-AUTH-009` | `ERR-AUTH-429-01` | W-AUTH-04 | TC-AUTH-003 |
-| AC-04 | Email đã có tài khoản không bị lộ | `FR-AUTH-CODE-001` | `BR-AUTH-007` | — | W-AUTH-05 | TC-AUTH-004 |
-| AC-05 | Vượt giới hạn trong một giờ | `FR-AUTH-CODE-001` | `BR-AUTH-009` | `ERR-AUTH-429-01` | W-AUTH-04 | TC-AUTH-005 |
 
 ## 7. Truy vết test case
 

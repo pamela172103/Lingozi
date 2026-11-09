@@ -89,7 +89,34 @@ sequenceDiagram
     Note over U,W: Nút Back: trang thư viện gọi /api/auth/me, nhận 401, chuyển tới đăng nhập
 ```
 
-## 4. Wireframe
+## 4. Acceptance criteria
+
+_Skill `ac`. Văn bản Gherkin trùng với [user story](../requirements/user-stories.md) (nguồn chính thức); sửa ở đó rồi cập nhật lại đây. Script `tools/feature-docs/check_feature_docs.py` kiểm tra hai bản khớp nhau._
+
+```gherkin
+Scenario: AC-01 Đăng xuất
+  Given tôi đang đăng nhập
+  When tôi chọn "Đăng xuất"
+  Then cookie phiên bị xóa và tôi về "Đăng nhập"
+
+Scenario: AC-02 Quay lại trang cũ sau khi đăng xuất
+  Given tôi vừa đăng xuất
+  When tôi bấm "Quay lại" của trình duyệt về "Thư viện"
+  Then tôi không thấy dữ liệu thư viện và được chuyển tới "Đăng nhập"
+
+Scenario: AC-03 Đăng xuất khi phiên đã hết hạn
+  Given phiên của tôi đã hết hạn
+  When tôi chọn "Đăng xuất"
+  Then thao tác vẫn thành công và không hiện lỗi
+```
+
+| AC | Nội dung | FR | BR | ERR | Wireframe | Test case |
+| --- | --- | --- | --- | --- | --- | --- |
+| AC-01 | Đăng xuất | `FR-AUTH-SES-002` | `BR-AUTH-008` | — | W-AUTH-15, W-AUTH-23, W-AUTH-01 | TC-AUTH-031 |
+| AC-02 | Quay lại trang cũ sau khi đăng xuất | `FR-AUTH-SES-002`, `FR-AUTH-SES-003` | `BR-AUTH-008` | `ERR-AUTH-401-02` | W-AUTH-01 | TC-AUTH-032 |
+| AC-03 | Đăng xuất khi phiên đã hết hạn | `FR-AUTH-SES-002` | `BR-AUTH-008` | — | W-AUTH-15 | TC-AUTH-033 |
+
+## 5. Wireframe
 
 _Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe ASCII là căn cứ cho DoR. Quy tắc: vẽ đủ mọi màn hình, hộp thoại và trạng thái mà AC của story nhắc tới._
 
@@ -162,7 +189,7 @@ _Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe A
 - Chân trang có liên kết tới `/privacy` và `/data-deletion`.
 - Nút của nhà cung cấp chưa được cấu hình bị ẩn (API `start` trả 404).
 
-## 5. API
+## 6. API
 
 _Skill `api-design`; lỗi theo Problem Details (RFC 9457) như ADR 0002. Quy ước chung ở [README.md](README.md)._
 
@@ -177,33 +204,6 @@ X-XSRF-TOKEN: <token>
 ```
 
 Phản hồi: `204`, cookie phiên bị xóa. Gọi khi không có phiên cũng trả `204`.
-
-## 6. Acceptance criteria
-
-_Skill `ac`. Văn bản Gherkin trùng với [user story](../requirements/user-stories.md) (nguồn chính thức); sửa ở đó rồi cập nhật lại đây. Script `tools/feature-docs/check_feature_docs.py` kiểm tra hai bản khớp nhau._
-
-```gherkin
-Scenario: AC-01 Đăng xuất
-  Given tôi đang đăng nhập
-  When tôi chọn "Đăng xuất"
-  Then cookie phiên bị xóa và tôi về "Đăng nhập"
-
-Scenario: AC-02 Quay lại trang cũ sau khi đăng xuất
-  Given tôi vừa đăng xuất
-  When tôi bấm "Quay lại" của trình duyệt về "Thư viện"
-  Then tôi không thấy dữ liệu thư viện và được chuyển tới "Đăng nhập"
-
-Scenario: AC-03 Đăng xuất khi phiên đã hết hạn
-  Given phiên của tôi đã hết hạn
-  When tôi chọn "Đăng xuất"
-  Then thao tác vẫn thành công và không hiện lỗi
-```
-
-| AC | Nội dung | FR | BR | ERR | Wireframe | Test case |
-| --- | --- | --- | --- | --- | --- | --- |
-| AC-01 | Đăng xuất | `FR-AUTH-SES-002` | `BR-AUTH-008` | — | W-AUTH-15, W-AUTH-23, W-AUTH-01 | TC-AUTH-031 |
-| AC-02 | Quay lại trang cũ sau khi đăng xuất | `FR-AUTH-SES-002`, `FR-AUTH-SES-003` | `BR-AUTH-008` | `ERR-AUTH-401-02` | W-AUTH-01 | TC-AUTH-032 |
-| AC-03 | Đăng xuất khi phiên đã hết hạn | `FR-AUTH-SES-002` | `BR-AUTH-008` | — | W-AUTH-15 | TC-AUTH-033 |
 
 ## 7. Truy vết test case
 

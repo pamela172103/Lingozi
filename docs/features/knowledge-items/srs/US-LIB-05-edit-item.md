@@ -117,7 +117,40 @@ sequenceDiagram
     end
 ```
 
-## 4. Wireframe
+## 4. Acceptance criteria
+
+_Skill `ac`. Văn bản Gherkin trùng với [user story](../requirements/user-stories.md) (nguồn chính thức); sửa ở đó rồi cập nhật lại đây. Script `tools/feature-docs/check_feature_docs.py` kiểm tra hai bản khớp nhau._
+
+```gherkin
+Scenario: AC-01 Sửa thành công
+  When tôi sửa nghĩa, thêm một ví dụ, xóa một ví dụ cũ và bấm "Lưu thay đổi"
+  Then mục được cập nhật, ngày sửa đổi theo, và tôi thấy "Đã lưu thay đổi"
+
+Scenario: AC-02 Xung đột do sửa ở hai nơi
+  Given tôi mở form sửa mục ở hai tab
+  And tab 1 đã lưu thay đổi
+  When tab 2 bấm "Lưu thay đổi"
+  Then tab 2 không ghi đè, và thấy "Mục này vừa được sửa ở nơi khác" (ERR-LIB-409-01)
+  And có lựa chọn "Tải bản mới nhất", nội dung đang nhập ở tab 2 được giữ để tự chép lại
+
+Scenario: AC-03 Rời trang khi chưa lưu
+  Given tôi đã thay đổi form
+  When tôi rời trang
+  Then trình duyệt hỏi xác nhận trước khi rời
+
+Scenario: AC-04 Sửa mục của người khác
+  When có request sửa mục của người khác
+  Then API trả 404 ERR-LIB-404-01, dữ liệu không đổi
+```
+
+| AC | Nội dung | FR | BR | ERR | Wireframe | Test case |
+| --- | --- | --- | --- | --- | --- | --- |
+| AC-01 | Sửa thành công | `FR-LIB-ITEM-005` | `BR-LIB-001`, `BR-LIB-004` | — | W-LIB-18, W-LIB-14 | TC-LIB-019 |
+| AC-02 | Xung đột do sửa ở hai nơi | `FR-LIB-ITEM-005` | `BR-LIB-007` | `ERR-LIB-409-01` | W-LIB-19 | TC-LIB-020 |
+| AC-03 | Rời trang khi chưa lưu | `FR-LIB-ITEM-005` | — | — | W-LIB-18 | TC-LIB-021 |
+| AC-04 | Sửa mục của người khác | `FR-LIB-ITEM-005` | `BR-LIB-006` | `ERR-LIB-404-01` | W-LIB-16 | TC-LIB-022 |
+
+## 5. Wireframe
 
 _Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe ASCII là căn cứ cho DoR. Quy tắc: vẽ đủ mọi màn hình, hộp thoại và trạng thái mà AC của story nhắc tới._
 
@@ -210,7 +243,7 @@ _Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe A
 - Cùng một màn hình cho mục không tồn tại và mục của người khác (không để lộ sự tồn tại).
 - Body lỗi giống hệt giữa hai trường hợp.
 
-## 5. API
+## 6. API
 
 _Skill `api-design`; lỗi theo Problem Details (RFC 9457) như ADR 0002. Quy ước chung ở [README.md](README.md)._
 
@@ -228,39 +261,6 @@ X-XSRF-TOKEN: <token>
 ```
 
 Thành công: `200` chi tiết với `version` mới. Xung đột: `409 ERR-LIB-409-01` kèm trường `current` là chi tiết mới nhất.
-
-## 6. Acceptance criteria
-
-_Skill `ac`. Văn bản Gherkin trùng với [user story](../requirements/user-stories.md) (nguồn chính thức); sửa ở đó rồi cập nhật lại đây. Script `tools/feature-docs/check_feature_docs.py` kiểm tra hai bản khớp nhau._
-
-```gherkin
-Scenario: AC-01 Sửa thành công
-  When tôi sửa nghĩa, thêm một ví dụ, xóa một ví dụ cũ và bấm "Lưu thay đổi"
-  Then mục được cập nhật, ngày sửa đổi theo, và tôi thấy "Đã lưu thay đổi"
-
-Scenario: AC-02 Xung đột do sửa ở hai nơi
-  Given tôi mở form sửa mục ở hai tab
-  And tab 1 đã lưu thay đổi
-  When tab 2 bấm "Lưu thay đổi"
-  Then tab 2 không ghi đè, và thấy "Mục này vừa được sửa ở nơi khác" (ERR-LIB-409-01)
-  And có lựa chọn "Tải bản mới nhất", nội dung đang nhập ở tab 2 được giữ để tự chép lại
-
-Scenario: AC-03 Rời trang khi chưa lưu
-  Given tôi đã thay đổi form
-  When tôi rời trang
-  Then trình duyệt hỏi xác nhận trước khi rời
-
-Scenario: AC-04 Sửa mục của người khác
-  When có request sửa mục của người khác
-  Then API trả 404 ERR-LIB-404-01, dữ liệu không đổi
-```
-
-| AC | Nội dung | FR | BR | ERR | Wireframe | Test case |
-| --- | --- | --- | --- | --- | --- | --- |
-| AC-01 | Sửa thành công | `FR-LIB-ITEM-005` | `BR-LIB-001`, `BR-LIB-004` | — | W-LIB-18, W-LIB-14 | TC-LIB-019 |
-| AC-02 | Xung đột do sửa ở hai nơi | `FR-LIB-ITEM-005` | `BR-LIB-007` | `ERR-LIB-409-01` | W-LIB-19 | TC-LIB-020 |
-| AC-03 | Rời trang khi chưa lưu | `FR-LIB-ITEM-005` | — | — | W-LIB-18 | TC-LIB-021 |
-| AC-04 | Sửa mục của người khác | `FR-LIB-ITEM-005` | `BR-LIB-006` | `ERR-LIB-404-01` | W-LIB-16 | TC-LIB-022 |
 
 ## 7. Truy vết test case
 

@@ -133,7 +133,78 @@ sequenceDiagram
     end
 ```
 
-## 4. Wireframe
+## 4. Acceptance criteria
+
+_Skill `ac`. Văn bản Gherkin trùng với [user story](../requirements/user-stories.md) (nguồn chính thức); sửa ở đó rồi cập nhật lại đây. Script `tools/feature-docs/check_feature_docs.py` kiểm tra hai bản khớp nhau._
+
+```gherkin
+Scenario: AC-01 Chọn loại trước khi nhập
+  Given tôi mở "Lưu kiến thức"
+  Then tôi thấy hai loại: "Từ vựng" và "Ngữ pháp"
+  And chưa có ô nhập nào hiện ra cho tới khi tôi chọn một loại
+
+Scenario: AC-02 Từ vựng chỉ bắt buộc "Từ"
+  Given tôi chọn "Từ vựng"
+  When tôi nhập "Từ" là "give up", để trống nghĩa, rồi bấm "Lưu"
+  Then mục được lưu với loại "word" và nghĩa là null
+  And tôi thấy trang chi tiết với thông báo "Đã lưu"
+
+Scenario: AC-03 Ngữ pháp chỉ bắt buộc "Điểm ngữ pháp"
+  Given tôi chọn "Ngữ pháp"
+  When tôi để trống "Điểm ngữ pháp" và bấm "Lưu"
+  Then mục không được lưu và ô hiện "Vui lòng nhập điểm ngữ pháp" (ERR-LIB-400-01)
+  When tôi nhập "Present perfect" và để trống nghĩa rồi bấm "Lưu"
+  Then mục được lưu với loại "grammar"
+
+Scenario: AC-04 Chỉ có hai loại trong Vòng 1
+  Given tôi mở form tạo
+  Then không có loại nào khác "Từ vựng" và "Ngữ pháp" để chọn
+  And API từ chối "kind" nằm ngoài {word, grammar} với ERR-LIB-400-01
+
+Scenario: AC-05 Nghĩa không bắt buộc, khoảng trắng được coi là trống
+  Given tôi chọn "Ngữ pháp" và nhập điểm ngữ pháp "Present perfect"
+  When tôi nhập nghĩa chỉ gồm khoảng trắng rồi bấm "Lưu"
+  Then mục được lưu và nghĩa được lưu là null
+
+Scenario: AC-06 Giới hạn độ dài
+  When tôi nhập nội dung dài 1001 ký tự, hoặc nghĩa dài 2001 ký tự
+  Then không lưu được và ô tương ứng hiện lỗi ERR-LIB-400-01
+  And nội dung dài đúng 1000 ký tự và nghĩa dài đúng 2000 ký tự thì lưu được
+
+Scenario: AC-07 Ví dụ không bắt buộc
+  Given tôi đã nhập đủ trường bắt buộc
+  When tôi không thêm ví dụ nào
+  Then mục vẫn được lưu
+  And khi thêm ví dụ thứ 21 thì hiện "Tối đa 20 ví dụ" (BR-LIB-004)
+
+Scenario: AC-08 Bấm Lưu hai lần hoặc mạng gửi lại
+  When cùng một yêu cầu tạo được gửi hai lần với cùng clientRequestId
+  Then chỉ có một mục được tạo (BR-LIB-008)
+
+Scenario: AC-09 Đạt giới hạn số mục
+  Given tôi đã có 10.000 mục
+  When tôi lưu thêm một mục
+  Then không lưu được và thấy ERR-LIB-422-01
+
+Scenario: AC-10 API từ chối yêu cầu thiếu loại
+  When một client gửi POST không có "kind"
+  Then API trả 400 ERR-LIB-400-01 với lỗi ở trường "kind" và không tạo mục
+```
+
+| AC | Nội dung | FR | BR | ERR | Wireframe | Test case |
+| --- | --- | --- | --- | --- | --- | --- |
+| AC-01 | Chọn loại trước khi nhập | `FR-LIB-ITEM-007` | `BR-LIB-002`, `BR-LIB-012` | — | W-LIB-06, W-LIB-07 | TC-LIB-033 |
+| AC-02 | Từ vựng chỉ bắt buộc "Từ" | `FR-LIB-ITEM-001` | `BR-LIB-001`, `BR-LIB-012` | — | W-LIB-08, W-LIB-14 | TC-LIB-001, TC-LIB-034, TC-LIB-050 |
+| AC-03 | Ngữ pháp chỉ bắt buộc "Điểm ngữ pháp" | `FR-LIB-ITEM-001` | `BR-LIB-012` | `ERR-LIB-400-01` | W-LIB-09, W-LIB-10 | TC-LIB-003, TC-LIB-035 |
+| AC-04 | Chỉ có hai loại trong Vòng 1 | `FR-LIB-ITEM-007` | `BR-LIB-002` | `ERR-LIB-400-01` | W-LIB-10 | TC-LIB-036 |
+| AC-05 | Nghĩa không bắt buộc, khoảng trắng được coi là trống | `FR-LIB-ITEM-001` | `BR-LIB-001` | — | W-LIB-09 | TC-LIB-003, TC-LIB-005 |
+| AC-06 | Giới hạn độ dài | `FR-LIB-ITEM-001` | `BR-LIB-001` | `ERR-LIB-400-01` | W-LIB-10 | TC-LIB-004 |
+| AC-07 | Ví dụ không bắt buộc | `FR-LIB-ITEM-001` | `BR-LIB-004` | — | W-LIB-08, W-LIB-10 | TC-LIB-002 |
+| AC-08 | Bấm Lưu hai lần hoặc mạng gửi lại | `FR-LIB-ITEM-001` | `BR-LIB-008` | — | W-LIB-08, W-LIB-11 | TC-LIB-002 |
+| AC-09 | Đạt giới hạn số mục | `FR-LIB-ITEM-001` | `BR-LIB-005` | `ERR-LIB-422-01` | W-LIB-11 | TC-LIB-006 |
+| AC-10 | API từ chối yêu cầu thiếu loại | `FR-LIB-ITEM-007` | `BR-LIB-002` | `ERR-LIB-400-01` | Không có UI | TC-LIB-037 |
+
+## 5. Wireframe
 
 _Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe ASCII là căn cứ cho DoR. Quy tắc: vẽ đủ mọi màn hình, hộp thoại và trạng thái mà AC của story nhắc tới._
 
@@ -305,7 +376,7 @@ _Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe A
 - Nút "Xóa" kiểu viền, có icon cảnh báo, không dùng nền đặc giống nút chính.
 - Toast "Đã lưu" (`role="status"`) chỉ hiện ngay sau khi lưu.
 
-## 5. API
+## 6. API
 
 _Skill `api-design`; lỗi theo Problem Details (RFC 9457) như ADR 0002. Quy ước chung ở [README.md](README.md)._
 
@@ -329,77 +400,6 @@ X-XSRF-TOKEN: <token>
 ```
 
 Phản hồi `201` (chi tiết mục, có `version`), kèm header `Location`. Lỗi: `400 ERR-LIB-400-01`, `422 ERR-LIB-422-01`.
-
-## 6. Acceptance criteria
-
-_Skill `ac`. Văn bản Gherkin trùng với [user story](../requirements/user-stories.md) (nguồn chính thức); sửa ở đó rồi cập nhật lại đây. Script `tools/feature-docs/check_feature_docs.py` kiểm tra hai bản khớp nhau._
-
-```gherkin
-Scenario: AC-01 Chọn loại trước khi nhập
-  Given tôi mở "Lưu kiến thức"
-  Then tôi thấy hai loại: "Từ vựng" và "Ngữ pháp"
-  And chưa có ô nhập nào hiện ra cho tới khi tôi chọn một loại
-
-Scenario: AC-02 Từ vựng chỉ bắt buộc "Từ"
-  Given tôi chọn "Từ vựng"
-  When tôi nhập "Từ" là "give up", để trống nghĩa, rồi bấm "Lưu"
-  Then mục được lưu với loại "word" và nghĩa là null
-  And tôi thấy trang chi tiết với thông báo "Đã lưu"
-
-Scenario: AC-03 Ngữ pháp chỉ bắt buộc "Điểm ngữ pháp"
-  Given tôi chọn "Ngữ pháp"
-  When tôi để trống "Điểm ngữ pháp" và bấm "Lưu"
-  Then mục không được lưu và ô hiện "Vui lòng nhập điểm ngữ pháp" (ERR-LIB-400-01)
-  When tôi nhập "Present perfect" và để trống nghĩa rồi bấm "Lưu"
-  Then mục được lưu với loại "grammar"
-
-Scenario: AC-04 Chỉ có hai loại trong Vòng 1
-  Given tôi mở form tạo
-  Then không có loại nào khác "Từ vựng" và "Ngữ pháp" để chọn
-  And API từ chối "kind" nằm ngoài {word, grammar} với ERR-LIB-400-01
-
-Scenario: AC-05 Nghĩa không bắt buộc, khoảng trắng được coi là trống
-  Given tôi chọn "Ngữ pháp" và nhập điểm ngữ pháp "Present perfect"
-  When tôi nhập nghĩa chỉ gồm khoảng trắng rồi bấm "Lưu"
-  Then mục được lưu và nghĩa được lưu là null
-
-Scenario: AC-06 Giới hạn độ dài
-  When tôi nhập nội dung dài 1001 ký tự, hoặc nghĩa dài 2001 ký tự
-  Then không lưu được và ô tương ứng hiện lỗi ERR-LIB-400-01
-  And nội dung dài đúng 1000 ký tự và nghĩa dài đúng 2000 ký tự thì lưu được
-
-Scenario: AC-07 Ví dụ không bắt buộc
-  Given tôi đã nhập đủ trường bắt buộc
-  When tôi không thêm ví dụ nào
-  Then mục vẫn được lưu
-  And khi thêm ví dụ thứ 21 thì hiện "Tối đa 20 ví dụ" (BR-LIB-004)
-
-Scenario: AC-08 Bấm Lưu hai lần hoặc mạng gửi lại
-  When cùng một yêu cầu tạo được gửi hai lần với cùng clientRequestId
-  Then chỉ có một mục được tạo (BR-LIB-008)
-
-Scenario: AC-09 Đạt giới hạn số mục
-  Given tôi đã có 10.000 mục
-  When tôi lưu thêm một mục
-  Then không lưu được và thấy ERR-LIB-422-01
-
-Scenario: AC-10 API từ chối yêu cầu thiếu loại
-  When một client gửi POST không có "kind"
-  Then API trả 400 ERR-LIB-400-01 với lỗi ở trường "kind" và không tạo mục
-```
-
-| AC | Nội dung | FR | BR | ERR | Wireframe | Test case |
-| --- | --- | --- | --- | --- | --- | --- |
-| AC-01 | Chọn loại trước khi nhập | `FR-LIB-ITEM-007` | `BR-LIB-002`, `BR-LIB-012` | — | W-LIB-06, W-LIB-07 | TC-LIB-033 |
-| AC-02 | Từ vựng chỉ bắt buộc "Từ" | `FR-LIB-ITEM-001` | `BR-LIB-001`, `BR-LIB-012` | — | W-LIB-08, W-LIB-14 | TC-LIB-001, TC-LIB-034, TC-LIB-050 |
-| AC-03 | Ngữ pháp chỉ bắt buộc "Điểm ngữ pháp" | `FR-LIB-ITEM-001` | `BR-LIB-012` | `ERR-LIB-400-01` | W-LIB-09, W-LIB-10 | TC-LIB-003, TC-LIB-035 |
-| AC-04 | Chỉ có hai loại trong Vòng 1 | `FR-LIB-ITEM-007` | `BR-LIB-002` | `ERR-LIB-400-01` | W-LIB-10 | TC-LIB-036 |
-| AC-05 | Nghĩa không bắt buộc, khoảng trắng được coi là trống | `FR-LIB-ITEM-001` | `BR-LIB-001` | — | W-LIB-09 | TC-LIB-003, TC-LIB-005 |
-| AC-06 | Giới hạn độ dài | `FR-LIB-ITEM-001` | `BR-LIB-001` | `ERR-LIB-400-01` | W-LIB-10 | TC-LIB-004 |
-| AC-07 | Ví dụ không bắt buộc | `FR-LIB-ITEM-001` | `BR-LIB-004` | — | W-LIB-08, W-LIB-10 | TC-LIB-002 |
-| AC-08 | Bấm Lưu hai lần hoặc mạng gửi lại | `FR-LIB-ITEM-001` | `BR-LIB-008` | — | W-LIB-08, W-LIB-11 | TC-LIB-002 |
-| AC-09 | Đạt giới hạn số mục | `FR-LIB-ITEM-001` | `BR-LIB-005` | `ERR-LIB-422-01` | W-LIB-11 | TC-LIB-006 |
-| AC-10 | API từ chối yêu cầu thiếu loại | `FR-LIB-ITEM-007` | `BR-LIB-002` | `ERR-LIB-400-01` | Không có UI | TC-LIB-037 |
 
 ## 7. Truy vết test case
 

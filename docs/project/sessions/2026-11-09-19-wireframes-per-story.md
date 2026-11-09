@@ -12,6 +12,10 @@
 - Màn hình dùng chung vẽ lại giống hệt ở từng story; thông tin điều hướng nằm dưới mục `### Điều hướng và liên kết màn hình`.
 - Cột Wireframe cũ (mã W-xx cũ, 5–7 mã mỗi tính năng) được thay bằng bản mới; cách đánh số mới thay cho W-AUTH-01 → 07 và W-LIB-01 → 05 trước đây.
 
+## Đổi thứ tự mục (theo yêu cầu sau đó)
+
+Trong mỗi file story: 4 Acceptance criteria, 5 Wireframe, 6 API (trước đây 4 Wireframe, 5 API, 6 AC). Đã sửa các tham chiếu số mục trong `AGENTS.md`, `docs/features/README.md`, `docs/architecture/design-system.md` và liên kết `#6-api` trong US-AUTH-07.
+
 ## Quy tắc cho AI (mới)
 
 - `AGENTS.md` §14 (đọc mỗi phiên) và `docs/features/README.md` (5 bước), nhắc ở `docs/guides/using-openba.md`.

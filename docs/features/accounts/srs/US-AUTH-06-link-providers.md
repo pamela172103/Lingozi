@@ -111,7 +111,33 @@ sequenceDiagram
     end
 ```
 
-## 4. Wireframe
+## 4. Acceptance criteria
+
+_Skill `ac`. Văn bản Gherkin trùng với [user story](../requirements/user-stories.md) (nguồn chính thức); sửa ở đó rồi cập nhật lại đây. Script `tools/feature-docs/check_feature_docs.py` kiểm tra hai bản khớp nhau._
+
+```gherkin
+Scenario: AC-01 Liên kết thành công
+  Given tôi đang đăng nhập và chưa liên kết Facebook
+  When tôi chọn "Liên kết Facebook" và đồng ý trên Facebook
+  Then Facebook xuất hiện trong danh sách phương thức đăng nhập của tôi
+
+Scenario: AC-02 Tài khoản ngoài đã thuộc người khác
+  Given Facebook này đã liên kết với một tài khoản Lingozi khác
+  When tôi liên kết nó
+  Then không liên kết và tôi thấy ERR-AUTH-409-01
+
+Scenario: AC-03 Đã liên kết rồi
+  Given tôi đã liên kết Google
+  Then nút "Liên kết Google" không hiển thị; thay bằng "Đã liên kết"
+```
+
+| AC | Nội dung | FR | BR | ERR | Wireframe | Test case |
+| --- | --- | --- | --- | --- | --- | --- |
+| AC-01 | Liên kết thành công | `FR-AUTH-EXT-003` | `BR-AUTH-012` | — | W-AUTH-15, W-AUTH-17 | TC-AUTH-025 |
+| AC-02 | Tài khoản ngoài đã thuộc người khác | `FR-AUTH-EXT-003` | `BR-AUTH-012` | `ERR-AUTH-409-01` | W-AUTH-18 | TC-AUTH-026 |
+| AC-03 | Đã liên kết rồi | `FR-AUTH-SES-003` | — | — | W-AUTH-15 | TC-AUTH-027 |
+
+## 5. Wireframe
 
 _Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe ASCII là căn cứ cho DoR. Quy tắc: vẽ đủ mọi màn hình, hộp thoại và trạng thái mà AC của story nhắc tới._
 
@@ -219,7 +245,7 @@ _Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe A
 
 - Hiện khi `/api/auth/me` lỗi (không phải 401). 401 thì chuyển tới đăng nhập.
 
-## 5. API
+## 6. API
 
 _Skill `api-design`; lỗi theo Problem Details (RFC 9457) như ADR 0002. Quy ước chung ở [README.md](README.md)._
 
@@ -231,32 +257,6 @@ _Skill `api-design`; lỗi theo Problem Details (RFC 9457) như ADR 0002. Quy ư
 Bắt đầu: `GET /api/auth/external/facebook/link` (đã đăng nhập) trả `302` tới Facebook.
 
 Kết quả: `302 /settings/account?linked=facebook` hoặc `?error=409-01`.
-
-## 6. Acceptance criteria
-
-_Skill `ac`. Văn bản Gherkin trùng với [user story](../requirements/user-stories.md) (nguồn chính thức); sửa ở đó rồi cập nhật lại đây. Script `tools/feature-docs/check_feature_docs.py` kiểm tra hai bản khớp nhau._
-
-```gherkin
-Scenario: AC-01 Liên kết thành công
-  Given tôi đang đăng nhập và chưa liên kết Facebook
-  When tôi chọn "Liên kết Facebook" và đồng ý trên Facebook
-  Then Facebook xuất hiện trong danh sách phương thức đăng nhập của tôi
-
-Scenario: AC-02 Tài khoản ngoài đã thuộc người khác
-  Given Facebook này đã liên kết với một tài khoản Lingozi khác
-  When tôi liên kết nó
-  Then không liên kết và tôi thấy ERR-AUTH-409-01
-
-Scenario: AC-03 Đã liên kết rồi
-  Given tôi đã liên kết Google
-  Then nút "Liên kết Google" không hiển thị; thay bằng "Đã liên kết"
-```
-
-| AC | Nội dung | FR | BR | ERR | Wireframe | Test case |
-| --- | --- | --- | --- | --- | --- | --- |
-| AC-01 | Liên kết thành công | `FR-AUTH-EXT-003` | `BR-AUTH-012` | — | W-AUTH-15, W-AUTH-17 | TC-AUTH-025 |
-| AC-02 | Tài khoản ngoài đã thuộc người khác | `FR-AUTH-EXT-003` | `BR-AUTH-012` | `ERR-AUTH-409-01` | W-AUTH-18 | TC-AUTH-026 |
-| AC-03 | Đã liên kết rồi | `FR-AUTH-SES-003` | — | — | W-AUTH-15 | TC-AUTH-027 |
 
 ## 7. Truy vết test case
 

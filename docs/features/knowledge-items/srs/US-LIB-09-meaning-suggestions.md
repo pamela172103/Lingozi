@@ -97,7 +97,45 @@ sequenceDiagram
     W-->>U: Điền ô Nghĩa (người dùng vẫn sửa được)
 ```
 
-## 4. Wireframe
+## 4. Acceptance criteria
+
+_Skill `ac`. Văn bản Gherkin trùng với [user story](../requirements/user-stories.md) (nguồn chính thức); sửa ở đó rồi cập nhật lại đây. Script `tools/feature-docs/check_feature_docs.py` kiểm tra hai bản khớp nhau._
+
+```gherkin
+Scenario: AC-01 Gợi ý từ mục của chính tôi
+  Given tôi đã lưu "give up" với nghĩa "từ bỏ"
+  When tôi nhập "give up" ở bất kỳ loại nào
+  Then ô nghĩa hiện gợi ý "từ bỏ" với nhãn "Từ mục của bạn"
+  And ô nghĩa vẫn trống cho tới khi tôi bấm gợi ý
+
+Scenario: AC-02 Gợi ý từ nguồn từ điển
+  Given nguồn trả về nghĩa "to stop trying" cho "give up"
+  When tôi nhập "give up"
+  Then gợi ý hiện với nhãn "Từ từ điển"
+
+Scenario: AC-03 Không gợi ý dữ liệu của người khác
+  Given người dùng B đã lưu "give up" với nghĩa "bỏ cuộc"
+  When tôi (người dùng A, chưa có mục nào) nhập "give up"
+  Then không có gợi ý "bỏ cuộc"
+
+Scenario: AC-04 Bấm gợi ý mới điền
+  When tôi bấm gợi ý "từ bỏ"
+  Then ô nghĩa được điền "từ bỏ" và tôi vẫn sửa được
+
+Scenario: AC-05 Không có gợi ý
+  When không có nguồn nào trả nghĩa cho từ tôi nhập
+  Then không hiện gợi ý, không có thông báo lỗi, và nghĩa vẫn không bắt buộc
+```
+
+| AC | Nội dung | FR | BR | ERR | Wireframe | Test case |
+| --- | --- | --- | --- | --- | --- | --- |
+| AC-01 | Gợi ý từ mục của chính tôi | `FR-LIB-ITEM-009` | `BR-LIB-014` | — | W-LIB-27 | TC-LIB-045 |
+| AC-02 | Gợi ý từ nguồn từ điển | `FR-LIB-ITEM-009` | `BR-LIB-014` | — | W-LIB-28 | TC-LIB-046 |
+| AC-03 | Không gợi ý dữ liệu của người khác | `FR-LIB-ITEM-009` | `BR-LIB-014` | — | W-LIB-29 | TC-LIB-047 |
+| AC-04 | Bấm gợi ý mới điền | `FR-LIB-ITEM-009` | `BR-LIB-014` | — | W-LIB-30 | TC-LIB-048 |
+| AC-05 | Không có gợi ý | `FR-LIB-ITEM-009` | `BR-LIB-015` | — | W-LIB-29 | TC-LIB-049 |
+
+## 5. Wireframe
 
 _Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe ASCII là căn cứ cho DoR. Quy tắc: vẽ đủ mọi màn hình, hộp thoại và trạng thái mà AC của story nhắc tới._
 
@@ -159,7 +197,7 @@ _Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe A
 
 - Bấm chip mới điền vào ô "Nghĩa"; người dùng vẫn sửa được.
 
-## 5. API
+## 6. API
 
 _Skill `api-design`; lỗi theo Problem Details (RFC 9457) như ADR 0002. Quy ước chung ở [README.md](README.md)._
 
@@ -179,44 +217,6 @@ Phản hồi:
 ```
 
 Tối đa 5 nghĩa. Nguồn lỗi hoặc quá 3 giây: `sourceAvailable = false`, `meanings` chỉ còn các mục `own`; vẫn là `200`.
-
-## 6. Acceptance criteria
-
-_Skill `ac`. Văn bản Gherkin trùng với [user story](../requirements/user-stories.md) (nguồn chính thức); sửa ở đó rồi cập nhật lại đây. Script `tools/feature-docs/check_feature_docs.py` kiểm tra hai bản khớp nhau._
-
-```gherkin
-Scenario: AC-01 Gợi ý từ mục của chính tôi
-  Given tôi đã lưu "give up" với nghĩa "từ bỏ"
-  When tôi nhập "give up" ở bất kỳ loại nào
-  Then ô nghĩa hiện gợi ý "từ bỏ" với nhãn "Từ mục của bạn"
-  And ô nghĩa vẫn trống cho tới khi tôi bấm gợi ý
-
-Scenario: AC-02 Gợi ý từ nguồn từ điển
-  Given nguồn trả về nghĩa "to stop trying" cho "give up"
-  When tôi nhập "give up"
-  Then gợi ý hiện với nhãn "Từ từ điển"
-
-Scenario: AC-03 Không gợi ý dữ liệu của người khác
-  Given người dùng B đã lưu "give up" với nghĩa "bỏ cuộc"
-  When tôi (người dùng A, chưa có mục nào) nhập "give up"
-  Then không có gợi ý "bỏ cuộc"
-
-Scenario: AC-04 Bấm gợi ý mới điền
-  When tôi bấm gợi ý "từ bỏ"
-  Then ô nghĩa được điền "từ bỏ" và tôi vẫn sửa được
-
-Scenario: AC-05 Không có gợi ý
-  When không có nguồn nào trả nghĩa cho từ tôi nhập
-  Then không hiện gợi ý, không có thông báo lỗi, và nghĩa vẫn không bắt buộc
-```
-
-| AC | Nội dung | FR | BR | ERR | Wireframe | Test case |
-| --- | --- | --- | --- | --- | --- | --- |
-| AC-01 | Gợi ý từ mục của chính tôi | `FR-LIB-ITEM-009` | `BR-LIB-014` | — | W-LIB-27 | TC-LIB-045 |
-| AC-02 | Gợi ý từ nguồn từ điển | `FR-LIB-ITEM-009` | `BR-LIB-014` | — | W-LIB-28 | TC-LIB-046 |
-| AC-03 | Không gợi ý dữ liệu của người khác | `FR-LIB-ITEM-009` | `BR-LIB-014` | — | W-LIB-29 | TC-LIB-047 |
-| AC-04 | Bấm gợi ý mới điền | `FR-LIB-ITEM-009` | `BR-LIB-014` | — | W-LIB-30 | TC-LIB-048 |
-| AC-05 | Không có gợi ý | `FR-LIB-ITEM-009` | `BR-LIB-015` | — | W-LIB-29 | TC-LIB-049 |
 
 ## 7. Truy vết test case
 

@@ -127,7 +127,33 @@ stateDiagram-v2
 | Authenticated | Đăng xuất | — | Anonymous | Người dùng |
 | Authenticated | Không hoạt động | Quá 14 ngày | Anonymous | Hệ thống |
 
-## 4. Wireframe
+## 4. Acceptance criteria
+
+_Skill `ac`. Văn bản Gherkin trùng với [user story](../requirements/user-stories.md) (nguồn chính thức); sửa ở đó rồi cập nhật lại đây. Script `tools/feature-docs/check_feature_docs.py` kiểm tra hai bản khớp nhau._
+
+```gherkin
+Scenario: AC-01 Phiên còn hạn
+  Given tôi đã đăng nhập cách đây 3 ngày
+  When tôi mở lại website
+  Then tôi vẫn ở trong thư viện (BR-AUTH-008)
+
+Scenario: AC-02 Phiên hết hạn
+  Given phiên của tôi đã không hoạt động trong 14 ngày
+  When tôi mở "Thư viện"
+  Then tôi được chuyển tới "Đăng nhập" với returnUrl (ERR-AUTH-401-02)
+
+Scenario: AC-03 Không có ô mật khẩu ở đâu
+  When tôi mở bất kỳ trang nào trong "/auth/*"
+  Then không có ô nhập mật khẩu và không có liên kết "Quên mật khẩu"
+```
+
+| AC | Nội dung | FR | BR | ERR | Wireframe | Test case |
+| --- | --- | --- | --- | --- | --- | --- |
+| AC-01 | Phiên còn hạn | `FR-AUTH-SES-001` | `BR-AUTH-008` | — | [W-LIB-01](../../knowledge-items/srs/US-LIB-03-list-items.md) | TC-AUTH-013 |
+| AC-02 | Phiên hết hạn | `FR-AUTH-SES-001` | `BR-AUTH-008` | `ERR-AUTH-401-02` | W-AUTH-01 | TC-AUTH-014 |
+| AC-03 | Không có ô mật khẩu ở đâu | `FR-AUTH-SES-001` | `BR-AUTH-010` | — | W-AUTH-01, W-AUTH-05 | TC-AUTH-015 |
+
+## 5. Wireframe
 
 _Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe ASCII là căn cứ cho DoR. Quy tắc: vẽ đủ mọi màn hình, hộp thoại và trạng thái mà AC của story nhắc tới._
 
@@ -190,7 +216,7 @@ _Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe A
 - Màn hình "Thư viện" mà người dùng vẫn ở lại khi phiên còn hạn: [W-LIB-01](../../knowledge-items/srs/US-LIB-03-list-items.md) (thuộc FEAT-02).
 - Khi phiên hết hạn, người dùng thấy W-AUTH-01 với URL `/auth/login?returnUrl=...`; không có thông báo riêng.
 
-## 5. API
+## 6. API
 
 _Skill `api-design`; lỗi theo Problem Details (RFC 9457) như ADR 0002. Quy ước chung ở [README.md](README.md)._
 
@@ -210,32 +236,6 @@ Phản hồi:
 ```json
 { "id": "7c1f...", "email": "an@example.com", "displayName": null, "logins": ["google"] }
 ```
-
-## 6. Acceptance criteria
-
-_Skill `ac`. Văn bản Gherkin trùng với [user story](../requirements/user-stories.md) (nguồn chính thức); sửa ở đó rồi cập nhật lại đây. Script `tools/feature-docs/check_feature_docs.py` kiểm tra hai bản khớp nhau._
-
-```gherkin
-Scenario: AC-01 Phiên còn hạn
-  Given tôi đã đăng nhập cách đây 3 ngày
-  When tôi mở lại website
-  Then tôi vẫn ở trong thư viện (BR-AUTH-008)
-
-Scenario: AC-02 Phiên hết hạn
-  Given phiên của tôi đã không hoạt động trong 14 ngày
-  When tôi mở "Thư viện"
-  Then tôi được chuyển tới "Đăng nhập" với returnUrl (ERR-AUTH-401-02)
-
-Scenario: AC-03 Không có ô mật khẩu ở đâu
-  When tôi mở bất kỳ trang nào trong "/auth/*"
-  Then không có ô nhập mật khẩu và không có liên kết "Quên mật khẩu"
-```
-
-| AC | Nội dung | FR | BR | ERR | Wireframe | Test case |
-| --- | --- | --- | --- | --- | --- | --- |
-| AC-01 | Phiên còn hạn | `FR-AUTH-SES-001` | `BR-AUTH-008` | — | [W-LIB-01](../../knowledge-items/srs/US-LIB-03-list-items.md) | TC-AUTH-013 |
-| AC-02 | Phiên hết hạn | `FR-AUTH-SES-001` | `BR-AUTH-008` | `ERR-AUTH-401-02` | W-AUTH-01 | TC-AUTH-014 |
-| AC-03 | Không có ô mật khẩu ở đâu | `FR-AUTH-SES-001` | `BR-AUTH-010` | — | W-AUTH-01, W-AUTH-05 | TC-AUTH-015 |
 
 ## 7. Truy vết test case
 

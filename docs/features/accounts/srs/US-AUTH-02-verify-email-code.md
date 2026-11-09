@@ -149,7 +149,60 @@ stateDiagram-v2
 | Active | Yêu cầu mã mới cho cùng email | Qua kiểm tra BR-AUTH-009 | Invalidated | Hệ thống |
 | Active | Hết 10 phút | `ExpiresAt` < hiện tại | Expired | Hệ thống |
 
-## 4. Wireframe
+## 4. Acceptance criteria
+
+_Skill `ac`. Văn bản Gherkin trùng với [user story](../requirements/user-stories.md) (nguồn chính thức); sửa ở đó rồi cập nhật lại đây. Script `tools/feature-docs/check_feature_docs.py` kiểm tra hai bản khớp nhau._
+
+```gherkin
+Scenario: AC-01 Mã đúng với email mới
+  Given tôi đã yêu cầu mã cho "an@example.com" chưa có tài khoản
+  When tôi nhập đúng mã
+  Then hệ thống tạo tài khoản với email đã xác minh (BR-AUTH-003)
+  And tôi được đăng nhập và chuyển tới "Thư viện"
+
+Scenario: AC-02 Mã đúng với email đã có tài khoản
+  Given "an@example.com" đã có tài khoản
+  When tôi nhập đúng mã
+  Then tôi được đăng nhập vào tài khoản đó, không tạo tài khoản mới
+
+Scenario: AC-03 Mã sai
+  When tôi nhập sai mã
+  Then tôi thấy "Mã không đúng. Bạn còn 4 lần thử." (ERR-AUTH-401-01)
+  And các ô mã được xóa và focus về ô đầu tiên
+
+Scenario: AC-04 Sai đủ 5 lần
+  Given tôi đã nhập sai 4 lần
+  When tôi nhập sai lần thứ 5
+  Then mã đó bị vô hiệu và tôi thấy ERR-AUTH-403-02 với nút "Gửi mã mới" (BR-AUTH-002)
+  And mã đó không dùng được nữa dù nhập đúng
+
+Scenario: AC-05 Mã hết hạn
+  Given đã quá 10 phút kể từ khi gửi mã
+  When tôi nhập mã đó
+  Then tôi thấy ERR-AUTH-400-03 "Mã đã hết hạn hoặc đã dùng" và nút "Gửi mã mới"
+
+Scenario: AC-06 Mã đã dùng
+  Given tôi đã đăng nhập bằng mã này
+  When tôi nhập lại đúng mã đó
+  Then tôi thấy ERR-AUTH-400-03 (BR-AUTH-001)
+
+Scenario: AC-07 Mã mới làm mã cũ mất hiệu lực
+  Given tôi có hai mã đã gửi cho cùng email
+  When tôi nhập mã cũ sau khi đã có mã mới
+  Then mã cũ bị từ chối với ERR-AUTH-400-03
+```
+
+| AC | Nội dung | FR | BR | ERR | Wireframe | Test case |
+| --- | --- | --- | --- | --- | --- | --- |
+| AC-01 | Mã đúng với email mới | `FR-AUTH-CODE-002` | `BR-AUTH-003` | — | W-AUTH-05 | TC-AUTH-006 |
+| AC-02 | Mã đúng với email đã có tài khoản | `FR-AUTH-CODE-002` | — | — | W-AUTH-05 | TC-AUTH-007 |
+| AC-03 | Mã sai | `FR-AUTH-CODE-002` | `BR-AUTH-002` | `ERR-AUTH-401-01` | W-AUTH-06 | TC-AUTH-008 |
+| AC-04 | Sai đủ 5 lần | `FR-AUTH-CODE-002` | `BR-AUTH-002` | `ERR-AUTH-403-02` | W-AUTH-07 | TC-AUTH-009 |
+| AC-05 | Mã hết hạn | `FR-AUTH-CODE-002` | `BR-AUTH-006` | `ERR-AUTH-400-03` | W-AUTH-08 | TC-AUTH-010 |
+| AC-06 | Mã đã dùng | `FR-AUTH-CODE-002` | `BR-AUTH-001` | `ERR-AUTH-400-03` | W-AUTH-08 | TC-AUTH-011 |
+| AC-07 | Mã mới làm mã cũ mất hiệu lực | `FR-AUTH-CODE-002` | `BR-AUTH-009` | `ERR-AUTH-400-03` | W-AUTH-08 | TC-AUTH-012 |
+
+## 5. Wireframe
 
 _Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe ASCII là căn cứ cho DoR. Quy tắc: vẽ đủ mọi màn hình, hộp thoại và trạng thái mà AC của story nhắc tới._
 
@@ -259,7 +312,7 @@ _Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe A
 
 - Sau khi đăng nhập, người dùng chuyển tới "Thư viện" [W-LIB-01](../../knowledge-items/srs/US-LIB-03-list-items.md) (thuộc FEAT-02).
 
-## 5. API
+## 6. API
 
 _Skill `api-design`; lỗi theo Problem Details (RFC 9457) như ADR 0002. Quy ước chung ở [README.md](README.md)._
 
@@ -288,59 +341,6 @@ Lỗi sai mã:
 ```json
 { "status": 401, "code": "ERR-AUTH-401-01", "remainingAttempts": 4 }
 ```
-
-## 6. Acceptance criteria
-
-_Skill `ac`. Văn bản Gherkin trùng với [user story](../requirements/user-stories.md) (nguồn chính thức); sửa ở đó rồi cập nhật lại đây. Script `tools/feature-docs/check_feature_docs.py` kiểm tra hai bản khớp nhau._
-
-```gherkin
-Scenario: AC-01 Mã đúng với email mới
-  Given tôi đã yêu cầu mã cho "an@example.com" chưa có tài khoản
-  When tôi nhập đúng mã
-  Then hệ thống tạo tài khoản với email đã xác minh (BR-AUTH-003)
-  And tôi được đăng nhập và chuyển tới "Thư viện"
-
-Scenario: AC-02 Mã đúng với email đã có tài khoản
-  Given "an@example.com" đã có tài khoản
-  When tôi nhập đúng mã
-  Then tôi được đăng nhập vào tài khoản đó, không tạo tài khoản mới
-
-Scenario: AC-03 Mã sai
-  When tôi nhập sai mã
-  Then tôi thấy "Mã không đúng. Bạn còn 4 lần thử." (ERR-AUTH-401-01)
-  And các ô mã được xóa và focus về ô đầu tiên
-
-Scenario: AC-04 Sai đủ 5 lần
-  Given tôi đã nhập sai 4 lần
-  When tôi nhập sai lần thứ 5
-  Then mã đó bị vô hiệu và tôi thấy ERR-AUTH-403-02 với nút "Gửi mã mới" (BR-AUTH-002)
-  And mã đó không dùng được nữa dù nhập đúng
-
-Scenario: AC-05 Mã hết hạn
-  Given đã quá 10 phút kể từ khi gửi mã
-  When tôi nhập mã đó
-  Then tôi thấy ERR-AUTH-400-03 "Mã đã hết hạn hoặc đã dùng" và nút "Gửi mã mới"
-
-Scenario: AC-06 Mã đã dùng
-  Given tôi đã đăng nhập bằng mã này
-  When tôi nhập lại đúng mã đó
-  Then tôi thấy ERR-AUTH-400-03 (BR-AUTH-001)
-
-Scenario: AC-07 Mã mới làm mã cũ mất hiệu lực
-  Given tôi có hai mã đã gửi cho cùng email
-  When tôi nhập mã cũ sau khi đã có mã mới
-  Then mã cũ bị từ chối với ERR-AUTH-400-03
-```
-
-| AC | Nội dung | FR | BR | ERR | Wireframe | Test case |
-| --- | --- | --- | --- | --- | --- | --- |
-| AC-01 | Mã đúng với email mới | `FR-AUTH-CODE-002` | `BR-AUTH-003` | — | W-AUTH-05 | TC-AUTH-006 |
-| AC-02 | Mã đúng với email đã có tài khoản | `FR-AUTH-CODE-002` | — | — | W-AUTH-05 | TC-AUTH-007 |
-| AC-03 | Mã sai | `FR-AUTH-CODE-002` | `BR-AUTH-002` | `ERR-AUTH-401-01` | W-AUTH-06 | TC-AUTH-008 |
-| AC-04 | Sai đủ 5 lần | `FR-AUTH-CODE-002` | `BR-AUTH-002` | `ERR-AUTH-403-02` | W-AUTH-07 | TC-AUTH-009 |
-| AC-05 | Mã hết hạn | `FR-AUTH-CODE-002` | `BR-AUTH-006` | `ERR-AUTH-400-03` | W-AUTH-08 | TC-AUTH-010 |
-| AC-06 | Mã đã dùng | `FR-AUTH-CODE-002` | `BR-AUTH-001` | `ERR-AUTH-400-03` | W-AUTH-08 | TC-AUTH-011 |
-| AC-07 | Mã mới làm mã cũ mất hiệu lực | `FR-AUTH-CODE-002` | `BR-AUTH-009` | `ERR-AUTH-400-03` | W-AUTH-08 | TC-AUTH-012 |
 
 ## 7. Truy vết test case
 

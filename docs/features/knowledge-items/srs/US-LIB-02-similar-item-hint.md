@@ -119,7 +119,47 @@ sequenceDiagram
     end
 ```
 
-## 4. Wireframe
+## 4. Acceptance criteria
+
+_Skill `ac`. Văn bản Gherkin trùng với [user story](../requirements/user-stories.md) (nguồn chính thức); sửa ở đó rồi cập nhật lại đây. Script `tools/feature-docs/check_feature_docs.py` kiểm tra hai bản khớp nhau._
+
+```gherkin
+Scenario: AC-01 Có mục tương tự
+  Given tôi đã có mục "Give up" nghĩa "từ bỏ"
+  When tôi tạo mục mới với nội dung "  give   UP " và bấm "Lưu"
+  Then mục chưa được lưu
+  And hộp thoại "Bạn đã lưu nội dung tương tự" liệt kê mục "Give up" với nghĩa và ngày tạo
+  And có hai lựa chọn "Mở mục cũ để bổ sung" và "Vẫn tạo mục mới"
+
+Scenario: AC-02 Mở mục cũ
+  When tôi chọn "Mở mục cũ để bổ sung"
+  Then tôi tới màn hình sửa mục cũ, và nội dung đang nhập không bị lưu thành mục mới
+  And nghĩa, ví dụ, ghi chú tôi đã nhập được giữ lại, hiện bên cạnh để tôi tự chép sang (không tự gộp)
+
+Scenario: AC-03 Vẫn tạo mục mới
+  When tôi chọn "Vẫn tạo mục mới"
+  Then mục mới được lưu, và mục cũ không thay đổi
+
+Scenario: AC-04 Không gợi ý mục của người khác
+  Given người dùng khác có mục "give up"
+  And tôi chưa có
+  When tôi lưu "give up"
+  Then không có hộp thoại gợi ý và mục được lưu ngay
+
+Scenario: AC-05 Nhiều mục tương tự
+  Given tôi có 7 mục cùng nội dung chuẩn hóa "give up"
+  Then hộp thoại hiện 5 mục mới nhất và dòng "và 2 mục khác"
+```
+
+| AC | Nội dung | FR | BR | ERR | Wireframe | Test case |
+| --- | --- | --- | --- | --- | --- | --- |
+| AC-01 | Có mục tương tự | `FR-LIB-ITEM-002` | `BR-LIB-003` | — | W-LIB-12 | TC-LIB-008 |
+| AC-02 | Mở mục cũ | `FR-LIB-ITEM-002` | `BR-LIB-003` | — | W-LIB-13 | TC-LIB-009 |
+| AC-03 | Vẫn tạo mục mới | `FR-LIB-ITEM-002` | `BR-LIB-003` | — | W-LIB-12, W-LIB-14 | TC-LIB-010 |
+| AC-04 | Không gợi ý mục của người khác | `FR-LIB-ITEM-002` | `BR-LIB-006` | — | W-LIB-08, W-LIB-14 | TC-LIB-011 |
+| AC-05 | Nhiều mục tương tự | `FR-LIB-ITEM-002` | `BR-LIB-003` | — | W-LIB-12 | TC-LIB-012 |
+
+## 5. Wireframe
 
 _Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe ASCII là căn cứ cho DoR. Quy tắc: vẽ đủ mọi màn hình, hộp thoại và trạng thái mà AC của story nhắc tới._
 
@@ -222,7 +262,7 @@ _Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe A
 - Nút "Xóa" kiểu viền, có icon cảnh báo, không dùng nền đặc giống nút chính.
 - Toast "Đã lưu" (`role="status"`) chỉ hiện ngay sau khi lưu.
 
-## 5. API
+## 6. API
 
 _Skill `api-design`; lỗi theo Problem Details (RFC 9457) như ADR 0002. Quy ước chung ở [README.md](README.md)._
 
@@ -241,46 +281,6 @@ Phản hồi:
 ```
 
 `term` rỗng trả danh sách rỗng; `term` dài hơn 1000 ký tự trả `400 ERR-LIB-400-01`.
-
-## 6. Acceptance criteria
-
-_Skill `ac`. Văn bản Gherkin trùng với [user story](../requirements/user-stories.md) (nguồn chính thức); sửa ở đó rồi cập nhật lại đây. Script `tools/feature-docs/check_feature_docs.py` kiểm tra hai bản khớp nhau._
-
-```gherkin
-Scenario: AC-01 Có mục tương tự
-  Given tôi đã có mục "Give up" nghĩa "từ bỏ"
-  When tôi tạo mục mới với nội dung "  give   UP " và bấm "Lưu"
-  Then mục chưa được lưu
-  And hộp thoại "Bạn đã lưu nội dung tương tự" liệt kê mục "Give up" với nghĩa và ngày tạo
-  And có hai lựa chọn "Mở mục cũ để bổ sung" và "Vẫn tạo mục mới"
-
-Scenario: AC-02 Mở mục cũ
-  When tôi chọn "Mở mục cũ để bổ sung"
-  Then tôi tới màn hình sửa mục cũ, và nội dung đang nhập không bị lưu thành mục mới
-  And nghĩa, ví dụ, ghi chú tôi đã nhập được giữ lại, hiện bên cạnh để tôi tự chép sang (không tự gộp)
-
-Scenario: AC-03 Vẫn tạo mục mới
-  When tôi chọn "Vẫn tạo mục mới"
-  Then mục mới được lưu, và mục cũ không thay đổi
-
-Scenario: AC-04 Không gợi ý mục của người khác
-  Given người dùng khác có mục "give up"
-  And tôi chưa có
-  When tôi lưu "give up"
-  Then không có hộp thoại gợi ý và mục được lưu ngay
-
-Scenario: AC-05 Nhiều mục tương tự
-  Given tôi có 7 mục cùng nội dung chuẩn hóa "give up"
-  Then hộp thoại hiện 5 mục mới nhất và dòng "và 2 mục khác"
-```
-
-| AC | Nội dung | FR | BR | ERR | Wireframe | Test case |
-| --- | --- | --- | --- | --- | --- | --- |
-| AC-01 | Có mục tương tự | `FR-LIB-ITEM-002` | `BR-LIB-003` | — | W-LIB-12 | TC-LIB-008 |
-| AC-02 | Mở mục cũ | `FR-LIB-ITEM-002` | `BR-LIB-003` | — | W-LIB-13 | TC-LIB-009 |
-| AC-03 | Vẫn tạo mục mới | `FR-LIB-ITEM-002` | `BR-LIB-003` | — | W-LIB-12, W-LIB-14 | TC-LIB-010 |
-| AC-04 | Không gợi ý mục của người khác | `FR-LIB-ITEM-002` | `BR-LIB-006` | — | W-LIB-08, W-LIB-14 | TC-LIB-011 |
-| AC-05 | Nhiều mục tương tự | `FR-LIB-ITEM-002` | `BR-LIB-003` | — | W-LIB-12 | TC-LIB-012 |
 
 ## 7. Truy vết test case
 

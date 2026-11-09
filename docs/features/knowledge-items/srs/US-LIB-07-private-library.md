@@ -91,7 +91,31 @@ sequenceDiagram
     A-->>B: 404 ERR-LIB-404-01 (giống mục không tồn tại)
 ```
 
-## 4. Wireframe
+## 4. Acceptance criteria
+
+_Skill `ac`. Văn bản Gherkin trùng với [user story](../requirements/user-stories.md) (nguồn chính thức); sửa ở đó rồi cập nhật lại đây. Script `tools/feature-docs/check_feature_docs.py` kiểm tra hai bản khớp nhau._
+
+```gherkin
+Scenario: AC-01 Không thấy dữ liệu người khác
+  Given user A và user B đều có mục
+  Then danh sách, chi tiết, gợi ý trùng của A chỉ chứa mục của A
+
+Scenario: AC-02 Mọi thao tác với ID của người khác
+  When A gọi GET, PUT, DELETE với ID mục của B
+  Then đều trả 404 ERR-LIB-404-01 và dữ liệu của B không đổi
+
+Scenario: AC-03 Không tin UserId từ client
+  When request tạo hoặc sửa gửi kèm trường userId của người khác
+  Then trường đó bị bỏ qua; mục luôn thuộc người đang đăng nhập
+```
+
+| AC | Nội dung | FR | BR | ERR | Wireframe | Test case |
+| --- | --- | --- | --- | --- | --- | --- |
+| AC-01 | Không thấy dữ liệu người khác | `FR-LIB-SEC-001` | `BR-LIB-006` | — | W-LIB-01 | TC-LIB-026 |
+| AC-02 | Mọi thao tác với ID của người khác | `FR-LIB-SEC-001` | `BR-LIB-006` | `ERR-LIB-404-01` | W-LIB-16 | TC-LIB-022 |
+| AC-03 | Không tin UserId từ client | `FR-LIB-SEC-001` | `BR-LIB-006` | — | Không có UI | TC-LIB-027 |
+
+## 5. Wireframe
 
 _Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe ASCII là căn cứ cho DoR. Quy tắc: vẽ đủ mọi màn hình, hộp thoại và trạng thái mà AC của story nhắc tới._
 
@@ -139,7 +163,7 @@ _Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe A
 - Cùng một màn hình cho mục không tồn tại và mục của người khác (không để lộ sự tồn tại).
 - Body lỗi giống hệt giữa hai trường hợp.
 
-## 5. API
+## 6. API
 
 _Skill `api-design`; lỗi theo Problem Details (RFC 9457) như ADR 0002. Quy ước chung ở [README.md](README.md)._
 
@@ -153,30 +177,6 @@ _Skill `api-design`; lỗi theo Problem Details (RFC 9457) như ADR 0002. Quy ư
 | `DELETE /api/library/items/{id}` | — | `204` | 404-01 |
 
 Áp dụng cho mọi endpoint ở [README.md](README.md#danh-mục-endpoint). Request thay đổi dữ liệu cần `X-XSRF-TOKEN` và phiên hợp lệ (FEAT-01); `userId` trong body bị bỏ qua.
-
-## 6. Acceptance criteria
-
-_Skill `ac`. Văn bản Gherkin trùng với [user story](../requirements/user-stories.md) (nguồn chính thức); sửa ở đó rồi cập nhật lại đây. Script `tools/feature-docs/check_feature_docs.py` kiểm tra hai bản khớp nhau._
-
-```gherkin
-Scenario: AC-01 Không thấy dữ liệu người khác
-  Given user A và user B đều có mục
-  Then danh sách, chi tiết, gợi ý trùng của A chỉ chứa mục của A
-
-Scenario: AC-02 Mọi thao tác với ID của người khác
-  When A gọi GET, PUT, DELETE với ID mục của B
-  Then đều trả 404 ERR-LIB-404-01 và dữ liệu của B không đổi
-
-Scenario: AC-03 Không tin UserId từ client
-  When request tạo hoặc sửa gửi kèm trường userId của người khác
-  Then trường đó bị bỏ qua; mục luôn thuộc người đang đăng nhập
-```
-
-| AC | Nội dung | FR | BR | ERR | Wireframe | Test case |
-| --- | --- | --- | --- | --- | --- | --- |
-| AC-01 | Không thấy dữ liệu người khác | `FR-LIB-SEC-001` | `BR-LIB-006` | — | W-LIB-01 | TC-LIB-026 |
-| AC-02 | Mọi thao tác với ID của người khác | `FR-LIB-SEC-001` | `BR-LIB-006` | `ERR-LIB-404-01` | W-LIB-16 | TC-LIB-022 |
-| AC-03 | Không tin UserId từ client | `FR-LIB-SEC-001` | `BR-LIB-006` | — | Không có UI | TC-LIB-027 |
 
 ## 7. Truy vết test case
 

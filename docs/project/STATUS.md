@@ -48,7 +48,7 @@ Không có công việc triển khai đang dở. Thứ tự dưới đây là đ
 | PLAN-04 | in-progress | Vòng 1: thiết kế FEAT-01 Tài khoản và FEAT-02 Mục kiến thức, rồi phát triển | Thiết kế xong ([accounts](../features/accounts/README.md), [knowledge-items](../features/knowledge-items/README.md)); **chờ chủ dự án duyệt DoR** rồi mới code |
 | ADR-01 | done | Chủ dự án duyệt ADR 0001–0006 | Accepted 2026-11-08; hosting: máy chủ riêng + SQL Server |
 | HOST-01 | todo | Chủ dự án cung cấp thông tin máy chủ `HOST-01`–`HOST-05` (OS/cấu hình, edition SQL Server, domain, nơi backup, staging) | Ghi vào ADR 0006; hạn cuối Vòng 1 |
-| AUTH-01 | todo | Chủ dự án xác nhận quy tắc mã: 6 số, 10 phút, 5 lần sai, 60 giây giữa các lần gửi, 5 mã mỗi giờ (ADR 0004 sửa đổi 2026-11-09) | Trước khi code FEAT-01 |
+| AUTH-01 | done | Chủ dự án xác nhận quy tắc mã: 6 số, 10 phút, dùng một lần; 5 lần sai thì vô hiệu; 60 giây giữa các lần gửi; 5 mã mỗi giờ (xác nhận 2026-11-09) | ADR 0004 sửa đổi chuyển sang Accepted; chưa code |
 | FB-01 | todo | Chủ dự án tạo Meta App (Facebook Login), chuẩn bị URL chính sách quyền riêng tư và chốt cách xóa dữ liệu (`Q-12`) | Có App ID/Secret trong secret store trước khi bật Facebook ở staging; trước đó trạng thái là `integration ready` |
 | MAIL-01 | todo | Chọn nhà cung cấp email production | ADR 0005 cập nhật; hạn trước khi phát hành staging |
 | ERD-01 | done | Chủ dự án duyệt ERD tổng thể | Duyệt 2026-11-08 |

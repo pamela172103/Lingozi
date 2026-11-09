@@ -107,4 +107,4 @@ Chủ dự án yêu cầu FEAT-01 theo luồng không mật khẩu (đăng nhậ
 - Phụ thuộc vào email: người dùng mất quyền truy cập email thì mất đăng nhập. Chấp nhận ở MVP; xem xét thêm phương thức dự phòng sau MVP.
 - Nhà cung cấp email production (`MAIL-01`) chưa chọn; mã chỉ gửi được trên Mailpit cho đến khi có nhà cung cấp.
 
-**Trạng thái:** Accepted cho luồng mã email (chủ dự án yêu cầu ngày 2026-11-09). Các con số trong mục "Quyết định mới" (6 số, 10 phút, 5 lần, 60 giây, 5 mã mỗi giờ) là đề xuất của nhóm; chủ dự án cần xác nhận lại trước khi đưa vào code.
+**Trạng thái:** Accepted (chủ dự án yêu cầu 2026-11-09 và xác nhận các con số bảo mật cùng ngày: mã 6 số, hiệu lực 10 phút, dùng một lần; sai 5 lần thì vô hiệu; tối đa 1 mã mỗi 60 giây và 5 mã mỗi giờ cho một email).

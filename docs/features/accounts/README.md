@@ -2,50 +2,57 @@
 
 - Module: `AUTH` (backend: module `Accounts`, schema `accounts`).
 - Vòng: 1 (2026-11-08 → 2026-11-21).
-- Trạng thái: **Thiết kế — chờ chủ dự án duyệt để đạt DoR**. Chưa có code nghiệp vụ.
+- Trạng thái: **Thiết kế v0.3 (2026-11-09), chờ chủ dự án duyệt để đạt DoR**. Chưa có code nghiệp vụ.
 - Nguồn:
   - [PRD](../../product/prd.md) FEAT-01, NFR-PRIV-001, NFR-SEC-001/002.
   - [MVP](../../product/mvp-scope.md).
-  - [ADR 0004](../../decisions/0004-authentication.md), gồm phần bổ sung Facebook.
-  - [ADR 0005](../../decisions/0005-email-delivery.md).
+  - [ADR 0004](../../decisions/0004-authentication.md), bản sửa đổi 2026-11-09.
   - [ERD](../../architecture/erd.md) §3.1.
-  - [Design system](../../architecture/design-system.md).
+  - Tham khảo luồng đăng nhập không mật khẩu của một ứng dụng học từ vựng đang chạy (chỉ tham khảo cấu trúc luồng; không sao chép giao diện, văn bản hay tài sản).
 
 ## Phạm vi
 
 **Có trong vòng này:**
 
-- Đăng ký bằng email + mật khẩu, xác thực email, gửi lại thư xác thực.
-- Đăng nhập bằng email + mật khẩu, khóa tạm khi sai nhiều lần.
-- Đăng nhập Google và Facebook theo quy tắc liên kết của ADR 0004.
-- Liên kết Google/Facebook với tài khoản đang đăng nhập.
-- Quên và đặt lại mật khẩu.
-- Đăng xuất.
-- Bảo vệ mọi trang và API của thư viện.
-- Trang chính sách quyền riêng tư và trang hướng dẫn xóa dữ liệu (`Q-12`).
+- Đăng nhập hoặc tạo tài khoản bằng mã 6 số gửi qua email. Không có mật khẩu.
+- Đăng nhập bằng Google và Facebook. Facebook được xác minh bằng mã email trước khi tạo hoặc liên kết tài khoản.
+- Liên kết Google/Facebook trong Cài đặt tài khoản.
+- Giữ phiên đăng nhập, đăng xuất, bảo vệ thư viện riêng tư.
+- Trang chính sách quyền riêng tư và hướng dẫn xóa dữ liệu (`Q-12`).
 
-**Không có:** xác thực 2 lớp, hủy liên kết nhà cung cấp, đổi email, xóa tài khoản tự phục vụ, đăng nhập bằng mạng xã hội khác.
+**Không có:** mật khẩu (đặt, đổi, đặt lại), xác thực hai lớp, đăng nhập bằng Apple hoặc nhà cung cấp khác, đổi email, xóa tài khoản tự phục vụ.
+
+## Thay đổi so với v0.2
+
+| Mục | v0.2 | v0.3 |
+| --- | --- | --- |
+| Đăng nhập email | Email và mật khẩu | Mã 6 số gửi qua email |
+| Đăng ký | Email, mật khẩu, xác thực bằng link | Cùng luồng với đăng nhập; mã xác minh email |
+| Quên mật khẩu | Có | Bỏ; thay bằng "Không nhận được mã?" (US-AUTH-07) |
+| Facebook | Tạo tài khoản chưa xác thực, phải xác thực bằng link | Phải nhập mã gửi tới email trước khi tạo hoặc liên kết |
+| Google | Không đổi | Không đổi |
 
 ## Hồ sơ
 
 | Loại | Tài liệu |
 | --- | --- |
-| User story + AC | [requirements/user-stories.md](requirements/user-stories.md) |
-| Đặc tả: FR, BR, ma trận lỗi, NFR | [srs/srs.md](srs/srs.md) |
+| User story và AC | [requirements/user-stories.md](requirements/user-stories.md) |
+| Đặc tả: FR, BR, lỗi, NFR | [srs/srs.md](srs/srs.md) |
 | API contract | [design/api-contract.md](design/api-contract.md) |
 | Luồng và sequence | [design/flows.md](design/flows.md) |
 | Wireframe | [design/wireframes.md](design/wireframes.md) |
-| Test case + RTM | [testing/test-cases.md](testing/test-cases.md) |
+| Test case và RTM | [testing/test-cases.md](testing/test-cases.md) |
 
 ## Definition of Ready
 
-| Điều kiện ([lộ trình](../../product/roadmap.md) §1) | Trạng thái |
+| Điều kiện | Trạng thái |
 | --- | --- |
-| User story có ID, AC dạng Gherkin | Có, chờ duyệt |
-| Business rules và mã lỗi | Có, chờ duyệt |
-| Màn hình đã duyệt, đủ trạng thái | Wireframe ASCII đã có; Figma BLOCKED (`DES-01`), nên dùng wireframe làm căn cứ, chờ duyệt |
-| API contract và ERD liên quan | Có; ERD đã duyệt |
-| Test case truy vết về AC | Có |
+| User story có ID và AC Gherkin | Có (39 AC), chờ duyệt |
+| BR và mã lỗi | Có (BR-AUTH-001 → 013), chờ duyệt |
+| Màn hình đã duyệt | Wireframe ASCII (W-AUTH-01 → 07); Figma BLOCKED (`DES-01`) |
+| API contract và ERD | Có; ERD cần bảng `EmailLoginCodes` (đã ghi, chờ duyệt) |
+| Test case truy vết về AC | Có (43 TC) |
+| Quyết định bảo mật của mã | Chờ chủ dự án xác nhận: 6 số, 10 phút, 5 lần sai, giới hạn gửi (BR-AUTH-001, 002, 009) |
 
 ## Phụ thuộc bên ngoài
 
@@ -53,5 +60,5 @@
 | --- | --- | --- |
 | Google OAuth client | Chủ dự án tạo trong Google Cloud Console | Google ở trạng thái `integration ready` |
 | `FB-01` | Meta App (Facebook Login), URL chính sách quyền riêng tư, cách xóa dữ liệu | Facebook ở trạng thái `integration ready` |
-| `MAIL-01` | Nhà cung cấp email production | Local/CI dùng Mailpit; staging chưa gửi được thư thật |
-| Nội dung pháp lý | Chủ dự án duyệt nội dung chính sách quyền riêng tư và hướng dẫn xóa dữ liệu | Không bật đăng nhập Facebook ở staging/production |
+| `MAIL-01` | Nhà cung cấp email production | Mã đăng nhập chỉ gửi được trên Mailpit (local/CI) |
+| Nội dung pháp lý | Chủ dự án duyệt chính sách và hướng dẫn xóa dữ liệu | Không bật Facebook ở staging/production |

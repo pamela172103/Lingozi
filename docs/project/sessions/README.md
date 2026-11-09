@@ -24,5 +24,6 @@ Mỗi phiên dùng một file `YYYY-MM-DD-NN-short-topic.md`, theo [mẫu](../se
 - [2026-11-08 · 14 · Dựng design system nền trong Figma](2026-11-08-14-figma-design-system.md).
 - [2026-11-09 · 15 · Theme trên trang xác thực](2026-11-09-15-auth-theme-wireframes.md).
 - [2026-11-09 · 16 · Sửa: trang xác thực không theo theme](2026-11-09-16-auth-no-theme-fix.md).
+- [2026-11-09 · 17 · FEAT-01: đăng nhập bằng mã email](2026-11-09-17-auth-email-code.md).
 
 Thêm liên kết nhật ký mới vào danh sách này sau mỗi phiên.

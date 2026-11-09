@@ -1,7 +1,7 @@
 # ERD tổng thể — Lingozi
 
 - Cập nhật: 2026-11-08.
-- Trạng thái: **đã duyệt** ngày 2026-11-08, ở mức phác thảo tổng thể của Vòng 0. **Sửa đổi 2026-11-08:** `Meaning` không bắt buộc; thêm `Ipa`, `IpaSource`; `Kind` không có mặc định (theo yêu cầu chủ dự án cho FEAT-02). Các điểm mở ở §5 vẫn chốt theo từng vòng. Bảng của từng tính năng được chốt chi tiết ở bước Thiết kế của vòng tương ứng, trong `docs/features/<feature>/srs/`. Migration chỉ được tạo từ phần đã chốt.
+- Trạng thái: **đã duyệt** ngày 2026-11-08, ở mức phác thảo tổng thể của Vòng 0. **Sửa đổi 2026-11-09:** không dùng mật khẩu để đăng nhập; thêm bảng `accounts.EmailLoginCodes`; `PasswordHash` luôn null. **Sửa đổi 2026-11-08:** `Meaning` không bắt buộc; thêm `Ipa`, `IpaSource`; `Kind` không có mặc định (theo yêu cầu chủ dự án cho FEAT-02). Các điểm mở ở §5 vẫn chốt theo từng vòng. Bảng của từng tính năng được chốt chi tiết ở bước Thiết kế của vòng tương ứng, trong `docs/features/<feature>/srs/`. Migration chỉ được tạo từ phần đã chốt.
 - Nguồn:
   - [ADR 0001](../decisions/0001-system-architecture-and-repo-layout.md): mỗi module một schema và một `DbContext`.
   - [ADR 0002](../decisions/0002-backend-stack.md): SQL Server 2025, EF Core 10.
@@ -203,7 +203,7 @@ Các cột Identity không dùng ở MVP (`PhoneNumber`, `TwoFactorEnabled`, …
 | Cột | Kiểu | Null? | Ràng buộc | Diễn giải |
 | --- | --- | --- | --- | --- |
 | `Id` | uniqueidentifier | Không | PK | — |
-| `Type` | tinyint | Không | CHECK: 1 = EmailConfirmation, 2 = PasswordReset | Loại thư |
+| `Type` | tinyint | Không | CHECK: 3 = LoginCode (mã đăng nhập, sửa 2026-11-09); 1 và 2 đã bỏ, không dùng | Loại thư |
 | `ToAddress` | nvarchar(256) | Không | — | Người nhận. Xóa bản ghi đã gửi sau 30 ngày |
 | `PayloadJson` | nvarchar(4000) | Không | JSON hợp lệ (`ISJSON`) | Dữ liệu dựng nội dung thư, ví dụ link có token. Không ghi ra log |
 | `Status` | tinyint | Không | CHECK: 0 = Pending, 1 = Sent, 2 = Failed | — |
@@ -212,6 +212,21 @@ Các cột Identity không dùng ở MVP (`PhoneNumber`, `TwoFactorEnabled`, …
 | `SentAt` | datetime2(3) | Có | — | — |
 | `LastError` | nvarchar(500) | Có | Chỉ lưu mã lỗi hoặc thông điệp đã lọc | Không chứa nội dung thư |
 | `CreatedAt` | datetime2(3) | Không | UTC | — |
+
+**`accounts.EmailLoginCodes`** (ADR 0004, sửa đổi 2026-11-09): mã đăng nhập 6 số gửi qua email.
+
+| Cột | Kiểu | Null? | Ràng buộc | Diễn giải |
+| --- | --- | --- | --- | --- |
+| `Id` | uniqueidentifier | Không | PK | — |
+| `Email` | nvarchar(256) | Không | Đã chuẩn hóa; index (`Email`, `CreatedAt` DESC) | Email nhận mã |
+| `CodeHmac` | varbinary(32) | Không | HMAC-SHA256 của mã; không lưu mã thô | Không bao giờ ghi mã vào log |
+| `ExpiresAt` | datetime2(3) | Không | UTC, sau tạo 10 phút | Hết hạn |
+| `Attempts` | tinyint | Không | Mặc định 0; tối đa 5 | Số lần nhập sai |
+| `ConsumedAt` | datetime2(3) | Có | — | Đã dùng thành công |
+| `InvalidatedAt` | datetime2(3) | Có | — | Bị vô hiệu do sai quá 5 lần hoặc có mã mới |
+| `CreatedAt` | datetime2(3) | Không | UTC | — |
+
+Mỗi email chỉ có một mã còn hiệu lực (mã mới vô hiệu mã cũ). Thư mã dùng `accounts.EmailOutbox` với `Type = 3` (LoginCode).
 
 **`accounts.DataProtectionKeys`** (ADR 0006): bảng chuẩn của `Microsoft.AspNetCore.DataProtection.EntityFrameworkCore`, gồm `Id` int identity PK, `FriendlyName` nvarchar(max), `Xml` nvarchar(max). Lưu khóa mã hóa cookie bền vững để cookie đăng nhập không mất hiệu lực khi container khởi động lại.
 

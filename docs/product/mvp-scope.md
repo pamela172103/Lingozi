@@ -8,7 +8,7 @@ Chi tiết từng tính năng (user story, AC, FR) được viết ở bước T
 
 | Vòng | Tính năng | Có trong MVP | Không có trong MVP |
 | --- | --- | --- | --- |
-| 1 | `FEAT-01` Tài khoản | Đăng ký email + mật khẩu có xác thực email; đăng nhập email, Google và Facebook (email từ Facebook phải được xác thực, ADR 0004); trang hướng dẫn xóa dữ liệu (`Q-12`); đăng xuất; quên/đặt lại mật khẩu; mọi dữ liệu gắn với chủ sở hữu | Xác thực 2 lớp, đăng nhập bằng mạng xã hội khác ngoài Google và Facebook, xóa tài khoản tự phục vụ (xem lại sau MVP) |
+| 1 | `FEAT-01` Tài khoản | Đăng nhập hoặc tạo tài khoản bằng mã 6 số gửi qua email (không mật khẩu); Google; Facebook (xác minh bằng mã gửi tới email, ADR 0004); trang hướng dẫn xóa dữ liệu (`Q-12`); đăng xuất; mọi dữ liệu gắn với chủ sở hữu | Xác thực 2 lớp, đăng nhập bằng mạng xã hội khác ngoài Google và Facebook, xóa tài khoản tự phục vụ (xem lại sau MVP) |
 | 1 | `FEAT-02` Mục kiến thức | Tạo mục với nội dung tiếng Anh và nghĩa (bắt buộc), ví dụ và ghi chú (tùy chọn), loại nội dung; xem, sửa, xóa có xác nhận; gợi ý mục trùng khi tạo | AI tự điền nghĩa, phát âm/audio, ảnh đính kèm, phục hồi sau xóa |
 | 2 | `FEAT-03` Bộ sưu tập, thẻ | Tạo, sửa, xóa bộ sưu tập và thẻ; gán một mục vào nhiều bộ sưu tập và nhiều thẻ; xem thư viện theo dòng thời gian | Bộ sưu tập lồng nhau, chia sẻ bộ sưu tập |
 | 2 | `FEAT-04` Tìm kiếm | Tìm toàn văn theo các trường đã chốt ở `Q-07`; lọc theo bộ sưu tập, thẻ, khoảng thời gian; phân trang | Tìm theo ngữ nghĩa, từ đồng nghĩa |

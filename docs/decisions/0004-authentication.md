@@ -1,6 +1,6 @@
 # ADR 0004 — Xác thực: ASP.NET Core Identity, cookie cùng site, Google, Facebook
 
-- **Trạng thái:** Accepted — chủ dự án duyệt ngày 2026-11-08. Quy tắc liên kết tài khoản Google (`Q-04`) theo phương án mặc định trong ADR này. **Bổ sung 2026-11-08:** chủ dự án yêu cầu thêm đăng nhập Facebook (mục "Bổ sung: Facebook Login" ở cuối).
+- **Trạng thái:** Accepted (2026-11-08), **được sửa đổi 2026-11-09** — xem mục "Sửa đổi 2026-11-09" ở cuối. Phần mật khẩu trong bản gốc không còn hiệu lực. Quy tắc liên kết tài khoản Google (`Q-04`) theo phương án mặc định trong ADR này. **Bổ sung 2026-11-08:** chủ dự án yêu cầu thêm đăng nhập Facebook (mục "Bổ sung: Facebook Login" ở cuối).
 - **Ngày:** 2026-11-08.
 - **Liên quan:** FEAT-01, [PRD](../product/prd.md) NFR-PRIV-001, NFR-SEC-001; [brainstorm](../product/brainstorms/personal-english-knowledge.md) `Q-04`.
 
@@ -82,3 +82,29 @@ Email từ Facebook có thể **không có** (tài khoản Facebook đăng ký b
 **Giao diện:** nút "Tiếp tục với Facebook" và "Tiếp tục với Google" làm theo hướng dẫn thương hiệu chính thức của Meta và Google. Đây là trường hợp được phép dùng logo theo điều khoản của nhà cung cấp, không phải sao chép tài sản của sản phẩm khác.
 
 **Kiểm thử:** luồng Facebook trong test tự động dùng handler giả, đặt trong project test, giống luồng Google. Ba trường hợp trong bảng trên đều phải có integration test.
+
+## Sửa đổi 2026-11-09: đăng nhập bằng mã email, không mật khẩu
+
+Chủ dự án yêu cầu FEAT-01 theo luồng không mật khẩu (đăng nhập bằng mã 6 số gửi qua email), thay cho Apple bằng Facebook. Quyết định này thay thế các mục sau của bản gốc:
+
+- Mục "Lưu trữ" và "Email + mật khẩu": không còn `PasswordHasher`, đặt lại mật khẩu, khóa do sai mật khẩu.
+- Mục "Email từ Facebook" của phần bổ sung: thay bằng quy tắc mã email (dưới đây).
+
+**Quyết định mới:**
+
+- **Mã đăng nhập:** 6 chữ số, sinh bằng bộ sinh ngẫu nhiên an toàn, hiệu lực 10 phút, dùng một lần. Lưu HMAC-SHA256 của mã với khóa từ biến môi trường, không lưu mã thô (`accounts.EmailLoginCodes`).
+- **Sai mã:** 5 lần sai thì vô hiệu mã đó. Mã mới chỉ cấp khi yêu cầu lại, và mã mới vô hiệu mã cũ.
+- **Giới hạn gửi:** 1 mã mỗi 60 giây và 5 mã mỗi giờ cho mỗi email; giới hạn theo IP ở BR-AUTH-013.
+- **Đăng ký và đăng nhập là một luồng:** mã đúng với email mới thì tạo tài khoản (`EmailConfirmed = 1`), với email cũ thì đăng nhập.
+- **Google:** không đổi. Tin cậy khi `email_verified = true`.
+- **Facebook:** không tin email từ Facebook. Luôn gửi mã tới email đó trước khi tạo hoặc liên kết tài khoản. Nếu email đã có tài khoản thì không liên kết trước khi có mã.
+- **Phiên:** cookie HttpOnly, như bản gốc.
+
+**Rủi ro và giảm thiểu:**
+
+- Brute force mã 6 số: giảm bằng 5 lần sai, hiệu lực 10 phút, giới hạn theo email và theo IP.
+- Lộ mã trong log hoặc database: mã lưu dạng HMAC, không ghi log.
+- Phụ thuộc vào email: người dùng mất quyền truy cập email thì mất đăng nhập. Chấp nhận ở MVP; xem xét thêm phương thức dự phòng sau MVP.
+- Nhà cung cấp email production (`MAIL-01`) chưa chọn; mã chỉ gửi được trên Mailpit cho đến khi có nhà cung cấp.
+
+**Trạng thái:** Accepted cho luồng mã email (chủ dự án yêu cầu ngày 2026-11-09). Các con số trong mục "Quyết định mới" (6 số, 10 phút, 5 lần, 60 giây, 5 mã mỗi giờ) là đề xuất của nhóm; chủ dự án cần xác nhận lại trước khi đưa vào code.

@@ -2,7 +2,7 @@
 
 - Cập nhật: 2026-11-08.
 - Giai đoạn: **Vòng 1 — Lưu được kiến thức của riêng mình** (2026-11-08 → 2026-11-21), đang ở bước ② Thiết kế. Vòng 0 xong phần việc. Xem [lộ trình](../product/roadmap.md) §5.
-- Phiên gần nhất: [FEAT-02: hai loại và nguồn từ điển B](sessions/2026-11-08-13-two-kinds-dictionary-api.md).
+- Phiên gần nhất: [FEAT-01: đăng nhập bằng mã email, không mật khẩu](sessions/2026-11-09-17-auth-email-code.md).
 - Đã đọc và gộp 4 commit từ `origin/work` vào `main` theo fast-forward, tới `61514e0`. Bàn giao phiên 05 được lưu cùng commit tài liệu tiếp theo; tra bằng `git log -- docs/project/`.
 
 ## Đã hoàn thành
@@ -48,6 +48,7 @@ Không có công việc triển khai đang dở. Thứ tự dưới đây là đ
 | PLAN-04 | in-progress | Vòng 1: thiết kế FEAT-01 Tài khoản và FEAT-02 Mục kiến thức, rồi phát triển | Thiết kế xong ([accounts](../features/accounts/README.md), [knowledge-items](../features/knowledge-items/README.md)); **chờ chủ dự án duyệt DoR** rồi mới code |
 | ADR-01 | done | Chủ dự án duyệt ADR 0001–0006 | Accepted 2026-11-08; hosting: máy chủ riêng + SQL Server |
 | HOST-01 | todo | Chủ dự án cung cấp thông tin máy chủ `HOST-01`–`HOST-05` (OS/cấu hình, edition SQL Server, domain, nơi backup, staging) | Ghi vào ADR 0006; hạn cuối Vòng 1 |
+| AUTH-01 | todo | Chủ dự án xác nhận quy tắc mã: 6 số, 10 phút, 5 lần sai, 60 giây giữa các lần gửi, 5 mã mỗi giờ (ADR 0004 sửa đổi 2026-11-09) | Trước khi code FEAT-01 |
 | FB-01 | todo | Chủ dự án tạo Meta App (Facebook Login), chuẩn bị URL chính sách quyền riêng tư và chốt cách xóa dữ liệu (`Q-12`) | Có App ID/Secret trong secret store trước khi bật Facebook ở staging; trước đó trạng thái là `integration ready` |
 | MAIL-01 | todo | Chọn nhà cung cấp email production | ADR 0005 cập nhật; hạn trước khi phát hành staging |
 | ERD-01 | done | Chủ dự án duyệt ERD tổng thể | Duyệt 2026-11-08 |
@@ -72,6 +73,7 @@ Không có công việc triển khai đang dở. Thứ tự dưới đây là đ
   - Kiểm tra tay: tắt SQL Server thì `/api/system/status` trả `database: unavailable`, bật lại thì `ok`.
   - Script token: 0 lỗi tương phản; `tokens.css` khớp với nguồn.
   - CI GitHub Actions run #1 (Node 26, ubuntu-24.04): 4/4 job success.
+- Phiên 2026-11-09-17: FEAT-01 v0.3 theo luồng đăng nhập không mật khẩu (mã 6 số qua email); Facebook thay Apple; ADR 0004 sửa đổi; ERD thêm `EmailLoginCodes`; PRD 0.3.0. Các con số bảo mật của mã chờ chủ dự án xác nhận.
 - Phiên 2026-11-09-16: sửa lỗi phiên 15. Trang đăng nhập và đăng ký KHÔNG theo theme; đã gỡ theme, bộ chọn theme, vùng trang trí và TC-AUTH-039 khỏi wireframe và test case.
 - Phiên 2026-11-09-15: (đã sửa ở phiên 16) thêm theme vào trang xác thực.
 - Phiên 2026-11-08-14: dựng biến và trang xem trước design system nền trong Figma (file tIrqU4XF6eEOTraGqv2EpY). Gói Free giới hạn một chế độ mỗi bộ biến, nên theme tách thành hai bộ.

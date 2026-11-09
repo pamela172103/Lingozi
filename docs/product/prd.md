@@ -3,7 +3,7 @@
 ## Metadata
 
 - **Product name:** Lingozi.
-- **Phiên bản:** 0.2.0 (Lean PRD cho Vòng 0).
+- **Phiên bản:** 0.3.0 (Lean PRD cho Vòng 0).
 - **Trạng thái:** Draft, chờ chủ dự án duyệt.
 - **Product Owner:** chủ dự án Lingozi.
 - **Cập nhật:** 2026-11-08.
@@ -68,7 +68,7 @@ Chi tiết từng tính năng ở [mvp-scope.md](mvp-scope.md).
 
 | Feature ID | Module | Tính năng | Ưu tiên | Persona | Vòng |
 | --- | --- | --- | --- | --- | --- |
-| `FEAT-01` | `AUTH` | Đăng ký và đăng nhập bằng email + mật khẩu, đăng nhập Google và Facebook, đăng xuất, quên mật khẩu, thư viện riêng tư theo chủ sở hữu | P0 | PER-01, PER-02 | 1 |
+| `FEAT-01` | `AUTH` | Đăng ký và đăng nhập bằng mã email (không mật khẩu), đăng nhập Google và Facebook, đăng xuất, thư viện riêng tư theo chủ sở hữu | P0 | PER-01, PER-02 | 1 |
 | `FEAT-02` | `LIB` | Tạo, xem, sửa, xóa mục kiến thức; gợi ý mục trùng | P0 | PER-01, PER-02 | 1 |
 | `FEAT-03` | `ORG` | Bộ sưu tập, thẻ, xem theo dòng thời gian | P0 | PER-01, PER-02 | 2 |
 | `FEAT-04` | `SRCH` | Tìm kiếm và lọc theo bộ sưu tập, thẻ, thời gian | P0 | PER-01, PER-02 | 2 |
@@ -111,3 +111,4 @@ Các ngưỡng là **đề xuất**, được xác nhận khi duyệt PRD và ki
 | --- | --- | --- |
 | 0.1.0 | 2026-11-08 | Bản Lean PRD đầu tiên cho Vòng 0 |
 | 0.2.0 | 2026-11-08 | Thêm đăng nhập Facebook vào FEAT-01 theo yêu cầu chủ dự án |
+| 0.3.0 | 2026-11-09 | FEAT-01 không dùng mật khẩu: đăng nhập và đăng ký bằng mã 6 số gửi qua email; Facebook xác minh bằng mã; bỏ đặt lại mật khẩu |

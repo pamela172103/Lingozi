@@ -23,7 +23,7 @@
 | 9 | Quyền riêng tư | Thư viện hoàn toàn riêng tư, không chia sẻ công khai | Tổng quan §4.7 |
 | 10 | Cách phát triển | Agile theo vòng 2 tuần; mỗi vòng thiết kế → phát triển → demo một vài tính năng | Chủ dự án, 2026-11-08 |
 | 11 | Thiết bị ưu tiên | **Desktop-first**, responsive xuống tablet và phone | Chủ dự án, 2026-11-08 |
-| 12 | Đăng nhập MVP | **Email + mật khẩu**, **Google** và **Facebook** (Facebook bổ sung sau, cùng ngày) | Chủ dự án, 2026-11-08 |
+| 12 | Đăng nhập MVP | **Mã 6 số gửi qua email** (không mật khẩu), **Google** và **Facebook**. Sửa 2026-11-09: bỏ mật khẩu theo luồng đã chọn; Facebook thay Apple | Chủ dự án, 2026-11-08 và 2026-11-09 |
 | 14 | Form nhập theo loại | Chọn loại trước, mỗi loại chỉ bắt buộc một trường; nghĩa gợi ý và không bắt buộc; từ vựng có phiên âm IPA tự điền, người dùng sửa hoặc thêm được. **Vòng 1 chỉ mở 2 loại: Từ vựng và Ngữ pháp** (chủ dự án, 2026-11-08). Các loại khác giữ trong danh mục để mở sau | Chủ dự án, 2026-11-08 |
 | 13 | Theme MVP | Default + **Coquette** (`Q-09`) | Chủ dự án, 2026-11-08 |
 

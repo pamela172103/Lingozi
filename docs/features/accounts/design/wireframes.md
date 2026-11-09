@@ -1,59 +1,31 @@
 # Wireframe — FEAT-01 Tài khoản
 
-- Cập nhật: 2026-11-09 (v0.2: thêm theme cho trang xác thực). Trạng thái: **chờ duyệt**.
+- Cập nhật: 2026-11-09 (v0.2: trang xác thực không theo theme, không có vùng trang trí). Trạng thái: **chờ duyệt**.
 - Figma đang BLOCKED (`DES-01`), nên wireframe ASCII này là căn cứ cho DoR. Kích thước và màu sắc theo [design system](../../../architecture/design-system.md); thiết kế chính ở 1280–1440 px. Các trang xác thực dùng bố cục một cột, căn giữa, rộng tối đa 440 px, nên hiển thị giống nhau trên mọi breakpoint (chỉ đổi lề).
-- Trang xác thực **không có sidebar**. Chỉ có logo trên cùng, và vùng trang trí (`lz-decor`) ở nửa trái màn hình khi rộng từ 1024 px trở lên.
+- Trang xác thực (`/auth/*`) **không có sidebar** và **không theo theme**. Giao diện cố định cho mọi khách chưa đăng nhập: một cột, logo trên cùng, không có vùng trang trí và không có bộ chọn theme.
+- Theme (Mặc định, Coquette) chỉ áp dụng sau khi đăng nhập, ở các trang trong app shell theo [design system](../../../architecture/design-system.md) §4–§5.
 
-## Theme trên trang xác thực (cập nhật 2026-11-09)
-
-Phiên bản trước chỉ vẽ một giao diện, không thể hiện theme. Từ bản này, mọi trang xác thực (`/auth/*`) hiển thị theo theme đang chọn, với hai theme ở MVP: **Mặc định** và **Coquette** ([design system](../../../architecture/design-system.md) §5).
-
-**Quy tắc chọn theme trước khi đăng nhập** (đề xuất, chờ chủ dự án duyệt):
-
-- Khách chưa đăng nhập chưa có `UserPreferences`, nên dùng theme **Mặc định**.
-- Có bộ chọn theme nhỏ ở góc trên bên phải (`Giao diện: Mặc định | Coquette`). Lựa chọn lưu trong cookie `lz-theme` (không định danh, chỉ chứa tên theme).
-- Sau khi đăng nhập, theme lấy từ `personalization.UserPreferences` ([ERD](../../../architecture/erd.md) §3.4). Nếu cookie khác với tài khoản, tài khoản thắng và cookie được cập nhật.
-- Trên màn hình xác thực, bộ chọn theme **không** ghi vào tài khoản; chỉ ghi khi đã đăng nhập ở `/settings/account`.
-
-**Token áp dụng cho trang xác thực:**
-
-| Thành phần | Mặc định | Coquette |
-| --- | --- | --- |
-| Nền trang | `color/bg/canvas` `#F7F7F8` | `color/bg/canvas` `#FBF1F3` |
-| Thẻ form | `color/bg/surface` `#FFFFFF`, `radius.card` = lg | `color/bg/surface` `#FFFAFB`, `radius.card` = xl |
-| Tiêu đề trang | Be Vietnam Pro, semibold 30 | Playfair Display (font display), semibold 30, chỉ dùng từ cỡ 20 px trở lên |
-| Nút chính | `color/accent/default` `#4F46E5`, chữ `color/accent/on` | `color/accent/default` `#B03A62`, chữ `color/accent/on` |
-| Link | `color/accent/text` `#4338CA` | `color/accent/text` `#962F53` |
-| Viền ô nhập | `color/border/strong` `#7E7E8C` | `color/border/strong` `#9C7884` |
-| Vòng focus | `color/focus/ring` `#4F46E5` | `color/focus/ring` `#B03A62` |
-| Vùng trang trí | `color/decor/primary` `#C7C3F7` (hình học) | `color/decor/primary` `#F4B6C8`, `color/decor/secondary` `#E9D5B7` (nơ, ren) |
-| Lỗi / thành công | `status/danger` `#B91C1C`, `status/success` `#15803D` | `status/danger` `#B42332`, `status/success` `#2E7044` |
-
-Ở Coquette, nút Xóa và thông báo lỗi có cùng tông đỏ hồng với nút chính. Lỗi luôn kèm icon và chữ (`DS-P3` trong design system §1), không chỉ dựa vào màu.
-
-## W-AUTH-01 Đăng nhập (`/auth/login`) — theme Mặc định
-
-Góc trên phải có bộ chọn theme (xem mục Theme ở trên). Theme đang chọn là "Mặc định".
+## W-AUTH-01 Đăng nhập (`/auth/login`)
 
 ```text
-┌──────────────── 1440 ────────────────────────────────────────────────┐
-│ [Logo Lingozi]                                                       │
-│ ┌──────── vùng trang trí ────────┐   ┌──────── 440 ────────────────┐ │
-│ │ (minh họa theo theme,          │   │ Đăng nhập                 h1│ │
-│ │  aria-hidden, ẩn khi           │   │                             │ │
-│ │  data-decor=reduced)           │   │ [G  Tiếp tục với Google    ]│ │
-│ │                                │   │ [f  Tiếp tục với Facebook  ]│ │
-│ │                                │   │ ──────────── hoặc ───────── │ │
-│ │                                │   │ Email *                     │ │
-│ │                                │   │ [__________________________]│ │
-│ │                                │   │ Mật khẩu *       [Hiện]     │ │
-│ │                                │   │ [__________________________]│ │
-│ │                                │   │ Quên mật khẩu?          link│ │
-│ │                                │   │ [        Đăng nhập         ]│ │
-│ │                                │   │ Chưa có tài khoản? Đăng ký  │ │
-│ └────────────────────────────────┘   └─────────────────────────────┘ │
-│                                Chính sách quyền riêng tư · Xóa dữ liệu│
-└──────────────────────────────────────────────────────────────────────┘
+┌──────────────────────────── 1440 ─────────────────────────────┐
+│                         [Logo Lingozi]                          │
+│                  ┌──────────── 440 ────────────┐                │
+│                  │ Đăng nhập                 h1 │                │
+│                  │                              │                │
+│                  │ [G  Tiếp tục với Google    ] │                │
+│                  │ [f  Tiếp tục với Facebook  ] │                │
+│                  │ ──────────── hoặc ────────── │                │
+│                  │ Email *                      │                │
+│                  │ [__________________________] │                │
+│                  │ Mật khẩu *       [Hiện]      │                │
+│                  │ [__________________________] │                │
+│                  │ Quên mật khẩu?          link │                │
+│                  │ [        Đăng nhập         ] │                │
+│                  │ Chưa có tài khoản? Đăng ký   │                │
+│                  └──────────────────────────────┘                │
+│            Chính sách quyền riêng tư · Xóa dữ liệu              │
+└──────────────────────────────────────────────────────────────────┘
 ```
 
 | Trạng thái | Hiển thị |
@@ -66,34 +38,9 @@ Góc trên phải có bộ chọn theme (xem mục Theme ở trên). Theme đang
 | `?confirmed=1` | `InlineAlert` (success): "Email đã được xác thực. Hãy đăng nhập." |
 | Nhà cung cấp chưa được cấu hình | Ẩn nút của nhà cung cấp đó (API `start` trả 404); không hiện nút không có tác dụng |
 
-### W-AUTH-01b Đăng nhập — theme Coquette
-
-```text
-┌──────────────── 1440 ────────────────────────────────────────────────────┐
-│ [Logo Lingozi]                         Giao diện: [ Mặc định | ● Coquette ]│
-│ ┌──── vùng trang trí (nền #FBF1F3) ───┐   ┌──── thẻ #FFFAFB, radius xl ──┐ │
-│ │   ～❀～ nơ, ren, hoa nhỏ (decor)     │   │ Đăng nhập  (Playfair, 30)  h1 │ │
-│ │   ♡  ♡  trang trí aria-hidden       │   │                              │ │
-│ │                                    │   │ [G  Tiếp tục với Google    ]  │ │
-│ │                                    │   │ [f  Tiếp tục với Facebook  ]  │ │
-│ │                                    │   │ ──────────── hoặc ───────── │ │
-│ │                                    │   │ Email *                      │ │
-│ │                                    │   │ [__________________________] │ │
-│ │                                    │   │ Mật khẩu *       [Hiện]      │ │
-│ │                                    │   │ Quên mật khẩu?   (#962F53)   │ │
-│ │                                    │   │ [   Đăng nhập  #B03A62   ]   │ │
-│ │                                    │   │ Chưa có tài khoản? Đăng ký   │ │
-│ └────────────────────────────────────┘   └──────────────────────────────┘ │
-└──────────────────────────────────────────────────────────────────────────┘
-```
-
-- Nút chính màu `#B03A62`, chữ trắng. Vòng focus cùng màu nhấn (`#B03A62`), đủ tương phản ở cả hai nền.
-- Lỗi đăng nhập (401-01) dùng `status/danger` `#B42332` kèm icon ✗ và chữ, không chỉ dựa vào màu.
-- Trang trí chỉ nằm trong vùng bên trái, không đè lên ô nhập hay nút (`DS-P1`).
-
 ## W-AUTH-02 Đăng ký (`/auth/register`)
 
-Dùng cùng bố cục và bộ chọn theme với W-AUTH-01 / W-AUTH-01b (cả hai theme). Nội dung:
+Bố cục như W-AUTH-01, gồm:
 
 - Hai nút Google và Facebook.
 - Ô "Tên hiển thị (không bắt buộc)", "Email *", "Mật khẩu *" kèm gợi ý luôn hiển thị: "8–128 ký tự, có chữ và số".
@@ -107,7 +54,6 @@ Lỗi hiện dưới từng ô (`FormField`), và focus vào ô lỗi đầu ti�
 
 ```text
 ┌──────── 440 ───────────────────────────┐
-│ (minh họa phong bì, lz-decor)          │
 │ Kiểm tra hộp thư của bạn            h1 │
 │ Nếu email hợp lệ, chúng tôi đã gửi một │
 │ liên kết. Liên kết có hiệu lực 24 giờ. │

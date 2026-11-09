@@ -49,11 +49,8 @@
 | `TC-AUTH-036` | NFR-A11Y-001 | E2E | axe trên mọi trang `/auth/*`, `/settings/account` ở cả hai theme | Không có vi phạm serious/critical |
 | `TC-AUTH-037` | NFR-PRIV-001 | INT | Cookie của user A gọi `/api/auth/me` | Chỉ trả dữ liệu của A |
 | `TC-AUTH-038` | Outbox (ADR 0005) | INT | Mailpit tắt → worker retry; bật lại | Thư được gửi; Attempts tăng; quá 5 lần thì Failed; log không chứa token |
-| `TC-AUTH-039` | NFR-A11Y-001, NFR-UX-001 (theme trên `/auth/*`, W-AUTH-01/01b/02) | E2E | Mở /auth/login và /auth/register khi chưa đăng nhập; bấm bộ chọn "Coquette", tải lại; chọn "Mặc định" | Nền, thẻ, nút chính, vòng focus và tiêu đề đúng token của theme đang chọn; cookie `lz-theme` lưu tên theme và không chứa dữ liệu cá nhân; sau khi đăng nhập theme lấy từ UserPreferences; axe không có vi phạm serious/critical ở cả hai theme |
 
 ## 2. Ma trận truy vết
-
-Theme trên trang xác thực: TC-AUTH-039 (W-AUTH-01, 01b, 02).
 
 | FR | Story | Test case |
 | --- | --- | --- |

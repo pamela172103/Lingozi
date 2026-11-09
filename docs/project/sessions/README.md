@@ -23,5 +23,6 @@ Mỗi phiên dùng một file `YYYY-MM-DD-NN-short-topic.md`, theo [mẫu](../se
 - [2026-11-08 · 13 · FEAT-02: hai loại và nguồn từ điển B](2026-11-08-13-two-kinds-dictionary-api.md).
 - [2026-11-08 · 14 · Dựng design system nền trong Figma](2026-11-08-14-figma-design-system.md).
 - [2026-11-09 · 15 · Theme trên trang xác thực](2026-11-09-15-auth-theme-wireframes.md).
+- [2026-11-09 · 16 · Sửa: trang xác thực không theo theme](2026-11-09-16-auth-no-theme-fix.md).
 
 Thêm liên kết nhật ký mới vào danh sách này sau mỗi phiên.

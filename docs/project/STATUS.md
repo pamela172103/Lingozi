@@ -72,6 +72,7 @@ Không có công việc triển khai đang dở. Thứ tự dưới đây là đ
   - Kiểm tra tay: tắt SQL Server thì `/api/system/status` trả `database: unavailable`, bật lại thì `ok`.
   - Script token: 0 lỗi tương phản; `tokens.css` khớp với nguồn.
   - CI GitHub Actions run #1 (Node 26, ubuntu-24.04): 4/4 job success.
+- Phiên 2026-11-09-15: vẽ lại wireframe trang xác thực (W-AUTH-01, 01b, 02) để hiện theme Mặc định và Coquette; thêm TC-AUTH-039. Quy tắc chọn theme trước khi đăng nhập là đề xuất, chờ duyệt.
 - Phiên 2026-11-08-14: dựng biến và trang xem trước design system nền trong Figma (file tIrqU4XF6eEOTraGqv2EpY). Gói Free giới hạn một chế độ mỗi bộ biến, nên theme tách thành hai bộ.
 - Phiên 2026-11-08-13: chủ dự án chọn phương án B và chỉ mở 2 loại ở Vòng 1. Không truy cập được dictionaryapi.dev từ máy cloud nên chưa kiểm tra điều khoản. Script truy vết: 45/45 AC, 50 TC.
 - Phiên 2026-11-08-12: cập nhật FEAT-02 v0.2 và ERD (sửa đổi có ghi); ADR 0007 Proposed; script truy vết: 45/45 AC có test case, 50 TC.

@@ -12,5 +12,5 @@ Hiện có: trang "Trạng thái hệ thống" (Vòng 0) và, từ US-AUTH-01, t
 | `src/styles/tokens.css` | **Sinh tự động** từ `docs/architecture/design-tokens.json`; không sửa tay |
 | `messages/vi.json`      | Chuỗi giao diện tiếng Việt                                                |
 
-- Biến môi trường: `AUTH_EXTERNAL_PROVIDERS` (danh sách `google,facebook` được bật; để trống thì ẩn nút, vì US-AUTH-04/05 chưa có); `API_ORIGIN`, là origin của API mà server Next.js gọi tới. Next.js rewrite `/api/*` sang origin này, nên trình duyệt không bao giờ gọi API trực tiếp.
+- Biến môi trường: `API_ORIGIN`, là origin của API mà server Next.js gọi tới. Next.js rewrite `/api/*` sang origin này, nên trình duyệt không bao giờ gọi API trực tiếp.
 - Lệnh chạy và kiểm tra: xem [hướng dẫn chạy local](../../docs/guides/local-development.md).

@@ -20,28 +20,26 @@ describe("LoginForm", () => {
     requestEmailCode.mockReset();
   });
 
-  it("starts with the email method only and no password field (W-AUTH-01)", () => {
+  it("shows Google and Facebook as in Figma but disabled, then the email option (W-AUTH-01)", () => {
     renderWithIntl(<LoginForm />);
 
     expect(screen.getByRole("heading", { level: 1, name: "Đăng nhập" })).toBeInTheDocument();
     expect(screen.getByText("Đăng nhập hoặc tạo tài khoản mới.")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Tiếp tục với email" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Tiếp tục với Google" })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "Tiếp tục với Facebook" })).toBeDisabled();
+    expect(screen.getByText("hoặc")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Tiếp tục với email" })).toBeEnabled();
     expect(screen.queryByLabelText(/mật khẩu/iu)).not.toBeInTheDocument();
-    expect(screen.queryByText(/Google|Facebook/u)).not.toBeInTheDocument();
   });
 
-  it("shows Google and Facebook only when they are configured, before the email option", () => {
-    renderWithIntl(<LoginForm providers={["google", "facebook"]} />);
+  it("explains to screen readers why the provider buttons do nothing yet", () => {
+    renderWithIntl(<LoginForm />);
 
-    expect(screen.getByRole("link", { name: "Tiếp tục với Google" })).toHaveAttribute(
-      "href",
-      "/api/auth/external/google/start",
-    );
-    expect(screen.getByRole("link", { name: "Tiếp tục với Facebook" })).toHaveAttribute(
-      "href",
-      "/api/auth/external/facebook/start",
-    );
-    expect(screen.getByText("hoặc")).toBeInTheDocument();
+    const google = screen.getByRole("button", { name: "Tiếp tục với Google" });
+    expect(google).toHaveAccessibleDescription("Google chưa khả dụng: đang chờ cấu hình đăng nhập.");
+    fireEvent.click(google);
+    expect(push).not.toHaveBeenCalled();
+    expect(requestEmailCode).not.toHaveBeenCalled();
   });
 
   it("reveals the email field with focus and the Gửi mã button (W-AUTH-02)", async () => {

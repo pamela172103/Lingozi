@@ -45,7 +45,7 @@ Chạy web ở terminal khác (cổng 3000):
 set -a; . ./.env; set +a; pnpm --filter @lingozi/web dev
 ```
 
-Mở `http://localhost:3000/auth/login` để thử đăng nhập bằng mã email (US-AUTH-01): nhập email, bấm "Gửi mã", rồi lấy mã trong Mailpit. Nút Google và Facebook chỉ hiện khi đặt `AUTH_EXTERNAL_PROVIDERS` (cần US-AUTH-04/05). Mở `http://localhost:3000`: trang "Trạng thái hệ thống" phải hiện API và Database đều "✓ Hoạt động". Trình duyệt chỉ gọi `http://localhost:3000/api/*`; Next.js chuyển tiếp sang API (ADR 0001, ADR 0004). Mailpit có giao diện tại `http://localhost:8025`.
+Mở `http://localhost:3000/auth/login` để thử đăng nhập bằng mã email (US-AUTH-01): nhập email, bấm "Gửi mã", rồi lấy mã trong Mailpit. Nút Google và Facebook hiện nhưng chưa bấm được (cần US-AUTH-04/05). Mở `http://localhost:3000`: trang "Trạng thái hệ thống" phải hiện API và Database đều "✓ Hoạt động". Trình duyệt chỉ gọi `http://localhost:3000/api/*`; Next.js chuyển tiếp sang API (ADR 0001, ADR 0004). Mailpit có giao diện tại `http://localhost:8025`.
 
 ## 4. Kiểm tra
 

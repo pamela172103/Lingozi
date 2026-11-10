@@ -7,12 +7,11 @@ import { useEffect, useId, useRef, useState, type FormEvent } from "react";
 import { requestEmailCode } from "@/lib/auth/api";
 import { isValidEmail, normalizeEmail } from "@/lib/auth/email";
 
-type Provider = "google" | "facebook";
 type FormError = { kind: "invalid-email" } | { kind: "session-error" } | { kind: "network-error" } | null;
 
 const buttonBase =
   "flex h-12 w-full items-center justify-center rounded-control px-4 text-sm font-medium transition-colors";
-const outlineButton = `${buttonBase} border border-border-strong bg-surface text-primary hover:bg-subtle`;
+const outlineButton = `${buttonBase} border border-border-strong bg-surface text-primary enabled:hover:bg-subtle disabled:cursor-not-allowed`;
 const primaryButton = `${buttonBase} bg-accent text-on-accent hover:brightness-95`;
 
 function Spinner() {
@@ -26,9 +25,10 @@ function Spinner() {
 
 /**
  * US-AUTH-01: sign-in methods and the "request email code" step (Figma W-AUTH-01…04).
- * `providers` lists the external sign-in buttons that are configured; they stay hidden until US-AUTH-04 and US-AUTH-05.
+ * Google and Facebook are drawn as in Figma but disabled until US-AUTH-04 and US-AUTH-05 exist,
+ * so no button looks usable when it is not (AGENTS.md §6).
  */
-export function LoginForm({ providers = [] }: { providers?: Provider[] }) {
+export function LoginForm() {
   const t = useTranslations("Auth");
   const router = useRouter();
   const [emailStep, setEmailStep] = useState(false);
@@ -38,6 +38,8 @@ export function LoginForm({ providers = [] }: { providers?: Provider[] }) {
   const [waitSeconds, setWaitSeconds] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
   const errorId = useId();
+  const googleNoteId = useId();
+  const facebookNoteId = useId();
 
   useEffect(() => {
     if (emailStep) inputRef.current?.focus();
@@ -100,22 +102,24 @@ export function LoginForm({ providers = [] }: { providers?: Provider[] }) {
       <p className="mt-4 text-base text-secondary">{t("login.subtitle")}</p>
 
       <div className="mt-4 flex flex-col gap-4">
-        {providers.includes("google") && (
-          <a href="/api/auth/external/google/start" className={outlineButton}>
-            {t("login.google")}
-          </a>
-        )}
-        {providers.includes("facebook") && (
-          <a href="/api/auth/external/facebook/start" className={outlineButton}>
-            {t("login.facebook")}
-          </a>
-        )}
+        <button type="button" disabled aria-describedby={googleNoteId} className={outlineButton}>
+          {t("login.google")}
+        </button>
+        <span id={googleNoteId} className="sr-only">
+          {t("login.comingSoon", { provider: "Google" })}
+        </span>
+        <button type="button" disabled aria-describedby={facebookNoteId} className={outlineButton}>
+          {t("login.facebook")}
+        </button>
+        <span id={facebookNoteId} className="sr-only">
+          {t("login.comingSoon", { provider: "Facebook" })}
+        </span>
       </div>
 
-      {providers.length > 0 && <p className="mt-4 text-xs text-muted">{t("login.or")}</p>}
+      <p className="mt-4 text-xs text-muted">{t("login.or")}</p>
 
       {emailStep ? (
-        <form noValidate onSubmit={onSubmit} className={providers.length > 0 ? "mt-4" : "mt-6"}>
+        <form noValidate onSubmit={onSubmit} className="mt-4">
           <label htmlFor="email" className="block text-sm font-semibold text-primary">
             {t("login.emailLabel")} <span aria-hidden="true">*</span>
           </label>
@@ -156,11 +160,7 @@ export function LoginForm({ providers = [] }: { providers?: Provider[] }) {
           </button>
         </form>
       ) : (
-        <button
-          type="button"
-          onClick={() => setEmailStep(true)}
-          className={`${primaryButton} ${providers.length > 0 ? "mt-4" : "mt-6"}`}
-        >
+        <button type="button" onClick={() => setEmailStep(true)} className={`${primaryButton} mt-4`}>
           {t("login.email")}
         </button>
       )}

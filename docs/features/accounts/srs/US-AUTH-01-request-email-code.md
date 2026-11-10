@@ -186,7 +186,7 @@ _Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe A
 - Ô email ẩn cho tới khi bấm "Tiếp tục với email".
 - Không có ô mật khẩu và không có liên kết "Quên mật khẩu".
 - Chân trang có liên kết tới `/privacy` và `/data-deletion`.
-- Nút của nhà cung cấp chưa được cấu hình bị ẩn (API `start` trả 404).
+- Nút Google và Facebook hiện nhưng không bấm được cho tới US-AUTH-04 và US-AUTH-05; mô tả cho trình đọc màn hình: "chưa khả dụng".
 
 ### W-AUTH-02 — Đăng nhập: bước nhập email
 
@@ -310,7 +310,7 @@ _Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe A
 Khác biệt đã biết giữa Figma và bản code:
 
 - Figma không có biểu tượng "G" và "f" trên nút Google và Facebook, và chỉ có chữ "hoặc" căn trái thay cho đường kẻ; bản code theo Figma.
-- Nút Google và Facebook bị ẩn cho tới khi US-AUTH-04 và US-AUTH-05 được làm và nhà cung cấp được cấu hình (biến `AUTH_EXTERNAL_PROVIDERS`), theo ghi chú của W-AUTH-01.
+- Nút Google và Facebook hiện đúng như Figma nhưng ở trạng thái không bấm được (`disabled`) cho tới khi US-AUTH-04 và US-AUTH-05 được làm; có mô tả cho trình đọc màn hình. Không dùng nút giả có vẻ hoạt động (AGENTS.md §6). W-AUTH-01 ghi lại việc này.
 - Chân trang "Chính sách quyền riêng tư · Xóa dữ liệu" là chữ thường cho tới US-AUTH-10 (trang đích chưa có).
 - Ở W-AUTH-05, nút "Xác nhận" và "Không nhận được mã?" bị vô hiệu cho tới US-AUTH-02 và US-AUTH-07; "Đổi email" quay về `/auth/login`.
 - W-AUTH-04 trong Figma ghi 30 giây (ví dụ); số giây thật lấy từ `Retry-After` và đếm ngược mỗi giây. Nút vẫn giữ màu như Figma, nhưng có `aria-disabled="true"` và không gửi khi bấm.

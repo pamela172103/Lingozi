@@ -187,7 +187,7 @@ _Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe A
 - Ô email ẩn cho tới khi bấm "Tiếp tục với email".
 - Không có ô mật khẩu và không có liên kết "Quên mật khẩu".
 - Chân trang có liên kết tới `/privacy` và `/data-deletion`.
-- Nút của nhà cung cấp chưa được cấu hình bị ẩn (API `start` trả 404).
+- Nút Google và Facebook hiện nhưng không bấm được cho tới US-AUTH-04 và US-AUTH-05; mô tả cho trình đọc màn hình: "chưa khả dụng".
 
 ## 6. API
 

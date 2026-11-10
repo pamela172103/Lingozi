@@ -27,7 +27,8 @@
       "emailLabel": "Email",
       "sendCode": "Gửi mã",
       "sending": "Đang gửi mã",
-      "sendCodeWait": "Gửi mã (đợi {seconds} giây)"
+      "sendCodeWait": "Gửi mã (đợi {seconds} giây)",
+      "comingSoon": "{provider} chưa khả dụng: đang chờ cấu hình đăng nhập."
     },
     "code": {
       "title": "Nhập mã",

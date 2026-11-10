@@ -2,7 +2,7 @@
 
 - Tính năng: FEAT-01 Tài khoản và thư viện riêng tư (`accounts`).
 - User story: [US-AUTH-01](../requirements/user-stories.md#us-auth-01--yêu-cầu-mã-đăng-nhập-bằng-email).
-- Phiên bản 0.3 (2026-11-09). Trạng thái: **chờ duyệt**.
+- Phiên bản 0.4 (2026-11-10). Trạng thái thiết kế: **chờ duyệt**. Trạng thái triển khai: đã code backend, frontend và test (xem [README tính năng](../README.md#trạng-thái-triển-khai)).
 - Tài liệu chung: [README.md](README.md) (danh mục FR, BR, ERR, NFR, quy ước API, ngữ cảnh).
 - Test case: [testing/test-cases.md](../testing/test-cases.md).
 - Skill OpenBA áp dụng: `srs` (FR, BR, ERR, NFR), `user-flow`, `sequence`, `wireframe-ascii`, `api-design`, `ac`.
@@ -295,6 +295,27 @@ _Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe A
 - Đếm ngược 10 phút theo thời hạn của mã.
 - Không có ô mật khẩu.
 
+### Thiết kế Figma (ảnh xuất, nguồn để code)
+
+Ảnh xuất từ file Figma Lingozi (khung 1440 × 1024, xuất rộng 2000 px). Đặt trong [design-assets/](../design-assets/). Nếu Figma và wireframe ASCII khác nhau, ảnh Figma là căn cứ cho giao diện; AC và SRS là căn cứ cho hành vi.
+
+| Wireframe | Ảnh Figma |
+| --- | --- |
+| W-AUTH-01 | [W-AUTH-01-login-initial.webp](../design-assets/W-AUTH-01-login-initial.webp) |
+| W-AUTH-02 | [W-AUTH-02-email-step.webp](../design-assets/W-AUTH-02-email-step.webp) |
+| W-AUTH-03 | [W-AUTH-03-email-invalid.webp](../design-assets/W-AUTH-03-email-invalid.webp) |
+| W-AUTH-04 | [W-AUTH-04-rate-limited.webp](../design-assets/W-AUTH-04-rate-limited.webp) |
+| W-AUTH-05 | [W-AUTH-05-code-entry.webp](../design-assets/W-AUTH-05-code-entry.webp) |
+
+Khác biệt đã biết giữa Figma và bản code:
+
+- Figma không có biểu tượng "G" và "f" trên nút Google và Facebook, và chỉ có chữ "hoặc" căn trái thay cho đường kẻ; bản code theo Figma.
+- Nút Google và Facebook bị ẩn cho tới khi US-AUTH-04 và US-AUTH-05 được làm và nhà cung cấp được cấu hình (biến `AUTH_EXTERNAL_PROVIDERS`), theo ghi chú của W-AUTH-01.
+- Chân trang "Chính sách quyền riêng tư · Xóa dữ liệu" là chữ thường cho tới US-AUTH-10 (trang đích chưa có).
+- Ở W-AUTH-05, nút "Xác nhận" và "Không nhận được mã?" bị vô hiệu cho tới US-AUTH-02 và US-AUTH-07; "Đổi email" quay về `/auth/login`.
+- W-AUTH-04 trong Figma ghi 30 giây (ví dụ); số giây thật lấy từ `Retry-After` và đếm ngược mỗi giây. Nút vẫn giữ màu như Figma, nhưng có `aria-disabled="true"` và không gửi khi bấm.
+- Cỡ chữ đo từ ảnh: tiêu đề 30 px, đoạn mô tả 16 px, nút và nhãn 14 px, chữ phụ và chân trang 12 px; thẻ rộng 440 px, đệm 32 px, nút cao 48 px.
+
 ## 6. API
 
 _Skill `api-design`; lỗi theo Problem Details (RFC 9457) như ADR 0002. Quy ước chung ở [README.md](README.md)._
@@ -341,3 +362,4 @@ Lỗi (`application/problem+json`):
 | Phiên bản | Ngày | Thay đổi |
 | --- | --- | --- |
 | 0.3 | 2026-11-09 | Tách từ `srs.md` và `design/` thành file riêng cho story; thêm FR chi tiết, sequence, state, bảng AC → FR/BR/ERR/TC. |
+| 0.4 | 2026-11-10 | Thêm ảnh Figma (`design-assets/`) và các khác biệt đã biết; ghi nhận triển khai. |

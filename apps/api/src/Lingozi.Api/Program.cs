@@ -2,6 +2,7 @@ using Lingozi.Accounts;
 using Lingozi.Accounts.Persistence;
 using Lingozi.Api.Endpoints;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,7 +16,28 @@ if (string.IsNullOrWhiteSpace(connectionString))
 
 builder.Services.AddProblemDetails();
 builder.Services.AddOpenApi();
-builder.Services.AddAccountsModule(connectionString);
+builder.Services.AddAccountsModule(connectionString, builder.Configuration);
+builder.Services.AddAuthRateLimiting();
+builder.Services.AddAntiforgery(options =>
+{
+    options.HeaderName = "X-XSRF-TOKEN";
+    options.Cookie.Name = "lingozi.antiforgery";
+    options.Cookie.SameSite = SameSiteMode.Strict;
+    options.Cookie.HttpOnly = true;
+    options.Cookie.SecurePolicy = builder.Environment.IsDevelopment() || builder.Environment.EnvironmentName == "Testing"
+        ? CookieSecurePolicy.SameAsRequest
+        : CookieSecurePolicy.Always;
+});
+// Next.js proxies /api/* to this API (ADR 0001), so the client IP arrives in X-Forwarded-For. Only loopback is trusted
+// by default; add the reverse proxy addresses in Proxy:TrustedProxies when it runs on another host or container.
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+    foreach (var address in builder.Configuration.GetSection("Proxy:TrustedProxies").Get<string[]>() ?? [])
+    {
+        options.KnownProxies.Add(System.Net.IPAddress.Parse(address));
+    }
+});
 builder.Services.AddHealthChecks()
     .AddDbContextCheck<AccountsDbContext>("database", tags: ["ready"]);
 builder.Services.AddSingleton(TimeProvider.System);
@@ -28,8 +50,10 @@ if (app.Configuration.GetValue<bool>("Database:ApplyMigrationsOnStartup"))
     await scope.ServiceProvider.GetRequiredService<AccountsDbContext>().Database.MigrateAsync();
 }
 
+app.UseForwardedHeaders();
 app.UseExceptionHandler();
 app.UseStatusCodePages();
+app.UseRateLimiter();
 
 if (app.Environment.IsDevelopment())
 {
@@ -43,6 +67,7 @@ else
 app.MapHealthChecks("/health/live", new HealthCheckOptions { Predicate = _ => false });
 app.MapHealthChecks("/health/ready", new HealthCheckOptions { Predicate = check => check.Tags.Contains("ready") });
 app.MapSystemEndpoints();
+app.MapAuthEndpoints();
 
 await app.RunAsync();
 

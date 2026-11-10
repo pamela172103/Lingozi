@@ -1,0 +1,6 @@
+root = true
+
+# EF Core generated migrations: not hand-edited, so style analyzers do not apply.
+[**/Persistence/Migrations/*.cs]
+generated_code = true
+dotnet_diagnostic.CA1861.severity = none

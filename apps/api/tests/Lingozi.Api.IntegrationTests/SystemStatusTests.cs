@@ -5,7 +5,8 @@ using Microsoft.Data.SqlClient;
 
 namespace Lingozi.Api.IntegrationTests;
 
-public sealed class SystemStatusTests(SqlServerApiFactory factory) : IClassFixture<SqlServerApiFactory>
+[Collection(SqlServerApiFactory.CollectionName)]
+public sealed class SystemStatusTests(SqlServerApiFactory factory)
 {
     [Fact]
     public async Task StatusReportsDatabaseOkAndNoPendingMigrations()

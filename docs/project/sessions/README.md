@@ -28,5 +28,6 @@ Mỗi phiên dùng một file `YYYY-MM-DD-NN-short-topic.md`, theo [mẫu](../se
 - [2026-11-09 · 18 · SRS theo từng user story](2026-11-09-18-srs-per-story.md).
 
 - [2026-11-09 · 19 · Wireframe đủ cho từng user story](2026-11-09-19-wireframes-per-story.md).
+- [2026-11-10 · 20 · Code US-AUTH-01](2026-11-10-20-code-us-auth-01.md).
 
 Thêm liên kết nhật ký mới vào danh sách này sau mỗi phiên.

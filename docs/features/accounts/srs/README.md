@@ -171,6 +171,8 @@ Theo `rules/03` và `rules/11`. Lỗi trả về dạng `application/problem+jso
 - **Bảng mới:** `accounts.EmailLoginCodes` (ERD §3.1 đã sửa): `Id`, `Email` (đã chuẩn hóa), `CodeHmac`, `ExpiresAt`, `Attempts`, `ConsumedAt`, `InvalidatedAt`, `CreatedAt`. Chỉ một mã còn hiệu lực cho mỗi email (mã mới vô hiệu mã cũ).
 - **Bảng cũ không dùng:** cột `PasswordHash` của `accounts.Users` giữ nullable nhưng luôn null ở v0.3. Không có Identity password flow. Bảng Identity `UserTokens` không còn dùng cho đặt lại mật khẩu.
 - **Outbox:** thư mã đăng nhập vào `accounts.EmailOutbox` với loại `LoginCode` (ERD §3.1). Nội dung thư không ghi ra log.
+- **Mã trong outbox (làm rõ BR-AUTH-001, 2026-11-10):** thư cần mã thô nên `PayloadJson` giữ mã dưới dạng mã hóa bằng Data Protection (`{"v":1,"data":"<mã hóa>"}`, vẫn là JSON hợp lệ) và được xóa (`data: null`) ngay khi thư gửi xong hoặc thất bại lần cuối. Bảng `EmailLoginCodes` chỉ có HMAC của mã gắn với email. Chủ dự án cần xác nhận cách làm này.
+- **Giới hạn gửi:** theo email dùng bảng `EmailLoginCodes` và khóa ứng dụng của SQL Server theo email để chống chạy đua; theo IP dùng bộ giới hạn trong bộ nhớ (một instance API; cần chuyển sang kho dùng chung khi chạy nhiều instance). Giới hạn theo IP đọc từ `X-Forwarded-For` của reverse proxy tin cậy (`Proxy:TrustedProxies`).
 - **Tên hiển thị:** không hỏi khi đăng ký. Người dùng có thể đặt trong Cài đặt tài khoản (ngoài phạm vi các story hiện tại).
 
 ## 6. Phụ lục

@@ -14,5 +14,41 @@
     "unavailable": "Không kết nối được",
     "apiUnreachable": "Website không gọi được API. Kiểm tra API đã chạy và biến API_ORIGIN.",
     "unknown": "Không xác định"
+  },
+  "Auth": {
+    "login": {
+      "title": "Đăng nhập",
+      "metaTitle": "Đăng nhập · Lingozi",
+      "subtitle": "Đăng nhập hoặc tạo tài khoản mới.",
+      "google": "Tiếp tục với Google",
+      "facebook": "Tiếp tục với Facebook",
+      "or": "hoặc",
+      "email": "Tiếp tục với email",
+      "emailLabel": "Email",
+      "sendCode": "Gửi mã",
+      "sending": "Đang gửi mã",
+      "sendCodeWait": "Gửi mã (đợi {seconds} giây)"
+    },
+    "code": {
+      "title": "Nhập mã",
+      "metaTitle": "Nhập mã · Lingozi",
+      "intro": "Chúng tôi đã gửi mã 6 số tới {email}.",
+      "validity": "Mã có hiệu lực 10 phút (còn {remaining}).",
+      "groupLabel": "Mã đăng nhập 6 số",
+      "digitLabel": "Chữ số {index} trong 6",
+      "confirm": "Xác nhận",
+      "notReceived": "Không nhận được mã?",
+      "changeEmail": "Đổi email"
+    },
+    "footer": {
+      "privacy": "Chính sách quyền riêng tư",
+      "dataDeletion": "Xóa dữ liệu"
+    },
+    "error": {
+      "400-01": "Email không đúng định dạng.",
+      "429-01": "Vui lòng đợi {seconds} giây trước khi gửi lại.",
+      "400-05": "Phiên làm việc không hợp lệ. Vui lòng tải lại trang.",
+      "network": "Mất kết nối. Vui lòng thử lại."
+    }
   }
 }

@@ -17,7 +17,7 @@ Hướng dẫn chạy khung ứng dụng (walking skeleton) của Vòng 0: websi
 cp .env.example .env
 ```
 
-Sửa `MSSQL_SA_PASSWORD` và mật khẩu trong `ConnectionStrings__Lingozi` thành cùng một giá trị mạnh. Không commit `.env`; file này đã có trong `.gitignore`. Giá trị có dấu `;` phải nằm trong ngoặc kép.
+Sửa `MSSQL_SA_PASSWORD` và mật khẩu trong `ConnectionStrings__Lingozi` thành cùng một giá trị mạnh. Tạo khóa mã đăng nhập bằng `openssl rand -base64 32` và dán vào `Auth__LoginCodeHmacKey` (API không khởi động nếu thiếu hoặc ngắn hơn 32 byte). Mã đăng nhập được gửi qua Mailpit (`Email__SmtpHost=localhost`); thư xem được tại `http://localhost:8025`. Không commit `.env`; file này đã có trong `.gitignore`. Giá trị có dấu `;` phải nằm trong ngoặc kép.
 
 ## 3. Chạy
 
@@ -45,7 +45,7 @@ Chạy web ở terminal khác (cổng 3000):
 set -a; . ./.env; set +a; pnpm --filter @lingozi/web dev
 ```
 
-Mở `http://localhost:3000`: trang "Trạng thái hệ thống" phải hiện API và Database đều "✓ Hoạt động". Trình duyệt chỉ gọi `http://localhost:3000/api/*`; Next.js chuyển tiếp sang API (ADR 0001, ADR 0004). Mailpit có giao diện tại `http://localhost:8025`.
+Mở `http://localhost:3000/auth/login` để thử đăng nhập bằng mã email (US-AUTH-01): nhập email, bấm "Gửi mã", rồi lấy mã trong Mailpit. Nút Google và Facebook chỉ hiện khi đặt `AUTH_EXTERNAL_PROVIDERS` (cần US-AUTH-04/05). Mở `http://localhost:3000`: trang "Trạng thái hệ thống" phải hiện API và Database đều "✓ Hoạt động". Trình duyệt chỉ gọi `http://localhost:3000/api/*`; Next.js chuyển tiếp sang API (ADR 0001, ADR 0004). Mailpit có giao diện tại `http://localhost:8025`.
 
 ## 4. Kiểm tra
 
@@ -67,7 +67,7 @@ Kiểm tra migration khớp với model:
 cd apps/api && dotnet ef migrations has-pending-model-changes --project src/Modules/Accounts/Lingozi.Accounts --startup-project src/Modules/Accounts/Lingozi.Accounts --context AccountsDbContext
 ```
 
-Chạy E2E (cần web, API và SQL Server đang chạy). Lần đầu cài trình duyệt:
+Chạy E2E (cần web, API, SQL Server và Mailpit đang chạy; API chạy với `Auth__RequestCodePerIpPer10Minutes=1000` để test không chạm giới hạn theo IP). Lần đầu cài trình duyệt:
 
 ```bash
 pnpm --filter @lingozi/e2e exec playwright install chromium

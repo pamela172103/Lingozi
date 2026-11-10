@@ -87,8 +87,14 @@ jobs:
             echo "ConnectionStrings__Lingozi=\"Server=localhost,1433;Database=Lingozi;User Id=sa;Password=$PW;TrustServerCertificate=true;Encrypt=true\""
             echo "ASPNETCORE_ENVIRONMENT=Development"
             echo "API_ORIGIN=http://localhost:5080"
+            echo "Auth__LoginCodeHmacKey=$(openssl rand -base64 32)"
+            echo "Auth__RequestCodePerIpPer10Minutes=1000"
+            echo "Email__SmtpHost=localhost"
+            echo "Email__SmtpPort=1025"
+            echo "Email__SmtpUseTls=false"
+            echo "Email__PollIntervalSeconds=1"
           } > .env
-      - run: docker compose up -d --wait sqlserver
+      - run: docker compose up -d --wait sqlserver mailpit
       - run: pnpm install --frozen-lockfile
       - run: pnpm --filter @lingozi/web build
         env:

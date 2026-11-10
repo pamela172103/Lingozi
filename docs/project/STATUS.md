@@ -1,8 +1,8 @@
 # Trạng thái dự án Lingozi
 
-- Cập nhật: 2026-11-08.
+- Cập nhật: 2026-11-10.
 - Giai đoạn: **Vòng 1 — Lưu được kiến thức của riêng mình** (2026-11-08 → 2026-11-21), đang ở bước ② Thiết kế. Vòng 0 xong phần việc. Xem [lộ trình](../product/roadmap.md) §5.
-- Phiên gần nhất: [Wireframe đủ cho từng user story](sessions/2026-11-09-19-wireframes-per-story.md).
+- Phiên gần nhất: [Code US-AUTH-01](sessions/2026-11-10-20-code-us-auth-01.md).
 - Đã đọc và gộp 4 commit từ `origin/work` vào `main` theo fast-forward, tới `61514e0`. Bàn giao phiên 05 được lưu cùng commit tài liệu tiếp theo; tra bằng `git log -- docs/project/`.
 
 ## Đã hoàn thành
@@ -26,8 +26,8 @@
 | --- | --- |
 | Tài liệu sản phẩm | Có tổng quan đã duyệt (`docs/product/overview.md`); có brainstorm/discovery tái lập; PRD và MVP ở trạng thái Draft chờ duyệt; discovery chưa có bằng chứng người dùng |
 | Nội dung học | Có cấu trúc; chưa có giáo trình, bài học hoặc bài tập |
-| Website | Khung Next.js 16.4.5, TS 6.0.3 strict, Tailwind 4, next-intl; trang "Trạng thái hệ thống" gọi API thật. Chưa có tính năng nghiệp vụ |
-| Backend/database | ASP.NET Core Minimal APIs .NET 10.0.14, EF Core 10.0.14, SQL Server 2025; module Accounts với migration `InitialDataProtectionKeys`; endpoint health và `/api/system/status`. Chưa có tính năng nghiệp vụ |
+| Website | Khung Next.js 16.4.5, TS 6.0.3 strict, Tailwind 4, next-intl; trang "Trạng thái hệ thống"; `/auth/login` và `/auth/code` (US-AUTH-01, theo ảnh Figma), gọi API thật. Chưa nhập và xác nhận được mã (US-AUTH-02) |
+| Backend/database | ASP.NET Core Minimal APIs .NET 10.0.14, EF Core 10.0.14, SQL Server 2025; module Accounts với migration `InitialDataProtectionKeys` và `AddEmailCodeSignIn`; endpoint health, `/api/system/status`, `/api/auth/antiforgery`, `/api/auth/email-code/request`; outbox gửi thư (SMTP, Mailpit ở local). Mới có US-AUTH-01 |
 | Kiểm thử ứng dụng | xUnit v3 + Testcontainers (3 test), Vitest (6 test), Playwright + axe (8 test, desktop và mobile); CI GitHub Actions `.github/workflows/ci.yml` |
 | OpenBA | Đã nhập và kiểm tra tính toàn vẹn, đường dẫn; chưa xác minh toàn bộ khả năng thực thi của 56 skill |
 | Đồng bộ GitHub | Đã gộp `origin/work` (`61514e0`) vào `main` cục bộ; phiên 05 sẽ push cùng bàn giao và đối chiếu GitHub sau push |
@@ -45,7 +45,7 @@ Không có công việc triển khai đang dở. Thứ tự dưới đây là đ
 | PLAN-03 | done | Xác minh phiên bản/tương thích và thiết kế chi tiết theo stack người dùng cung cấp (ADR Accepted; ghi nhận khi dựng khung trong ADR 0001–0003) | Bằng chứng kiểm tra và quyết định tại `docs/decisions/`; không tự thay đổi stack |
 | SKEL-01 | done | Walking skeleton + CI (Vòng 0) | Build/test/E2E đạt ở local; CI GitHub run #1 (commit `2c98e96`) có 4/4 job success |
 | ADR-07 | in-progress | Nguồn phiên âm: API từ điển miễn phí (B), giọng Anh-Anh (2026-11-08) | Cổng còn mở: (1) pháp lý về CC BY-SA 3.0 (share-alike) khi lưu phiên âm; (2) trang điều khoản chưa tìm được; (3) độ phủ Anh-Anh ~6/13 từ mẫu, cần đo; US-LIB-08/09 chỉ ghi hoạt động khi đạt |
-| PLAN-04 | in-progress | Vòng 1: thiết kế FEAT-01 Tài khoản và FEAT-02 Mục kiến thức, rồi phát triển | Thiết kế xong ([accounts](../features/accounts/README.md), [knowledge-items](../features/knowledge-items/README.md)); **chờ chủ dự án duyệt DoR** rồi mới code |
+| PLAN-04 | in-progress | Vòng 1: thiết kế FEAT-01 Tài khoản và FEAT-02 Mục kiến thức, rồi phát triển | Thiết kế xong ([accounts](../features/accounts/README.md), [knowledge-items](../features/knowledge-items/README.md)); chờ chủ dự án duyệt DoR; US-AUTH-01 đã code (2026-11-10), các story còn lại chưa |
 | ADR-01 | done | Chủ dự án duyệt ADR 0001–0006 | Accepted 2026-11-08; hosting: máy chủ riêng + SQL Server |
 | HOST-01 | todo | Chủ dự án cung cấp thông tin máy chủ `HOST-01`–`HOST-05` (OS/cấu hình, edition SQL Server, domain, nơi backup, staging) | Ghi vào ADR 0006; hạn cuối Vòng 1 |
 | AUTH-01 | done | Chủ dự án xác nhận quy tắc mã: 6 số, 10 phút, dùng một lần; 5 lần sai thì vô hiệu; 60 giây giữa các lần gửi; 5 mã mỗi giờ (xác nhận 2026-11-09) | ADR 0004 sửa đổi chuyển sang Accepted; chưa code |
@@ -103,3 +103,4 @@ Không có công việc triển khai đang dở. Thứ tự dưới đây là đ
 
 Trong phiên cloud trên môi trường "Lingozi": .NET SDK được setup script cài sẵn (cần kiểm tra lại `dotnet --version` ở phiên mới, vì script chưa được chứng minh trên container mới). Docker daemon không tự chạy; khởi động bằng `nohup dockerd > /tmp/dockerd.log 2>&1 &`, rồi kiểm tra bằng `docker info`. Trạng thái này đi cùng repository; không phụ thuộc lịch sử chat hoặc các tiến trình đang chạy.
 - Phiên 2026-11-09-19: vẽ 74 wireframe ASCII đủ mọi màn hình và trạng thái nêu trong AC của 19 story (W-AUTH-01 → 23, W-LIB-01 → 30); bảng AC có cột Wireframe; quy tắc ghi ở `AGENTS.md` §14 và `docs/features/README.md`; `check_feature_docs.py` kiểm tra tự động (OK). Chưa render trên GitHub.
+- Phiên 2026-11-10-20: code US-AUTH-01. `dotnet build -warnaserror` sạch; `dotnet test` 40/40 (SQL Server 2025 + Mailpit); web lint/typecheck/format đạt, Vitest 50/50, `pnpm build` đạt; Playwright 24/24 trên desktop và Pixel 7 (có gửi mã thật qua Mailpit, axe sạch). Chưa chạy CI GitHub với thay đổi này; chưa gửi thư thật (chờ `MAIL-01`).

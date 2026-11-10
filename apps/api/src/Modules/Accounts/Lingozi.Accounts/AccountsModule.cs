@@ -36,6 +36,7 @@ public static class AccountsModule
         services.AddSingleton<LoginCodeHasher>();
         services.AddSingleton<EmailOutboxPayload>();
         services.AddScoped<LoginCodeRequestService>();
+        services.AddScoped<LoginCodeVerifier>();
         services.AddScoped<IEmailSender, SmtpEmailSender>();
         services.AddScoped<EmailOutboxDispatcher>();
         services.AddHostedService<EmailOutboxWorker>();

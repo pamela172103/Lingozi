@@ -1,5 +1,6 @@
 using Lingozi.Accounts;
 using Lingozi.Accounts.Persistence;
+using Lingozi.Api.Authentication;
 using Lingozi.Api.Endpoints;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -18,6 +19,7 @@ builder.Services.AddProblemDetails();
 builder.Services.AddOpenApi();
 builder.Services.AddAccountsModule(connectionString, builder.Configuration);
 builder.Services.AddAuthRateLimiting();
+builder.Services.AddSessionCookies();
 builder.Services.AddAntiforgery(options =>
 {
     options.HeaderName = "X-XSRF-TOKEN";
@@ -54,6 +56,7 @@ app.UseForwardedHeaders();
 app.UseExceptionHandler();
 app.UseStatusCodePages();
 app.UseRateLimiter();
+app.UseAuthentication();
 
 if (app.Environment.IsDevelopment())
 {

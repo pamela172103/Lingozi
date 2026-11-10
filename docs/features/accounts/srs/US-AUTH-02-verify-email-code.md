@@ -2,7 +2,7 @@
 
 - Tính năng: FEAT-01 Tài khoản và thư viện riêng tư (`accounts`).
 - User story: [US-AUTH-02](../requirements/user-stories.md#us-auth-02--nhập-mã-để-đăng-nhập-hoặc-tạo-tài-khoản).
-- Phiên bản 0.3 (2026-11-09). Trạng thái: **chờ duyệt**.
+- Phiên bản 0.4 (2026-11-10). Trạng thái thiết kế: **chờ duyệt**. Trạng thái triển khai: đã code backend, frontend và test (xem [README tính năng](../README.md#trạng-thái-triển-khai)).
 - Tài liệu chung: [README.md](README.md) (danh mục FR, BR, ERR, NFR, quy ước API, ngữ cảnh).
 - Test case: [testing/test-cases.md](../testing/test-cases.md).
 - Skill OpenBA áp dụng: `srs` (FR, BR, ERR, NFR), `user-flow`, `sequence`, `state`, `wireframe-ascii`, `api-design`, `ac`.
@@ -312,6 +312,22 @@ _Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe A
 
 - Sau khi đăng nhập, người dùng chuyển tới "Thư viện" [W-LIB-01](../../knowledge-items/srs/US-LIB-03-list-items.md) (thuộc FEAT-02).
 
+### Thiết kế Figma (ảnh xuất, nguồn để code)
+
+Ảnh xuất từ file Figma Lingozi, lưu trong [design-assets/](../design-assets/). W-AUTH-05 dùng chung ảnh với [US-AUTH-01](US-AUTH-01-request-email-code.md#thiết-kế-figma-ảnh-xuất-nguồn-để-code).
+
+| Wireframe | Ảnh Figma |
+| --- | --- |
+| W-AUTH-06 | [W-AUTH-06-code-wrong.webp](../design-assets/W-AUTH-06-code-wrong.webp) |
+| W-AUTH-07 | [W-AUTH-07-code-locked.webp](../design-assets/W-AUTH-07-code-locked.webp) |
+| W-AUTH-08 | [W-AUTH-08-code-expired.webp](../design-assets/W-AUTH-08-code-expired.webp) |
+
+Khác biệt đã biết giữa Figma và bản code:
+
+- Figma W-AUTH-07 ghi "Mã này đã bị khóa." và hiện cả ô mã bị vô hiệu. Bản code làm đúng như vậy; sau khi bị khóa, nhập lại sẽ nhận ERR-AUTH-400-03 (cùng thông báo "hết hạn hoặc đã dùng") vì mã không còn dùng được.
+- "Gửi mã mới" đưa người dùng về `/auth/login` để gửi mã mới. Chức năng gửi lại mã đầy đủ (kể cả nút "Không nhận được mã?") thuộc US-AUTH-07, chưa làm; nút đó vẫn vô hiệu.
+- Sau khi đăng nhập, bản code chuyển tới `/library`, trang chỉ là chỗ giữ chỗ cho đến FEAT-02.
+
 ## 6. API
 
 _Skill `api-design`; lỗi theo Problem Details (RFC 9457) như ADR 0002. Quy ước chung ở [README.md](README.md)._
@@ -359,3 +375,4 @@ Lỗi sai mã:
 | Phiên bản | Ngày | Thay đổi |
 | --- | --- | --- |
 | 0.3 | 2026-11-09 | Tách từ `srs.md` và `design/` thành file riêng cho story; thêm FR chi tiết, sequence, state, bảng AC → FR/BR/ERR/TC. |
+| 0.4 | 2026-11-10 | Thêm ảnh Figma W-AUTH-06 đến 08 và khác biệt đã biết; ghi nhận triển khai; quyết định: mã đã thay thế hoặc đã dùng trả 400-03, không tính là lần sai. |

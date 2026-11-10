@@ -18,6 +18,10 @@ public sealed class EmailOutboxTests(SqlServerApiFactory factory)
             s.AddSingleton<TimeProvider>(clock);
             s.AddScoped<IEmailSender>(_ => sender);
         }));
+        // The outbox is shared by the whole test collection. Earlier tests leave pending mail that would fill the
+        // dispatcher's batch first, so clear it here; this test only checks its own message.
+        await custom.WithDbAsync(async db =>
+            await db.EmailOutbox.Where(m => m.Status == EmailOutboxStatus.Pending).ExecuteDeleteAsync(TestContext.Current.CancellationToken));
         var email = TestExtensions.NewEmail();
         using var client = new AuthClient(custom);
         using var accepted = await client.RequestCodeAsync(email);

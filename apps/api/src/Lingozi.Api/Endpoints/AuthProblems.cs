@@ -5,12 +5,19 @@ namespace Lingozi.Api.Endpoints;
 /// <summary>Problem Details (RFC 9457) responses with an <c>ERR-AUTH-*</c> code, as in the SRS error matrix (ADR 0002).</summary>
 internal static class AuthProblems
 {
-    public static IResult Create(int status, string title, string code) =>
-        Results.Problem(
-            type: "about:blank",
-            title: title,
-            statusCode: status,
-            extensions: new Dictionary<string, object?> { ["code"] = code });
+    public static IResult Create(int status, string title, string code, IDictionary<string, object?>? extra = null)
+    {
+        var extensions = extra is null ? new Dictionary<string, object?>() : new Dictionary<string, object?>(extra);
+        extensions["code"] = code;
+        return Results.Problem(type: "about:blank", title: title, statusCode: status, extensions: extensions);
+    }
+
+    public static IResult WrongCode(int remainingAttempts) =>
+        Create(StatusCodes.Status401Unauthorized, "Unauthorized", "ERR-AUTH-401-01", new Dictionary<string, object?> { ["remainingAttempts"] = remainingAttempts });
+
+    public static IResult CodeLocked() => Create(StatusCodes.Status403Forbidden, "Forbidden", "ERR-AUTH-403-02");
+
+    public static IResult CodeUnavailable() => Create(StatusCodes.Status400BadRequest, "Bad Request", "ERR-AUTH-400-03");
 
     public static IResult InvalidEmail() => Create(StatusCodes.Status400BadRequest, "Bad Request", "ERR-AUTH-400-01");
 

@@ -1,10 +1,6 @@
-using System.Security.Cryptography;
-using System.Text;
 using Lingozi.Accounts.Email;
 using Lingozi.Accounts.Persistence;
-using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
-using System.Data;
 
 namespace Lingozi.Accounts.Authentication;
 
@@ -48,7 +44,7 @@ public sealed class LoginCodeRequestService(
         {
             db.ChangeTracker.Clear();
             await using var transaction = await db.Database.BeginTransactionAsync(ct);
-            await LockEmailAsync(normalized, ct);
+            await EmailLock.AcquireAsync(db, normalized, ct);
 
             var now = clock.GetUtcNow().UtcDateTime;
             var recent = await db.EmailLoginCodes
@@ -111,20 +107,5 @@ public sealed class LoginCodeRequestService(
         }
 
         return 0;
-    }
-
-    /// <summary>Serializes concurrent requests for one email so the limits cannot be bypassed in a race.</summary>
-    private async Task LockEmailAsync(string normalizedEmail, CancellationToken cancellationToken)
-    {
-        var resource = "login-code:" + Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(normalizedEmail)));
-        var result = new SqlParameter("@result", SqlDbType.Int) { Direction = ParameterDirection.Output };
-        await db.Database.ExecuteSqlRawAsync(
-            "EXEC @result = sp_getapplock @Resource = @resource, @LockMode = 'Exclusive', @LockOwner = 'Transaction', @LockTimeout = 5000",
-            [result, new SqlParameter("@resource", resource)],
-            cancellationToken);
-        if ((int)result.Value < 0)
-        {
-            throw new InvalidOperationException("Could not obtain the per-email lock.");
-        }
     }
 }

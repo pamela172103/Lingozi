@@ -37,9 +37,10 @@
 | Story | Trạng thái | Ghi chú |
 | --- | --- | --- |
 | US-AUTH-01 | **Đã code (2026-11-10), chờ chủ dự án duyệt** | Backend, frontend theo ảnh Figma, test. Còn thiếu để chạy thật ở production: `MAIL-01` (nhà cung cấp email); khi đó trạng thái là `integration ready` (gửi được tới Mailpit, chưa gửi tới hộp thư thật). Chưa có: xác minh mã (US-AUTH-02), gửi lại mã (US-AUTH-07), nút Google/Facebook (US-AUTH-04/05), trang pháp lý (US-AUTH-10). |
-| US-AUTH-02 → 10 | Chưa code | |
+| US-AUTH-02 | **Đã code (2026-11-10), chờ chủ dự án duyệt** | Xác minh mã, tạo tài khoản lần đầu, cookie phiên, chuyển tới `/library` (chỗ giữ chỗ). Test: 9 integration, 61 Vitest, E2E. Chưa có: gửi lại mã (US-AUTH-07). |
+| US-AUTH-03 → 10 | Chưa code | |
 
-Ảnh Figma dùng để code nằm ở [design-assets/](design-assets/). Quyết định và giả định khi triển khai US-AUTH-01 nằm ở [nhật ký phiên 20](../../project/sessions/2026-11-10-20-code-us-auth-01.md).
+Ảnh Figma dùng để code nằm ở [design-assets/](design-assets/). Quyết định và giả định khi triển khai nằm ở [nhật ký phiên 20](../../project/sessions/2026-11-10-20-code-us-auth-01.md) (US-AUTH-01) và [nhật ký phiên 21](../../project/sessions/2026-11-10-21-code-us-auth-02.md) (US-AUTH-02).
 
 ## Hồ sơ
 

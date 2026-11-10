@@ -3,6 +3,7 @@ using System.Net.Http.Json;
 using System.Text.Json;
 using Lingozi.Accounts.Persistence;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Lingozi.Api.IntegrationTests;
@@ -66,6 +67,16 @@ internal sealed class AuthClient : IDisposable
         return await _client.SendAsync(request, TestContext.Current.CancellationToken);
     }
 
+    public async Task<HttpResponseMessage> VerifyCodeAsync(string? email, string? code)
+    {
+        using var request = new HttpRequestMessage(HttpMethod.Post, "/api/auth/email-code/verify")
+        {
+            Content = JsonContent.Create(new { email, code }),
+        };
+        request.Headers.Add("X-XSRF-TOKEN", await GetTokenAsync());
+        return await _client.SendAsync(request, TestContext.Current.CancellationToken);
+    }
+
     public void Dispose() => _client.Dispose();
 }
 
@@ -78,6 +89,21 @@ internal static class TestExtensions
     }
 
     public static string NewEmail() => $"user-{Guid.NewGuid():N}@example.com";
+
+    /// <summary>Opens the newest sign-in code sent to <paramref name="email"/> (tests only: production never returns codes).</summary>
+    public static async Task<string> LatestCodeAsync(this WebApplicationFactory<Program> factory, string email)
+    {
+        await using var scope = factory.Services.CreateAsyncScope();
+        var db = scope.ServiceProvider.GetRequiredService<Lingozi.Accounts.Persistence.AccountsDbContext>();
+        var message = await db.EmailOutbox.Where(m => m.ToAddress == email)
+            .OrderByDescending(m => m.CreatedAt).FirstAsync(TestContext.Current.CancellationToken);
+        var payload = scope.ServiceProvider.GetRequiredService<Lingozi.Accounts.Email.EmailOutboxPayload>()
+            .Open<Lingozi.Accounts.Email.LoginCodePayload>(message.PayloadJson);
+        return payload!.Code;
+    }
+
+    /// <summary>A 6-digit code that is certainly not <paramref name="code"/>.</summary>
+    public static string OtherCodeThan(string code) => code == "000000" ? "111111" : "000000";
 
     public static async Task WithDbAsync(this WebApplicationFactory<Program> factory, Func<AccountsDbContext, Task> action)
     {

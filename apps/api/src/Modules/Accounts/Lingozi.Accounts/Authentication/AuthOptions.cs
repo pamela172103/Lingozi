@@ -16,6 +16,10 @@ public sealed class AuthOptions
     [Range(1, 100_000)]
     public int RequestCodePerIpPer10Minutes { get; set; } = 10;
 
+    /// <summary>Code verification attempts allowed per IP address per 10 minutes (BR-AUTH-013).</summary>
+    [Range(1, 100_000)]
+    public int VerifyCodePerIpPer10Minutes { get; set; } = 20;
+
     internal byte[] GetKeyBytes()
     {
         try

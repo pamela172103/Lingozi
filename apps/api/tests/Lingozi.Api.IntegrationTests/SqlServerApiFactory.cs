@@ -23,6 +23,7 @@ public class SqlServerApiFactory : WebApplicationFactory<Program>, IAsyncLifetim
         // Throwaway key for tests only (32 bytes, base64). Real environments set Auth__LoginCodeHmacKey.
         builder.UseSetting("Auth:LoginCodeHmacKey", Convert.ToBase64String(new byte[32].Select((_, i) => (byte)(i + 1)).ToArray()));
         builder.UseSetting("Auth:RequestCodePerIpPer10Minutes", "1000");
+        builder.UseSetting("Auth:VerifyCodePerIpPer10Minutes", "1000");
     }
 
     public override async ValueTask DisposeAsync()

@@ -1,4 +1,4 @@
-import { requestEmailCode } from "./api";
+import { requestEmailCode, verifyEmailCode } from "./api";
 
 type FetchCall = { url: string; init?: RequestInit };
 
@@ -83,5 +83,56 @@ describe("requestEmailCode", () => {
 
     mockFetch([new Response("oops", { status: 500 })]);
     expect(await requestEmailCode("an@example.com")).toEqual({ kind: "network-error" });
+  });
+});
+
+describe("verifyEmailCode", () => {
+  beforeEach(() => {
+    document.cookie = "XSRF-TOKEN=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/";
+  });
+  afterEach(() => vi.unstubAllGlobals());
+
+  it("posts the email and code with the token and returns the redirect", async () => {
+    const calls = mockFetch([new Response(JSON.stringify({ redirectTo: "/library" }), { status: 200 })]);
+
+    expect(await verifyEmailCode("an@example.com", "123456")).toEqual({ kind: "signed-in", redirectTo: "/library" });
+    expect(calls[1]?.url).toBe("/api/auth/email-code/verify");
+    expect(calls[1]?.init?.body).toBe(JSON.stringify({ email: "an@example.com", code: "123456" }));
+  });
+
+  it("maps 401-01 to wrong-code with the remaining attempts", async () => {
+    mockFetch([
+      new Response(JSON.stringify({ code: "ERR-AUTH-401-01", remainingAttempts: 3 }), {
+        status: 401,
+        headers: { "Content-Type": "application/problem+json" },
+      }),
+    ]);
+    expect(await verifyEmailCode("an@example.com", "000000")).toEqual({ kind: "wrong-code", remainingAttempts: 3 });
+  });
+
+  it("maps 403-02 to locked and 400-03 to unavailable", async () => {
+    mockFetch([problem(403, "ERR-AUTH-403-02")]);
+    expect(await verifyEmailCode("an@example.com", "000000")).toEqual({ kind: "locked" });
+
+    mockFetch([problem(400, "ERR-AUTH-400-03")]);
+    expect(await verifyEmailCode("an@example.com", "000000")).toEqual({ kind: "unavailable" });
+  });
+
+  it("maps 429 to rate-limited using Retry-After", async () => {
+    mockFetch([problem(429, "ERR-AUTH-429-01", { "Retry-After": "12" })]);
+    expect(await verifyEmailCode("an@example.com", "000000")).toEqual({ kind: "rate-limited", retryAfterSeconds: 12 });
+  });
+
+  it("refreshes the token once on ERR-AUTH-400-05", async () => {
+    mockFetch([
+      problem(400, "ERR-AUTH-400-05"),
+      new Response(JSON.stringify({ redirectTo: "/library" }), { status: 200 }),
+    ]);
+    expect(await verifyEmailCode("an@example.com", "123456")).toEqual({ kind: "signed-in", redirectTo: "/library" });
+  });
+
+  it("reports network-error when fetch fails", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new TypeError("offline")));
+    expect(await verifyEmailCode("an@example.com", "123456")).toEqual({ kind: "network-error" });
   });
 });

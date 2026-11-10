@@ -67,7 +67,7 @@ Kiểm tra migration khớp với model:
 cd apps/api && dotnet ef migrations has-pending-model-changes --project src/Modules/Accounts/Lingozi.Accounts --startup-project src/Modules/Accounts/Lingozi.Accounts --context AccountsDbContext
 ```
 
-Chạy E2E (cần web, API, SQL Server và Mailpit đang chạy; API chạy với `Auth__RequestCodePerIpPer10Minutes=1000` để test không chạm giới hạn theo IP). Lần đầu cài trình duyệt:
+Chạy E2E (cần web, API, SQL Server và Mailpit đang chạy; API chạy với `Auth__RequestCodePerIpPer10Minutes=1000` và `Auth__VerifyCodePerIpPer10Minutes=1000` để test không chạm giới hạn theo IP). Lần đầu cài trình duyệt:
 
 ```bash
 pnpm --filter @lingozi/e2e exec playwright install chromium

@@ -2,7 +2,7 @@
 
 - Cập nhật: 2026-11-10.
 - Giai đoạn: **Vòng 1 — Lưu được kiến thức của riêng mình** (2026-11-08 → 2026-11-21), đang ở bước ② Thiết kế. Vòng 0 xong phần việc. Xem [lộ trình](../product/roadmap.md) §5.
-- Phiên gần nhất: [Code US-AUTH-01](sessions/2026-11-10-20-code-us-auth-01.md).
+- Phiên gần nhất: [Code US-AUTH-02](sessions/2026-11-10-21-code-us-auth-02.md).
 - Đã đọc và gộp 4 commit từ `origin/work` vào `main` theo fast-forward, tới `61514e0`. Bàn giao phiên 05 được lưu cùng commit tài liệu tiếp theo; tra bằng `git log -- docs/project/`.
 
 ## Đã hoàn thành
@@ -104,3 +104,4 @@ Không có công việc triển khai đang dở. Thứ tự dưới đây là đ
 Trong phiên cloud trên môi trường "Lingozi": .NET SDK được setup script cài sẵn (cần kiểm tra lại `dotnet --version` ở phiên mới, vì script chưa được chứng minh trên container mới). Docker daemon không tự chạy; khởi động bằng `nohup dockerd > /tmp/dockerd.log 2>&1 &`, rồi kiểm tra bằng `docker info`. Trạng thái này đi cùng repository; không phụ thuộc lịch sử chat hoặc các tiến trình đang chạy.
 - Phiên 2026-11-09-19: vẽ 74 wireframe ASCII đủ mọi màn hình và trạng thái nêu trong AC của 19 story (W-AUTH-01 → 23, W-LIB-01 → 30); bảng AC có cột Wireframe; quy tắc ghi ở `AGENTS.md` §14 và `docs/features/README.md`; `check_feature_docs.py` kiểm tra tự động (OK). Chưa render trên GitHub.
 - Phiên 2026-11-10-20: code US-AUTH-01. `dotnet build -warnaserror` sạch; `dotnet test` 40/40 (SQL Server 2025 + Mailpit); web lint/typecheck/format đạt, Vitest 50/50, `pnpm build` đạt; Playwright 24/24 trên desktop và Pixel 7 (có gửi mã thật qua Mailpit, axe sạch). Chưa chạy CI GitHub với thay đổi này; chưa gửi thư thật (chờ `MAIL-01`).
+- Phiên 2026-11-10-21: code US-AUTH-02 (xác minh mã, tạo tài khoản, cookie phiên, màn nhập mã theo Figma W-AUTH-06 đến 08). Backend 49/49, web 61/61, E2E 32/32. Đã commit cùng phiên này.

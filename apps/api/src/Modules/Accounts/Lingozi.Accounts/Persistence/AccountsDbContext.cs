@@ -20,11 +20,25 @@ public sealed class AccountsDbContext(DbContextOptions<AccountsDbContext> option
 
     public DbSet<EmailOutboxMessage> EmailOutbox => Set<EmailOutboxMessage>();
 
+    public DbSet<User> Users => Set<User>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         ArgumentNullException.ThrowIfNull(modelBuilder);
         modelBuilder.HasDefaultSchema(Schema);
         modelBuilder.Entity<DataProtectionKey>().ToTable("DataProtectionKeys");
+
+        modelBuilder.Entity<User>(entity =>
+        {
+            entity.ToTable("Users");
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Email).HasMaxLength(256).IsRequired();
+            entity.Property(e => e.NormalizedEmail).HasMaxLength(256).IsRequired();
+            entity.HasIndex(e => e.NormalizedEmail).IsUnique();
+            entity.Property(e => e.PasswordHash).HasColumnType("nvarchar(max)");
+            entity.Property(e => e.SecurityStamp).HasMaxLength(64).IsRequired();
+            entity.Property(e => e.CreatedAt).HasColumnType("datetime2(3)");
+        });
 
         modelBuilder.Entity<EmailLoginCode>(entity =>
         {

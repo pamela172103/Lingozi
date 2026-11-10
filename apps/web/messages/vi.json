@@ -39,7 +39,16 @@
       "digitLabel": "Chữ số {index} trong 6",
       "confirm": "Xác nhận",
       "notReceived": "Không nhận được mã?",
-      "changeEmail": "Đổi email"
+      "changeEmail": "Đổi email",
+      "wrongCode": "Mã không đúng. Bạn còn {remaining} lần thử.",
+      "locked": "Mã này đã bị khóa do nhập sai nhiều lần. Hãy yêu cầu mã mới.",
+      "unavailable": "Mã đã hết hạn hoặc đã dùng. Hãy yêu cầu mã mới.",
+      "newCode": "Gửi mã mới",
+      "verifying": "Đang xác nhận",
+      "rateLimited": "Vui lòng đợi {seconds} giây trước khi thử lại.",
+      "invalidEmail": "Email không đúng định dạng.",
+      "session": "Phiên làm việc không hợp lệ. Vui lòng tải lại trang.",
+      "network": "Mất kết nối. Vui lòng thử lại."
     },
     "footer": {
       "privacy": "Chính sách quyền riêng tư",
@@ -51,5 +60,9 @@
       "400-05": "Phiên làm việc không hợp lệ. Vui lòng tải lại trang.",
       "network": "Mất kết nối. Vui lòng thử lại."
     }
+  },
+  "Library": {
+    "title": "Thư viện",
+    "placeholder": "Bạn đã đăng nhập. Màn hình thư viện thuộc Vòng 1 (FEAT-02) và chưa được xây dựng."
   }
 }

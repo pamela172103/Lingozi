@@ -89,6 +89,7 @@ jobs:
             echo "API_ORIGIN=http://localhost:5080"
             echo "Auth__LoginCodeHmacKey=$(openssl rand -base64 32)"
             echo "Auth__RequestCodePerIpPer10Minutes=1000"
+            echo "Auth__VerifyCodePerIpPer10Minutes=1000"
             echo "Email__SmtpHost=localhost"
             echo "Email__SmtpPort=1025"
             echo "Email__SmtpUseTls=false"

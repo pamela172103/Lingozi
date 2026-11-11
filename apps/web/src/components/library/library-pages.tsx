@@ -10,6 +10,7 @@ import type { ItemDetail, ItemPage } from "@/lib/library/types";
 import { ItemForm } from "./item-form";
 import { ItemList } from "./item-list";
 import { LibraryShell } from "./library-shell";
+import { DeleteItemButton } from "./delete-item-button";
 import { SavedToast } from "./saved-toast";
 
 const primaryLink =
@@ -19,9 +20,20 @@ const primaryLink =
  * Library list (W-LIB-01…04). Shows the page of items; an empty library, a page past the end, and a failed load each have their own state.
  * A signed-out visitor is sent to sign-in (US-AUTH-09 will make this a shared guard).
  */
-export async function ListPage({ kind, page, pageSize }: { kind: LibraryKind; page: number; pageSize: number }) {
+export async function ListPage({
+  kind,
+  page,
+  pageSize,
+  notice,
+}: {
+  kind: LibraryKind;
+  page: number;
+  pageSize: number;
+  notice?: "deleted" | "gone" | null;
+}) {
   const t = await getTranslations(`Library.${kind}`);
   const list = await getTranslations("Library.list");
+  const deleteT = await getTranslations("Library.delete");
   const base = libraryPath(kind);
   const result = await apiGet<ItemPage>(`/api/library/items?kind=${API_KIND[kind]}&page=${page}&pageSize=${pageSize}`);
   if (result.status === "unauthorized") redirect("/auth/login");
@@ -33,6 +45,7 @@ export async function ListPage({ kind, page, pageSize }: { kind: LibraryKind; pa
 
   return (
     <LibraryShell active={kind}>
+      {notice && <SavedToast text={notice === "deleted" ? deleteT("deletedToast") : deleteT("gone")} />}
       <div className="flex flex-wrap items-center gap-3">
         <h1 className="flex-1 text-[30px] leading-tight font-bold text-primary">
           {t("title")}
@@ -124,6 +137,7 @@ export async function DetailPage({
   saved: "create" | "edit" | null;
 }) {
   const t = await getTranslations("Library.detail");
+  const savedT = await getTranslations(`Library.${kind}`);
   const nav = await getTranslations("Library.nav");
   const format = await getFormatter();
   const result = await apiGet<ItemDetail>(`/api/library/items/${encodeURIComponent(id)}`);
@@ -167,18 +181,21 @@ export async function DetailPage({
 
   return (
     <LibraryShell active={kind}>
-      {saved && <SavedToast kind={kind} edited={saved === "edit"} />}
+      {saved && <SavedToast text={saved === "edit" ? savedT("savedEditToast") : savedT("savedToast")} />}
       <div className="flex items-start justify-between gap-4">
         <div className="min-w-0">
           {back}
           <h1 className="mt-1 text-[30px] leading-tight font-bold break-words text-primary">{item.term}</h1>
         </div>
-        <Link
-          href={libraryPath(kind, item.id, "edit")}
-          className="mt-6 inline-flex h-11 shrink-0 items-center rounded-control border border-border-strong bg-surface px-4 text-sm font-medium text-primary hover:bg-subtle"
-        >
-          {t("edit")}
-        </Link>
+        <div className="mt-6 flex shrink-0 gap-3">
+          <Link
+            href={libraryPath(kind, item.id, "edit")}
+            className="inline-flex h-11 items-center rounded-control border border-border-strong bg-surface px-4 text-sm font-medium text-primary hover:bg-subtle"
+          >
+            {t("edit")}
+          </Link>
+          <DeleteItemButton kind={kind} id={item.id} term={item.term} />
+        </div>
       </div>
       {!grammar && meta.length > 0 && <p className="mt-1 text-sm text-secondary">{meta.join(" · ")}</p>}
       <div className="mt-6 space-y-6 rounded-card bg-surface p-6 shadow-card sm:p-8">

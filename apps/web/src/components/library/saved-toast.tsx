@@ -1,19 +1,18 @@
 "use client";
 
-import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 
 /**
- * "Đã lưu" after a create, or "Đã lưu thay đổi" after an edit (W-LIB-16, W-LIB-21). Announced politely, hides after 5 s,
- * and the `saved` flag is removed from the URL so a refresh does not show it again.
+ * A short confirmation after an action: "Đã lưu", "Đã lưu thay đổi", "Đã xóa" (W-LIB-16, W-LIB-21, W-LIB-24, W-LIB-25).
+ * Announced politely and hidden after 5 s. The `saved` and `notice` flags are removed from the URL, so a refresh does not repeat it.
  */
-export function SavedToast({ kind, edited = false }: { kind: "vocabulary" | "grammar"; edited?: boolean }) {
-  const t = useTranslations(`Library.${kind}`);
+export function SavedToast({ text }: { text: string }) {
   const [visible, setVisible] = useState(true);
 
   useEffect(() => {
     const url = new URL(window.location.href);
     url.searchParams.delete("saved");
+    url.searchParams.delete("notice");
     window.history.replaceState(window.history.state, "", url);
     const timer = setTimeout(() => setVisible(false), 5000);
     return () => clearTimeout(timer);
@@ -24,7 +23,7 @@ export function SavedToast({ kind, edited = false }: { kind: "vocabulary" | "gra
       {visible && (
         <p className="rounded-card bg-primary px-4 py-3 text-sm font-medium text-surface shadow-overlay">
           <span aria-hidden="true">✓ </span>
-          {edited ? t("savedEditToast") : t("savedToast")}
+          {text}
         </p>
       )}
     </div>

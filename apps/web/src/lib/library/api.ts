@@ -102,3 +102,38 @@ export async function findSimilarItems(kind: ApiKind, term: string): Promise<Sim
     return { kind: "unavailable" };
   }
 }
+
+export type DeleteItemResult =
+  | { kind: "deleted" }
+  | { kind: "not-found" }
+  | { kind: "unauthorized" }
+  | { kind: "session-error" }
+  | { kind: "network-error" };
+
+/** US-LIB-06: deletes one item and its examples (FR-LIB-ITEM-006). Antiforgery token refreshed once, as for the other writes. */
+export async function deleteItem(id: string): Promise<DeleteItemResult> {
+  try {
+    for (const forceRefresh of [false, true]) {
+      const token = await ensureXsrfToken(forceRefresh);
+      if (!token) return { kind: "session-error" };
+
+      const response = await fetch(`/api/library/items/${encodeURIComponent(id)}`, {
+        method: "DELETE",
+        credentials: "same-origin",
+        headers: { "X-XSRF-TOKEN": token },
+      });
+      if (response.status === 204) return { kind: "deleted" };
+      if (response.status === 404) return { kind: "not-found" };
+      if (response.status === 401) return { kind: "unauthorized" };
+      const code = await problemCode(response.clone());
+      if (response.status === 400 && code === "ERR-AUTH-400-05") {
+        if (forceRefresh) return { kind: "session-error" };
+        continue;
+      }
+      return { kind: "network-error" };
+    }
+    return { kind: "session-error" };
+  } catch {
+    return { kind: "network-error" };
+  }
+}

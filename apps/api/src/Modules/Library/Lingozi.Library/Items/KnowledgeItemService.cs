@@ -237,6 +237,26 @@ public sealed class KnowledgeItemService(LibraryDbContext db, TimeProvider clock
         }, cancellationToken);
     }
 
+    /// <summary>
+    /// FR-LIB-ITEM-006 (US-LIB-06): hard-deletes the item and its examples in one transaction (BR-LIB-009). Returns false when the item
+    /// does not exist or belongs to someone else (BR-LIB-006); the answer is the same in both cases.
+    /// </summary>
+    public async Task<bool> DeleteAsync(Guid userId, Guid id, CancellationToken cancellationToken)
+    {
+        var strategy = db.Database.CreateExecutionStrategy();
+        return await strategy.ExecuteAsync(async ct =>
+        {
+            db.ChangeTracker.Clear();
+            await using var transaction = await db.Database.BeginTransactionAsync(ct);
+            await UserLock.AcquireAsync(db, userId, ct);
+            // The examples go too: the composite foreign key cascades, and the explicit delete keeps the rule visible here.
+            await db.Examples.Where(e => e.ItemId == id && e.UserId == userId).ExecuteDeleteAsync(ct);
+            var deleted = await db.Items.Where(i => i.Id == id && i.UserId == userId).ExecuteDeleteAsync(ct);
+            await transaction.CommitAsync(ct);
+            return deleted > 0;
+        }, cancellationToken);
+    }
+
     /// <summary>BR-LIB-011: <c>page</c> ≥ 1 (default 1), <c>pageSize</c> 1–50 (default 20; larger is capped at 50).</summary>
     public static bool TryNormalizePaging(int? page, int? pageSize, out int normalizedPage, out int normalizedPageSize)
     {

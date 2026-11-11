@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 
 import { ListPage } from "@/components/library/library-pages";
-import { parsePage, parsePageSize } from "@/lib/library/paging";
+import { parseNotice, parsePage, parsePageSize } from "@/lib/library/paging";
 
 export const dynamic = "force-dynamic";
 
@@ -11,7 +11,13 @@ export async function generateMetadata(): Promise<Metadata> {
   return { title: t("metaTitle") };
 }
 
-export default async function Page({ searchParams }: { searchParams: Promise<{ page?: string; pageSize?: string }> }) {
-  const { page, pageSize } = await searchParams;
-  return <ListPage kind="grammar" page={parsePage(page)} pageSize={parsePageSize(pageSize)} />;
+export default async function Page({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string; pageSize?: string; notice?: string }>;
+}) {
+  const { page, pageSize, notice } = await searchParams;
+  return (
+    <ListPage kind="grammar" page={parsePage(page)} pageSize={parsePageSize(pageSize)} notice={parseNotice(notice)} />
+  );
 }

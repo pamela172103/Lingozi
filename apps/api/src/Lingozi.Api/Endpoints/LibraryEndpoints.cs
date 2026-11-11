@@ -37,6 +37,14 @@ internal static class LibraryEndpoints
             .ProducesProblem(StatusCodes.Status404NotFound)
             .ProducesProblem(StatusCodes.Status409Conflict);
 
+        group.MapDelete("/items/{id}", DeleteAsync)
+            .AddEndpointFilter<ValidateAntiforgeryFilter>()
+            .WithName("DeleteKnowledgeItem")
+            .WithSummary("Xóa cứng mục và ví dụ của chính người dùng (FR-LIB-ITEM-006)")
+            .Produces(StatusCodes.Status204NoContent)
+            .ProducesProblem(StatusCodes.Status401Unauthorized)
+            .ProducesProblem(StatusCodes.Status404NotFound);
+
         group.MapGet("/items/similar", SimilarAsync)
             .WithName("FindSimilarKnowledgeItems")
             .WithSummary("Mục cùng loại có cùng nội dung chuẩn hóa của chính người dùng; chỉ gợi ý (FR-LIB-ITEM-002)")
@@ -108,6 +116,17 @@ internal static class LibraryEndpoints
             UpdateItemOutcome.NotFound => LibraryProblems.NotFound(),
             _ => LibraryProblems.Invalid(result.Errors!),
         };
+    }
+
+    internal static async Task<IResult> DeleteAsync(string id, KnowledgeItemService service, HttpContext context, CancellationToken cancellationToken)
+    {
+        if (!Guid.TryParse(id, out var itemId))
+        {
+            return LibraryProblems.NotFound();
+        }
+
+        var deleted = await service.DeleteAsync(CurrentUserId(context), itemId, cancellationToken);
+        return deleted ? TypedResults.NoContent() : LibraryProblems.NotFound();
     }
 
     internal static async Task<IResult> SimilarAsync(

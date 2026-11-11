@@ -186,6 +186,17 @@
       "open": "Mở",
       "more": "và {count} mục khác",
       "created": "tạo {date}"
+    },
+    "delete": {
+      "open": "Xóa",
+      "title": "Xóa mục ''{term}''?",
+      "body": "Hành động này không thể hoàn tác.",
+      "cancel": "Hủy",
+      "confirm": "Xóa",
+      "deleting": "Đang xóa",
+      "failed": "Không xóa được. Vui lòng thử lại.",
+      "deletedToast": "Đã xóa",
+      "gone": "Mục này không còn tồn tại."
     }
   }
 }

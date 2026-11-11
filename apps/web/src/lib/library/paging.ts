@@ -26,3 +26,8 @@ export function listHref(libraryPathOf: string, page: number, pageSize: number):
   const query = params.toString();
   return query ? `${libraryPathOf}?${query}` : libraryPathOf;
 }
+
+/** The one-time notice after an action on an item: `?notice=deleted` or `?notice=gone` (US-LIB-06). Anything else is ignored. */
+export function parseNotice(value: string | undefined): "deleted" | "gone" | null {
+  return value === "deleted" || value === "gone" ? value : null;
+}

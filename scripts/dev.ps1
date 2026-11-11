@@ -36,10 +36,10 @@ $startedContainers = @()
 
 if (-not (Test-Port 1433)) {
   if (-not $hasDocker) {
-    throw 'SQL Server chưa chạy ở localhost:1433. Hoặc bật SQL Server đã cài trên máy, hoặc cài Docker Desktop (https://www.docker.com/products/docker-desktop/) rồi chạy lại.'
+    throw 'SQL Server chua chay o localhost:1433. Hoac bat SQL Server da cai tren may, hoac cai Docker Desktop (https://www.docker.com/products/docker-desktop/) roi chay lai.'
   }
   docker compose up -d --wait sqlserver
-  if ($LASTEXITCODE -ne 0) { throw 'Không bật được SQL Server bằng Docker. Mở Docker Desktop và đợi trạng thái "Running".' }
+  if ($LASTEXITCODE -ne 0) { throw 'Khong bat duoc SQL Server bang Docker. Mo Docker Desktop va doi trang thai "Running".' }
   $startedContainers += 'sqlserver'
 }
 
@@ -51,7 +51,7 @@ if (-not (Test-Port 8025)) {
     New-Item -ItemType Directory -Force -Path 'logs' | Out-Null
     Start-Process -FilePath 'mailpit' -WindowStyle Hidden -RedirectStandardOutput (Join-Path $root 'logs\mailpit.log') -RedirectStandardError (Join-Path $root 'logs\mailpit.err.log') | Out-Null
   } else {
-    Write-Host 'Mailpit chưa chạy (localhost:8025). Mở mailpit.exe trước, hoặc cài Docker để script tự bật.' -ForegroundColor Yellow
+    Write-Host 'Mailpit chua chay (localhost:8025). Mo mailpit.exe truoc, hoac cai Docker de script tu bat.' -ForegroundColor Yellow
   }
 }
 @{ containers = $startedContainers } | ConvertTo-Json | Set-Content '.dev-containers.json'
@@ -85,9 +85,9 @@ $apiOk = Wait-Http 'http://localhost:5080/health/ready' 180
 $webOk = Wait-Http 'http://localhost:3000/auth/login' 180
 
 Write-Host ''
-if ($apiOk) { Write-Host '  API     http://localhost:5080  (log: logs\api.log)' -ForegroundColor Green } else { Write-Host '  API chưa sẵn sàng. Xem logs\api.err.log' -ForegroundColor Red }
-if ($webOk) { Write-Host '  Web     http://localhost:3000  (log: logs\web.log)' -ForegroundColor Green } else { Write-Host '  Web chưa sẵn sàng. Xem logs\web.err.log' -ForegroundColor Red }
-if (Test-Port 8025) { Write-Host '  Mailpit http://localhost:8025  (mã đăng nhập nằm ở đây)' -ForegroundColor Green } else { Write-Host '  Mailpit chưa chạy: không nhận được mã đăng nhập' -ForegroundColor Yellow }
+if ($apiOk) { Write-Host '  API     http://localhost:5080  (log: logs\api.log)' -ForegroundColor Green } else { Write-Host '  API chua san sang. Xem logs\api.err.log' -ForegroundColor Red }
+if ($webOk) { Write-Host '  Web     http://localhost:3000  (log: logs\web.log)' -ForegroundColor Green } else { Write-Host '  Web chua san sang. Xem logs\web.err.log' -ForegroundColor Red }
+if (Test-Port 8025) { Write-Host '  Mailpit http://localhost:8025  (ma dang nhap nam o day)' -ForegroundColor Green } else { Write-Host '  Mailpit chua chay: khong nhan duoc ma dang nhap' -ForegroundColor Yellow }
 Write-Host ''
-Write-Host '  Dừng toàn bộ: powershell -ExecutionPolicy Bypass -File scripts\stop-dev.ps1'
+Write-Host '  Dung toan bo: powershell -ExecutionPolicy Bypass -File scripts\stop-dev.ps1'
 if ($webOk) { Start-Process 'http://localhost:3000/library' }

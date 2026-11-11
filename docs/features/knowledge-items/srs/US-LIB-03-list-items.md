@@ -50,7 +50,7 @@ Theo `rules/03` và `rules/11`. Nội dung chính thức nằm ở [README.md](R
 ### 2.4 Yêu cầu phi chức năng (NFR)
 
 - `NFR-PERF-001`: GET danh sách và chi tiết, POST, PUT có P95 ≤ 300 ms với 5.000 mục mỗi người; đo trên staging. Index (`UserId`, `CreatedAt` DESC) và (`UserId`, `NormalizedTerm`) theo ERD.
-- `NFR-UX-001`: Form 2 cột ở ≥ 1280 px (trái: nội dung, loại, nghĩa; phải: ví dụ, ghi chú, nguồn); 1 cột ở < 1024 px; không cuộn ngang.
+- `NFR-UX-001`: Form 2 cột ở ≥ 1280 px (trái: nội dung, loại, nghĩa; phải: ví dụ, ghi chú); 1 cột ở < 1024 px; không cuộn ngang.
 
 ## 3. Luồng
 

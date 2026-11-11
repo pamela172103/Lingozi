@@ -70,7 +70,7 @@ Theo `rules/03` và `rules/11`. Nội dung chính thức nằm ở [README.md](R
 ### 2.4 Yêu cầu phi chức năng (NFR)
 
 - `NFR-A11Y-001`: Form có nhãn hiển thị; thêm và xóa ví dụ bằng bàn phím; xóa ví dụ thì focus chuyển sang ví dụ kế bên; dialog giữ focus bên trong; gợi ý cập nhật có `aria-live="polite"`.
-- `NFR-UX-001`: Form 2 cột ở ≥ 1280 px (trái: nội dung, loại, nghĩa; phải: ví dụ, ghi chú, nguồn); 1 cột ở < 1024 px; không cuộn ngang.
+- `NFR-UX-001`: Form 2 cột ở ≥ 1280 px (trái: nội dung, loại, nghĩa; phải: ví dụ, ghi chú); 1 cột ở < 1024 px; không cuộn ngang.
 - `NFR-PERF-001`: GET danh sách và chi tiết, POST, PUT có P95 ≤ 300 ms với 5.000 mục mỗi người; đo trên staging. Index (`UserId`, `CreatedAt` DESC) và (`UserId`, `NormalizedTerm`) theo ERD.
 
 ## 3. Luồng
@@ -359,7 +359,7 @@ _Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe A
 │Lingozi       │ [ ✓ Đã lưu ]  (toast sau khi lưu)                              │
 │              │ ← Thư viện                            [ Sửa ]  [ x Xóa ]       │
 │▸ Thư viện    │ give up                                         term           │
-│▸ Luyện tập   │ Từ vựng · /ɡɪv ʌp/                                             │
+│▸ Luyện tập   │ Từ vựng · /ɡɪv ʌp/ · Động từ                                   │
 │              │                                                                │
 │              │ Nghĩa   h2                                                     │
 │              │ từ bỏ                                                          │
@@ -367,16 +367,14 @@ _Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe A
 │              │ Ví dụ   h2                                                     │
 │              │ 1. Don't give up. — Đừng bỏ cuộc.                              │
 │              │                                                                │
-│              │ Ghi chú · Nguồn: Friends S01E01                                │
+│              │ Ghi chú: Thường dùng trong văn nói                             │
 │              │                                                                │
 │              │ Tạo 08/11/2026 14:00 · Sửa 08/11/2026 14:05                    │
 └──────────────┴────────────────────────────────────────────────────────────────┘
 ```
-
-- Nội dung hiện cỡ `text.term`; phiên âm chỉ có với Từ vựng, kèm nguồn khi do hệ thống điền.
+- Nội dung hiện cỡ `text.term`. Từ vựng: hiện loại từ (nếu có) và phiên âm (nếu có; kèm nguồn khi do hệ thống điền). Ngữ pháp: thay khối Nghĩa bằng khối Công thức; hiện Ý nghĩa nếu có. Ghi chú hiện ở cuối; không còn dòng Nguồn.
 - Nút "Xóa" kiểu viền, có icon cảnh báo, không dùng nền đặc giống nút chính.
 - Toast "Đã lưu" (`role="status"`) chỉ hiện ngay sau khi lưu.
-
 ## 6. API
 
 _Skill `api-design`; lỗi theo Problem Details (RFC 9457) như ADR 0002. Quy ước chung ở [README.md](README.md)._

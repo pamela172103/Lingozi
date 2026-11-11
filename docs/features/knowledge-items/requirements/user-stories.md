@@ -134,15 +134,15 @@ Scenario: AC-04 Tham số trang ngoài giới hạn
 ```gherkin
 Scenario: AC-01 Xem chi tiết
   When tôi mở một mục của mình
-  Then tôi thấy nội dung (cỡ chữ term), loại, nghĩa, các ví dụ theo thứ tự, ghi chú, nguồn, ngày tạo và ngày sửa
+  Then tôi thấy nội dung (cỡ chữ term), loại; với từ vựng là loại từ (nếu có), phiên âm (nếu có) và nghĩa; với ngữ pháp là công thức và ý nghĩa (nếu có); các ví dụ theo thứ tự, ghi chú, ngày tạo và ngày sửa
 
 Scenario: AC-02 Mục không tồn tại hoặc của người khác
   When tôi mở đường dẫn tới mục không tồn tại, hoặc mục của người khác
   Then tôi thấy cùng màn hình "Không tìm thấy mục này" (ERR-LIB-404-01)
 
 Scenario: AC-03 Mục không có trường tùy chọn
-  Given mục chỉ có nội dung và nghĩa
-  Then các khối ví dụ, ghi chú, nguồn không hiển thị, không để khối trống
+  Given mục từ vựng chỉ có từ và nghĩa
+  Then các khối ví dụ, ghi chú, loại từ, phiên âm không hiển thị, không để khối trống
 ```
 
 ## US-LIB-05 — Sửa mục
@@ -260,7 +260,7 @@ Scenario: AC-08 Không có ô phiên âm cho Ngữ pháp
 
 ## US-LIB-09 — Gợi ý nghĩa khi nhập
 
-Là người học, tôi muốn được gợi ý nghĩa để nhanh hơn, nhưng gợi ý không tự điền vào form.
+Là người học, tôi muốn được gợi ý nghĩa để nhanh hơn, nhưng gợi ý không tự điền vào form. Gợi ý áp dụng cho ô "Nghĩa" của từ vựng (bắt buộc) và ô "Ý nghĩa" của ngữ pháp (không bắt buộc). Gợi ý không thay thế việc tự nhập: với từ vựng, người dùng vẫn phải bấm chọn hoặc tự nhập nghĩa.
 
 ```gherkin
 Scenario: AC-01 Gợi ý từ mục của chính tôi
@@ -285,5 +285,5 @@ Scenario: AC-04 Bấm gợi ý mới điền
 
 Scenario: AC-05 Không có gợi ý
   When không có nguồn nào trả nghĩa cho từ tôi nhập
-  Then không hiện gợi ý, không có thông báo lỗi, và nghĩa vẫn không bắt buộc
+  Then không hiện gợi ý, không có thông báo lỗi, và ô nghĩa vẫn trống để tôi tự nhập (nghĩa của từ vựng là bắt buộc, BR-LIB-001)
 ```

@@ -2,7 +2,7 @@
 
 - Cập nhật: 2026-11-10.
 - Giai đoạn: **Vòng 1 — Lưu được kiến thức của riêng mình** (2026-11-08 → 2026-11-21), đang ở bước ② Thiết kế. Vòng 0 xong phần việc. Xem [lộ trình](../product/roadmap.md) §5.
-- Phiên gần nhất: [US-LIB-01: đổi form theo loại](sessions/2026-11-11-22-us-lib-01-form-change.md).
+- Phiên gần nhất: [Chi tiết, sửa và gợi ý theo form mới](sessions/2026-11-11-23-knowledge-detail-and-suggestions.md).
 - Đã đọc và gộp 4 commit từ `origin/work` vào `main` theo fast-forward, tới `61514e0`. Bàn giao phiên 05 được lưu cùng commit tài liệu tiếp theo; tra bằng `git log -- docs/project/`.
 
 ## Đã hoàn thành
@@ -106,3 +106,4 @@ Trong phiên cloud trên môi trường "Lingozi": .NET SDK được setup scrip
 - Phiên 2026-11-10-20: code US-AUTH-01. `dotnet build -warnaserror` sạch; `dotnet test` 40/40 (SQL Server 2025 + Mailpit); web lint/typecheck/format đạt, Vitest 50/50, `pnpm build` đạt; Playwright 24/24 trên desktop và Pixel 7 (có gửi mã thật qua Mailpit, axe sạch). Chưa chạy CI GitHub với thay đổi này; chưa gửi thư thật (chờ `MAIL-01`).
 - Phiên 2026-11-10-21: code US-AUTH-02 (xác minh mã, tạo tài khoản, cookie phiên, màn nhập mã theo Figma W-AUTH-06 đến 08). Backend 49/49, web 61/61, E2E 32/32. Đã commit cùng phiên này.
 - Phiên 2026-11-11-22: US-LIB-01 đổi form theo loại (từ vựng: Từ*, Nghĩa*, phiên âm, loại từ, ví dụ, ghi chú; ngữ pháp: Tên cấu trúc*, Công thức*, ý nghĩa, ví dụ, ghi chú; bỏ Nguồn). Cập nhật đặc tả, BR, wireframe, test case, ERD. Còn lại: US-LIB-09 và màn hình chi tiết/sửa.
+- Phiên 2026-11-11-23: cập nhật chi tiết (W-LIB-14, 15), sửa (W-LIB-18, 19), gợi ý nghĩa (US-LIB-09, AC-05) và danh mục theo form mới; bỏ Nguồn. Còn lại: ERD cột Source chờ xác nhận.

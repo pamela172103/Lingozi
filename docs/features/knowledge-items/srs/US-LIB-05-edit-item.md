@@ -2,7 +2,7 @@
 
 - Tính năng: FEAT-02 Mục kiến thức (`knowledge-items`).
 - User story: [US-LIB-05](../requirements/user-stories.md#us-lib-05--sửa-mục).
-- Phiên bản 0.3 (2026-11-09). Trạng thái: **chờ duyệt**.
+- Phiên bản 0.4 (2026-11-11). Trạng thái: **chờ duyệt**.
 - Tài liệu chung: [README.md](README.md) (danh mục FR, BR, ERR, NFR, quy ước API, ngữ cảnh).
 - Test case: [testing/test-cases.md](../testing/test-cases.md).
 - Skill OpenBA áp dụng: `srs` (FR, BR, ERR, NFR), `user-flow`, `sequence`, `wireframe-ascii`, `api-design`, `ac`.
@@ -58,7 +58,7 @@ Theo `rules/03` và `rules/11`. Nội dung chính thức nằm ở [README.md](R
 
 - `NFR-PRIV-001`: Integration test truy cập chéo cho mọi endpoint (US-LIB-07); truy cập tài nguyên người khác trả 404.
 - `NFR-A11Y-001`: Form có nhãn hiển thị; thêm và xóa ví dụ bằng bàn phím; xóa ví dụ thì focus chuyển sang ví dụ kế bên; dialog giữ focus bên trong; gợi ý cập nhật có `aria-live="polite"`.
-- `NFR-UX-001`: Form 2 cột ở ≥ 1280 px (trái: nội dung, loại, nghĩa; phải: ví dụ, ghi chú, nguồn); 1 cột ở < 1024 px; không cuộn ngang.
+- `NFR-UX-001`: Form 2 cột ở ≥ 1280 px (trái: nội dung, loại, nghĩa; phải: ví dụ, ghi chú); 1 cột ở < 1024 px; không cuộn ngang.
 
 ## 3. Luồng
 
@@ -158,18 +158,19 @@ _Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe A
 
 ```text
 ┌──────────────┬────────────────────────────────────────────────────────────────┐
-│Lingozi       │ ← Thư viện    Sửa "give up" · Từ vựng   h1                     │
+│Lingozi       │ Sửa "give up" · Từ vựng   h1                                   │
 │              │ ┌────────────────────────────┐  ┌────────────────────────────┐ │
 │▸ Thư viện    │ │ Từ *                       │  │ Ví dụ (1/20)               │ │
 │▸ Luyện tập   │ │ [give up__________]        │  │ 1. Don't give up.          │ │
 │              │ │ Phiên âm                   │  │ [ x Xóa ví dụ ]            │ │
 │              │ │ [/ɡɪv ʌp/_________]        │  │ [ + Thêm ví dụ ]           │ │
-│              │ │                            │  │ Ghi chú cá nhân            │ │
-│⚙ Cài đặt     │ │ Nghĩa                      │  │ [________________]         │ │
-│              │ │ [từ bỏ____________]        │  └────────────────────────────┘ │
+│              │ │ Loại từ                    │  │ Ghi chú cá nhân            │ │
+│⚙ Cài đặt     │ │ [Động từ          ▾]       │  │ [________________]         │ │
+│              │ │ Nghĩa *                    │  └────────────────────────────┘ │
+│              │ │ [từ bỏ____________]        │                                 │
 │              │ └────────────────────────────┘                                 │
 │              │                                                                │
-│              │                 [ Hủy ]   [ Lưu thay đổi ]                     │
+│              │                  [ Hủy ]   [ Lưu thay đổi ]                    │
 └──────────────┴────────────────────────────────────────────────────────────────┘
 ```
 
@@ -188,7 +189,7 @@ _Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe A
 │              │ ┌────────────────────────────┐  ┌────────────────────────────┐ │
 │              │ │ Từ *                       │  │ Bản bạn đang sửa (giữ lại) │ │
 │              │ │ [give up__________]        │  │ Nghĩa: bỏ cuộc             │ │
-│⚙ Cài đặt     │ │ Nghĩa                      │  │                            │ │
+│⚙ Cài đặt     │ │ Nghĩa *                    │  │                            │ │
 │              │ │ [bỏ cuộc__________]        │  │ [ Tải bản mới nhất ]       │ │
 │              │ └────────────────────────────┘  └────────────────────────────┘ │
 │              │                                                                │
@@ -206,7 +207,7 @@ _Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe A
 │Lingozi       │ [ ✓ Đã lưu ]  (toast sau khi lưu)                              │
 │              │ ← Thư viện                            [ Sửa ]  [ x Xóa ]       │
 │▸ Thư viện    │ give up                                         term           │
-│▸ Luyện tập   │ Từ vựng · /ɡɪv ʌp/                                             │
+│▸ Luyện tập   │ Từ vựng · /ɡɪv ʌp/ · Động từ                                   │
 │              │                                                                │
 │              │ Nghĩa   h2                                                     │
 │              │ từ bỏ                                                          │
@@ -214,16 +215,14 @@ _Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe A
 │              │ Ví dụ   h2                                                     │
 │              │ 1. Don't give up. — Đừng bỏ cuộc.                              │
 │              │                                                                │
-│              │ Ghi chú · Nguồn: Friends S01E01                                │
+│              │ Ghi chú: Thường dùng trong văn nói                             │
 │              │                                                                │
 │              │ Tạo 08/11/2026 14:00 · Sửa 08/11/2026 14:05                    │
 └──────────────┴────────────────────────────────────────────────────────────────┘
 ```
-
-- Nội dung hiện cỡ `text.term`; phiên âm chỉ có với Từ vựng, kèm nguồn khi do hệ thống điền.
+- Nội dung hiện cỡ `text.term`. Từ vựng: hiện loại từ (nếu có) và phiên âm (nếu có; kèm nguồn khi do hệ thống điền). Ngữ pháp: thay khối Nghĩa bằng khối Công thức; hiện Ý nghĩa nếu có. Ghi chú hiện ở cuối; không còn dòng Nguồn.
 - Nút "Xóa" kiểu viền, có icon cảnh báo, không dùng nền đặc giống nút chính.
 - Toast "Đã lưu" (`role="status"`) chỉ hiện ngay sau khi lưu.
-
 ### W-LIB-16 — Chi tiết mục: không tìm thấy (ERR-LIB-404-01)
 
 ```text
@@ -276,3 +275,4 @@ Thành công: `200` chi tiết với `version` mới. Xung đột: `409 ERR-LIB-
 | Phiên bản | Ngày | Thay đổi |
 | --- | --- | --- |
 | 0.3 | 2026-11-09 | Tách từ `srs.md` và `design/` thành file riêng cho story; thêm FR chi tiết, sequence, state, bảng AC → FR/BR/ERR/TC. |
+| 0.4 | 2026-11-11 | Theo quyết định của chủ dự án (2026-11-11): bỏ "Nguồn" khỏi chi tiết và form sửa; thêm loại từ, công thức, ý nghĩa theo loại; gợi ý nghĩa vẫn có; sửa nhãn "Nghĩa" thành bắt buộc khi là từ vựng. |

@@ -15,7 +15,7 @@
 
 **Có trong vòng này:**
 
-- Chọn loại trước, rồi form theo loại. Vòng 1 chỉ có hai loại: **Từ vựng** (bắt buộc "Từ") và **Ngữ pháp** (bắt buộc "Điểm ngữ pháp"). Nghĩa, ví dụ, ghi chú, nguồn đều không bắt buộc.
+- Chọn loại trước, rồi form theo loại. Vòng 1 chỉ có hai loại: **Từ vựng** (bắt buộc "Từ" và "Nghĩa") và **Ngữ pháp** (bắt buộc "Tên cấu trúc" và "Công thức"). Các trường còn lại không bắt buộc; không có trường Nguồn trên form.
 - Từ vựng: phiên âm IPA **Anh-Anh** tự điền từ API từ điển miễn phí (ADR 0007, phương án B đã chọn; chỉ khi nguồn có bản Anh-Anh được gắn nhãn, nếu không ô để trống); ghi nguồn Wiktionary CC BY-SA 3.0; người dùng sửa hoặc tự nhập. **Chưa được ghi là hoạt động** cho tới khi kiểm tra điều khoản và giới hạn gọi của nhà cung cấp.
 - Gợi ý nghĩa khi nhập: từ mục của chính người dùng và nguồn từ điển; không lấy dữ liệu người khác. Gợi ý không tự điền, phải bấm.
 - Gợi ý mục trùng khi tạo; người dùng tự quyết bổ sung vào mục cũ hay tạo mục riêng.
@@ -33,7 +33,7 @@
 - **Đã chốt (2026-11-08, quyết định 14 và `Q-02`):** chọn loại trước; mỗi loại một trường bắt buộc; nghĩa gợi ý và không bắt buộc; từ vựng có IPA tự điền, sửa được. **Thay đổi (2026-11-11, chủ dự án):** từ vựng bắt buộc "Từ" và "Nghĩa"; ngữ pháp bắt buộc "Tên cấu trúc" và "Công thức"; ý nghĩa ngữ pháp không bắt buộc; bỏ trường "Nguồn" khỏi form; thêm "Loại từ" cho từ vựng. Thay thế phần "mỗi loại một trường bắt buộc" và "nghĩa không bắt buộc" của quyết định 14.
 - **Giả định còn lại (chưa được chủ dự án trả lời):**
 - `Q-03`: mục được coi là "tương tự" khi nội dung tiếng Anh trùng sau khi chuẩn hóa (chữ thường, trim, gộp khoảng trắng).
-- `ERD-02`: Term ≤ 1000, Meaning ≤ 2000, Note ≤ 4000, Source ≤ 300 ký tự.
+- `ERD-02`: Term ≤ 1000, Formula ≤ 1000, Meaning ≤ 2000, Note ≤ 4000 ký tự.
 - `ERD-03`: tối đa 10.000 mục mỗi người.
 
 ## Hồ sơ
@@ -60,4 +60,4 @@
 
 - **v0.2 (2026-11-08):** theo yêu cầu chủ dự án: chọn loại trước, form và nhãn bắt buộc theo loại, nghĩa không bắt buộc và gợi ý, phiên âm IPA cho từ vựng. Thêm US-LIB-08, US-LIB-09, FR-LIB-ITEM-007 → 009, BR-LIB-012 → 015, ERR-LIB-400-02; sửa ERD (`Meaning` null, thêm `Ipa`, `IpaSource`).
 - **v0.3 (2026-11-08):** chủ dự án chọn phương án B (API từ điển miễn phí) và chỉ mở hai loại ở Vòng 1: Từ vựng và Ngữ pháp. Sửa US-LIB-01 (AC-01, 04, 05, 08), BR-LIB-002, BR-LIB-012, BR-LIB-013, API item-kinds, luồng, wireframe W-LIB-02a, test case TC-LIB-002, 003, 033, 036, 044, 050; ERD `Kind IN (1, 5)`.
-- **v0.4 (2026-11-11):** chủ dự án đổi form theo loại (xem quyết định ở trên). Sửa US-LIB-01 (mô tả, AC-02, 03, 05, 06, 08; thêm AC-11), BR-LIB-001, 012, thêm BR-LIB-016, FR-LIB-ITEM-001, API item-kinds và POST, luồng, wireframe W-LIB-08 đến 11 (cũng sửa bản sao ở US-LIB-02 và US-LIB-08), test case TC-LIB-001 đến 006, 034, 035, thêm TC-LIB-051; ERD `Formula`, `PartOfSpeech`. Chưa sửa: US-LIB-09 (vẫn ghi nghĩa không bắt buộc), màn hình chi tiết và sửa (US-LIB-04, 05).
+- **v0.4 (2026-11-11):** chủ dự án đổi form theo loại (xem quyết định ở trên). Sửa US-LIB-01 (mô tả, AC-02, 03, 05, 06, 08; thêm AC-11), BR-LIB-001, 012, thêm BR-LIB-016, FR-LIB-ITEM-001, API item-kinds và POST, luồng, wireframe W-LIB-08 đến 11 (cũng sửa bản sao ở US-LIB-02 và US-LIB-08), test case TC-LIB-001 đến 006, 034, 035, thêm TC-LIB-051; ERD `Formula`, `PartOfSpeech`. Cùng ngày, theo quyết định của chủ dự án: giữ gợi ý nghĩa (US-LIB-09, AC-05 sửa); màn hình chi tiết và sửa (US-LIB-04, 05, W-LIB-14, 15, 18, 19) bỏ Nguồn và hiện loại từ, công thức.

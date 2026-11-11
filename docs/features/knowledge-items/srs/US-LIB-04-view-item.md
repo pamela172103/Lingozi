@@ -2,7 +2,7 @@
 
 - Tính năng: FEAT-02 Mục kiến thức (`knowledge-items`).
 - User story: [US-LIB-04](../requirements/user-stories.md#us-lib-04--xem-chi-tiết-một-mục).
-- Phiên bản 0.3 (2026-11-09). Trạng thái: **chờ duyệt**.
+- Phiên bản 0.4 (2026-11-11). Trạng thái: **chờ duyệt**.
 - Tài liệu chung: [README.md](README.md) (danh mục FR, BR, ERR, NFR, quy ước API, ngữ cảnh).
 - Test case: [testing/test-cases.md](../testing/test-cases.md).
 - Skill OpenBA áp dụng: `srs` (FR, BR, ERR, NFR), `user-flow`, `sequence`, `wireframe-ascii`, `api-design`, `ac`.
@@ -11,7 +11,7 @@
 
 **Trong phạm vi:**
 
-- Trang chi tiết: nội dung, loại, phiên âm (nếu có), nghĩa, ví dụ, ghi chú, nguồn, ngày tạo và sửa.
+- Trang chi tiết: nội dung, loại; với từ vựng là loại từ (nếu có), phiên âm (nếu có), nghĩa; với ngữ pháp là công thức và ý nghĩa (nếu có); ví dụ, ghi chú, ngày tạo và sửa.
 - Không hiện khối trống cho trường không có dữ liệu.
 
 **Ngoài phạm vi:**
@@ -68,7 +68,7 @@ flowchart TD
 | --- | --- |
 | Bình thường | Hiển thị đầy đủ; chỉ hiện các khối có dữ liệu. |
 | Đang tải | `Skeleton` cho nội dung, nghĩa và ví dụ. |
-| Trống | Mục chỉ có nội dung (và loại): không hiện ví dụ, ghi chú, nguồn. |
+| Trống | Mục chỉ có nội dung (và loại): không hiện ví dụ, ghi chú, loại từ, ý nghĩa. |
 | Lỗi | 404-01: `EmptyState` "Không tìm thấy mục này"; lỗi khác: "Thử lại". |
 | Mất kết nối | Không hỗ trợ ngoại tuyến. Hiện "Mất kết nối" và nút "Thử lại"; không mất dữ liệu đã nhập. |
 
@@ -86,7 +86,7 @@ sequenceDiagram
     W->>A: GET /api/library/items/{id}
     alt 200
         A-->>W: Detail
-        W-->>U: Term, loại, IPA (nếu có), nghĩa, ví dụ, ghi chú, nguồn
+        W-->>U: Term, loại, IPA (nếu có), loại từ (nếu có), nghĩa hoặc công thức, ví dụ, ghi chú
     else 404 (không tồn tại hoặc của người khác)
         A-->>W: 404 ERR-LIB-404-01
         W-->>U: "Không tìm thấy mục này"
@@ -100,15 +100,15 @@ _Skill `ac`. Văn bản Gherkin trùng với [user story](../requirements/user-s
 ```gherkin
 Scenario: AC-01 Xem chi tiết
   When tôi mở một mục của mình
-  Then tôi thấy nội dung (cỡ chữ term), loại, nghĩa, các ví dụ theo thứ tự, ghi chú, nguồn, ngày tạo và ngày sửa
+  Then tôi thấy nội dung (cỡ chữ term), loại; với từ vựng là loại từ (nếu có), phiên âm (nếu có) và nghĩa; với ngữ pháp là công thức và ý nghĩa (nếu có); các ví dụ theo thứ tự, ghi chú, ngày tạo và ngày sửa
 
 Scenario: AC-02 Mục không tồn tại hoặc của người khác
   When tôi mở đường dẫn tới mục không tồn tại, hoặc mục của người khác
   Then tôi thấy cùng màn hình "Không tìm thấy mục này" (ERR-LIB-404-01)
 
 Scenario: AC-03 Mục không có trường tùy chọn
-  Given mục chỉ có nội dung và nghĩa
-  Then các khối ví dụ, ghi chú, nguồn không hiển thị, không để khối trống
+  Given mục từ vựng chỉ có từ và nghĩa
+  Then các khối ví dụ, ghi chú, loại từ, phiên âm không hiển thị, không để khối trống
 ```
 
 | AC | Nội dung | FR | BR | ERR | Wireframe | Test case |
@@ -128,7 +128,7 @@ _Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe A
 │Lingozi       │ [ ✓ Đã lưu ]  (toast sau khi lưu)                              │
 │              │ ← Thư viện                            [ Sửa ]  [ x Xóa ]       │
 │▸ Thư viện    │ give up                                         term           │
-│▸ Luyện tập   │ Từ vựng · /ɡɪv ʌp/                                             │
+│▸ Luyện tập   │ Từ vựng · /ɡɪv ʌp/ · Động từ                                   │
 │              │                                                                │
 │              │ Nghĩa   h2                                                     │
 │              │ từ bỏ                                                          │
@@ -136,16 +136,14 @@ _Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe A
 │              │ Ví dụ   h2                                                     │
 │              │ 1. Don't give up. — Đừng bỏ cuộc.                              │
 │              │                                                                │
-│              │ Ghi chú · Nguồn: Friends S01E01                                │
+│              │ Ghi chú: Thường dùng trong văn nói                             │
 │              │                                                                │
 │              │ Tạo 08/11/2026 14:00 · Sửa 08/11/2026 14:05                    │
 └──────────────┴────────────────────────────────────────────────────────────────┘
 ```
-
-- Nội dung hiện cỡ `text.term`; phiên âm chỉ có với Từ vựng, kèm nguồn khi do hệ thống điền.
+- Nội dung hiện cỡ `text.term`. Từ vựng: hiện loại từ (nếu có) và phiên âm (nếu có; kèm nguồn khi do hệ thống điền). Ngữ pháp: thay khối Nghĩa bằng khối Công thức; hiện Ý nghĩa nếu có. Ghi chú hiện ở cuối; không còn dòng Nguồn.
 - Nút "Xóa" kiểu viền, có icon cảnh báo, không dùng nền đặc giống nút chính.
 - Toast "Đã lưu" (`role="status"`) chỉ hiện ngay sau khi lưu.
-
 ### W-LIB-15 — Chi tiết mục: tối thiểu (không có trường tùy chọn)
 
 ```text
@@ -156,7 +154,7 @@ _Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe A
 │▸ Luyện tập   │                                                                │
 │              │ Tạo 08/11/2026 14:00 · Sửa 08/11/2026 14:00                    │
 │              │                                                                │
-│              │ (không có khối Nghĩa, Ví dụ, Ghi chú, Nguồn)                   │
+│              │ (không có khối Nghĩa, Ví dụ, Ghi chú, Loại từ)                 │
 │⚙ Cài đặt     │                                                                │
 └──────────────┴────────────────────────────────────────────────────────────────┘
 ```
@@ -225,3 +223,4 @@ Phản hồi `200` là chi tiết mục (gồm `ipa`, `ipaSource`, `examples`, `
 | Phiên bản | Ngày | Thay đổi |
 | --- | --- | --- |
 | 0.3 | 2026-11-09 | Tách từ `srs.md` và `design/` thành file riêng cho story; thêm FR chi tiết, sequence, state, bảng AC → FR/BR/ERR/TC. |
+| 0.4 | 2026-11-11 | Theo quyết định của chủ dự án (2026-11-11): bỏ "Nguồn" khỏi chi tiết và form sửa; thêm loại từ, công thức, ý nghĩa theo loại; gợi ý nghĩa vẫn có; sửa nhãn "Nghĩa" thành bắt buộc khi là từ vựng. |

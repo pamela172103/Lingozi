@@ -99,11 +99,12 @@ Mô tả Input, Xử lý, Output của từng FR nằm trong file SRS của stor
   "id": "uuid",
   "kind": "word",
   "term": "give up",
-  "meaning": "từ bỏ",                         // null nếu không có
+  "meaning": "từ bỏ",                         // word: bắt buộc; grammar: null nếu không có
+  "formula": null,                            // chỉ có với "grammar", bắt buộc
+  "partOfSpeech": "Động từ",                  // chỉ có với "word"; null nếu không có
   "ipa": null,                                // chỉ có với "word"
   "ipaSource": null,
   "note": "Không dùng với tân ngữ là người", // null nếu không có
-  "source": "Friends S01E01",                // null nếu không có
   "examples": [ { "text": "Don't give up.", "translation": "Đừng bỏ cuộc." } ], // theo thứ tự hiển thị
   "createdAt": "2026-11-08T07:00:00Z",
   "updatedAt": "2026-11-08T07:05:00Z",
@@ -114,11 +115,12 @@ Mô tả Input, Xử lý, Output của từng FR nằm trong file SRS của stor
 {
   "kind": "word",                              // bắt buộc: "word" hoặc "grammar" (BR-LIB-002)
   "term": "give up",                          // bắt buộc (BR-LIB-012)
-  "meaning": null,                            // không bắt buộc; null hoặc chuỗi rỗng sau trim → null
+  "meaning": "từ bỏ",                         // word: bắt buộc (BR-LIB-001); grammar: không bắt buộc, null hoặc rỗng sau trim → null
+  "formula": null,                            // grammar: bắt buộc; word: phải null
+  "partOfSpeech": "Động từ",                  // chỉ khi kind = "word"; danh sách BR-LIB-016; grammar phải null
   "ipa": null,                                // chỉ khi kind = "word"; còn lại phải null (BR-LIB-013)
   "ipaSource": null,                          // "dictionary" hoặc "user"; null khi ipa là null
   "note": null,
-  "source": null,
   "examples": [ { "text": "Don't give up.", "translation": null } ]
 }
 ```
@@ -127,7 +129,7 @@ Mô tả Input, Xử lý, Output của từng FR nằm trong file SRS của stor
 
 | Method và path | Body | Thành công | Lỗi |
 | --- | --- | --- | --- |
-| `GET /api/library/item-kinds` | — | `200 { kinds: [{ kind: "word", label: "Từ vựng", termLabel: "Từ", showsIpa: true }, { kind: "grammar", label: "Ngữ pháp", termLabel: "Điểm ngữ pháp", showsIpa: false }] }` (Vòng 1: hai loại theo BR-LIB-002/012) | — |
+| `GET /api/library/item-kinds` | — | `200 { kinds: [{ kind: "word", label: "Từ vựng", requiredFields: [{ name: "term", label: "Từ" }, { name: "meaning", label: "Nghĩa" }], showsIpa: true, partOfSpeech: ["Danh từ", "Động từ", "Tính từ", "Trạng từ", "Giới từ", "Liên từ", "Thán từ", "Cụm từ", "Khác"] }, { kind: "grammar", label: "Ngữ pháp", requiredFields: [{ name: "term", label: "Tên cấu trúc" }, { name: "formula", label: "Công thức" }], showsIpa: false }] }` (Vòng 1: hai loại theo BR-LIB-002/012/016) | — |
 | `GET /api/library/items?page=1&pageSize=20` | — | `200 { items: Summary[], page, pageSize, totalCount }` | 400-01 |
 | `GET /api/library/items/similar?term=` | — | `200 { items: Summary[] (tối đa 5), totalCount }`; `term` rỗng thì danh sách rỗng | 400-01 (`term` > 1000 ký tự) |
 | `GET /api/library/suggestions?term=&kind=` | — | `200 { ipa: { value, source: "dictionary" } \| null, sourceAvailable: bool, meanings: [{ text, source: "own" \| "dictionary" }] }` (tối đa 5 nghĩa; `ipa` chỉ khi `kind = word`) | 400-01 |
@@ -162,7 +164,7 @@ Mọi route nằm trong app shell có sidebar ([design system](../../../architec
 | `NFR-PRIV-001` | Integration test truy cập chéo cho mọi endpoint (US-LIB-07); truy cập tài nguyên người khác trả 404. |
 | `NFR-PERF-001` | GET danh sách và chi tiết, POST, PUT có P95 ≤ 300 ms với 5.000 mục mỗi người; đo trên staging. Index (`UserId`, `CreatedAt` DESC) và (`UserId`, `NormalizedTerm`) theo ERD. |
 | `NFR-A11Y-001` | Form có nhãn hiển thị; thêm và xóa ví dụ bằng bàn phím; xóa ví dụ thì focus chuyển sang ví dụ kế bên; dialog giữ focus bên trong; gợi ý cập nhật có `aria-live="polite"`. |
-| `NFR-UX-001` | Form 2 cột ở ≥ 1280 px (trái: nội dung, loại, nghĩa; phải: ví dụ, ghi chú, nguồn); 1 cột ở < 1024 px; không cuộn ngang. |
+| `NFR-UX-001` | Form 2 cột ở ≥ 1280 px (trái: nội dung, loại, nghĩa; phải: ví dụ, ghi chú); 1 cột ở < 1024 px; không cuộn ngang. |
 
 ### 4.5 Ma trận lỗi tổng hợp (ERR)
 

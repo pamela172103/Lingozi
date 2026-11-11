@@ -140,7 +140,7 @@ _Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe A
 │Lingozi       │ [ ✓ Đã lưu ]  (toast sau khi lưu)                              │
 │              │ ← Thư viện                            [ Sửa ]  [ x Xóa ]       │
 │▸ Thư viện    │ give up                                         term           │
-│▸ Luyện tập   │ Từ vựng · /ɡɪv ʌp/                                             │
+│▸ Luyện tập   │ Từ vựng · /ɡɪv ʌp/ · Động từ                                   │
 │              │                                                                │
 │              │ Nghĩa   h2                                                     │
 │              │ từ bỏ                                                          │
@@ -148,16 +148,14 @@ _Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe A
 │              │ Ví dụ   h2                                                     │
 │              │ 1. Don't give up. — Đừng bỏ cuộc.                              │
 │              │                                                                │
-│              │ Ghi chú · Nguồn: Friends S01E01                                │
+│              │ Ghi chú: Thường dùng trong văn nói                             │
 │              │                                                                │
 │              │ Tạo 08/11/2026 14:00 · Sửa 08/11/2026 14:05                    │
 └──────────────┴────────────────────────────────────────────────────────────────┘
 ```
-
-- Nội dung hiện cỡ `text.term`; phiên âm chỉ có với Từ vựng, kèm nguồn khi do hệ thống điền.
+- Nội dung hiện cỡ `text.term`. Từ vựng: hiện loại từ (nếu có) và phiên âm (nếu có; kèm nguồn khi do hệ thống điền). Ngữ pháp: thay khối Nghĩa bằng khối Công thức; hiện Ý nghĩa nếu có. Ghi chú hiện ở cuối; không còn dòng Nguồn.
 - Nút "Xóa" kiểu viền, có icon cảnh báo, không dùng nền đặc giống nút chính.
 - Toast "Đã lưu" (`role="status"`) chỉ hiện ngay sau khi lưu.
-
 ### W-LIB-20 — Hộp thoại xác nhận xóa
 
 ```text

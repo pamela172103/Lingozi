@@ -2,7 +2,7 @@
 
 - Tính năng: FEAT-02 Mục kiến thức (`knowledge-items`).
 - User story: [US-LIB-09](../requirements/user-stories.md#us-lib-09--gợi-ý-nghĩa-khi-nhập).
-- Phiên bản 0.3 (2026-11-09). Trạng thái: **chờ duyệt**.
+- Phiên bản 0.4 (2026-11-11). Trạng thái: **chờ duyệt**.
 - Tài liệu chung: [README.md](README.md) (danh mục FR, BR, ERR, NFR, quy ước API, ngữ cảnh).
 - Test case: [testing/test-cases.md](../testing/test-cases.md).
 - Skill OpenBA áp dụng: `srs` (FR, BR, ERR, NFR), `user-flow`, `sequence`, `wireframe-ascii`, `api-design`, `ac`.
@@ -10,6 +10,8 @@
 ## 1. Giới thiệu
 
 Là người học, tôi muốn được gợi ý nghĩa để nhanh hơn, nhưng gợi ý không tự điền vào form.
+
+Gợi ý áp dụng cho ô "Nghĩa" của từ vựng (bắt buộc) và ô "Ý nghĩa" của ngữ pháp (không bắt buộc). Gợi ý không thay thế việc tự nhập: với từ vựng, người dùng vẫn phải bấm chọn hoặc tự nhập nghĩa.
 
 **Trong phạm vi:**
 
@@ -58,7 +60,7 @@ _Skill `user-flow`: màn hình và chuyển đổi, kèm các trạng thái giao
 
 ```mermaid
 flowchart TD
-    A[Nhập Từ hoặc Điểm ngữ pháp, rời ô] --> B[GET /suggestions?term&kind]
+    A[Nhập Từ hoặc Tên cấu trúc, rời ô] --> B[GET /suggestions?term&kind]
     B --> C{Có gợi ý nghĩa?}
     C -- Không --> D[Không hiện gì, nghĩa vẫn không bắt buộc]
     C -- Có --> E[Hàng chip gợi ý: Từ mục của bạn, Từ từ điển]
@@ -124,7 +126,7 @@ Scenario: AC-04 Bấm gợi ý mới điền
 
 Scenario: AC-05 Không có gợi ý
   When không có nguồn nào trả nghĩa cho từ tôi nhập
-  Then không hiện gợi ý, không có thông báo lỗi, và nghĩa vẫn không bắt buộc
+  Then không hiện gợi ý, không có thông báo lỗi, và ô nghĩa vẫn trống để tôi tự nhập (nghĩa của từ vựng là bắt buộc, BR-LIB-001)
 ```
 
 | AC | Nội dung | FR | BR | ERR | Wireframe | Test case |
@@ -145,7 +147,7 @@ _Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe A
 ┌─ Form (một phần) ────────────────────────────────────────┐
 │ Từ *                                                     │
 │ [give up__________________]                              │
-│ Nghĩa (không bắt buộc)                                   │
+│ Nghĩa *                                                  │
 │ [__________________________]                             │
 │ Gợi ý:  ( từ bỏ · Từ mục của bạn )                       │
 └──────────────────────────────────────────────────────────┘
@@ -160,7 +162,7 @@ _Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe A
 ┌─ Form (một phần) ────────────────────────────────────────┐
 │ Từ *                                                     │
 │ [give up__________________]                              │
-│ Nghĩa (không bắt buộc)                                   │
+│ Nghĩa *                                                  │
 │ [__________________________]                             │
 │ Gợi ý:  ( từ bỏ · Từ mục của bạn )                       │
 │         ( to stop trying · Từ từ điển )                  │
@@ -175,7 +177,7 @@ _Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe A
 ┌─ Form (một phần) ────────────────────────────────────────┐
 │ Từ *                                                     │
 │ [xyzzy___________________]                               │
-│ Nghĩa (không bắt buộc)                                   │
+│ Nghĩa *                                                  │
 │ [__________________________]                             │
 └──────────────────────────────────────────────────────────┘
 ```
@@ -189,7 +191,7 @@ _Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe A
 ┌─ Form (một phần) ────────────────────────────────────────┐
 │ Từ *                                                     │
 │ [give up__________________]                              │
-│ Nghĩa (không bắt buộc)                                   │
+│ Nghĩa *                                                  │
 │ [từ bỏ____________________]                              │
 │ Gợi ý:  ( từ bỏ · Từ mục của bạn )                       │
 └──────────────────────────────────────────────────────────┘
@@ -233,3 +235,4 @@ Tối đa 5 nghĩa. Nguồn lỗi hoặc quá 3 giây: `sourceAvailable = false`
 | Phiên bản | Ngày | Thay đổi |
 | --- | --- | --- |
 | 0.3 | 2026-11-09 | Tách từ `srs.md` và `design/` thành file riêng cho story; thêm FR chi tiết, sequence, state, bảng AC → FR/BR/ERR/TC. |
+| 0.4 | 2026-11-11 | Theo quyết định của chủ dự án (2026-11-11): bỏ "Nguồn" khỏi chi tiết và form sửa; thêm loại từ, công thức, ý nghĩa theo loại; gợi ý nghĩa vẫn có; sửa nhãn "Nghĩa" thành bắt buộc khi là từ vựng. |

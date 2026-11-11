@@ -27,3 +27,7 @@ __pycache__/
 Thumbs.db
 *.log
 *.tmp
+
+# Local development helper (scripts/dev.ps1)
+/.dev-pids.json
+/logs/

@@ -104,3 +104,21 @@ nohup dockerd > /tmp/dockerd.log 2>&1 &
 ```
 
 Trình duyệt Chromium được cài sẵn ở `/opt/pw-browsers/chromium`; chạy E2E với `PLAYWRIGHT_CHROMIUM_EXECUTABLE=/opt/pw-browsers/chromium`.
+
+## Chạy một lệnh trên Windows (PowerShell)
+
+Không cần mở nhiều cửa sổ. Từ thư mục gốc repo:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\dev.ps1
+```
+
+Script này nạp `.env`, bật SQL Server và Mailpit bằng Docker, chạy API và website ở nền, chờ cả hai sẵn sàng rồi mở `http://localhost:3000/library`. Log nằm trong `logs\` (`api.log`, `web.log`, và `*.err.log` cho lỗi).
+
+Dừng toàn bộ:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\stop-dev.ps1
+```
+
+Lần đầu chạy có thể mất vài phút (API build, website biên dịch). Nếu script báo "chưa sẵn sàng", mở `logs\api.err.log` hoặc `logs\web.err.log`. Script chưa được kiểm chứng trên máy Windows của người dùng; lần chạy đầu hãy báo lại kết quả.

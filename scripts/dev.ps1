@@ -26,7 +26,9 @@ function Test-Port([int]$port) {
   $client = New-Object System.Net.Sockets.TcpClient
   try {
     $async = $client.BeginConnect('127.0.0.1', $port, $null, $null)
-    return $async.AsyncWaitHandle.WaitOne(1000) -and $client.Connected
+    if (-not $async.AsyncWaitHandle.WaitOne(1000)) { return $false }
+    $client.EndConnect($async)
+    return $client.Connected
   } catch { return $false } finally { $client.Close() }
 }
 $hasDocker = [bool](Get-Command docker -ErrorAction SilentlyContinue)

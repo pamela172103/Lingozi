@@ -5,7 +5,7 @@
 - Phiên bản 0.3 (2026-11-09). Trạng thái: **chờ duyệt**.
 - Tài liệu chung: [README.md](README.md) (danh mục FR, BR, ERR, NFR, quy ước API, ngữ cảnh).
 - Test case: [testing/test-cases.md](../testing/test-cases.md).
-- Skill OpenBA áp dụng: `srs` (FR, BR, ERR, NFR), `user-flow`, `sequence`, `wireframe-ascii`, `api-design`, `ac`.
+- Skill OpenBA áp dụng: `srs` (FR, BR, ERR, NFR), `user-flow`, `sequence`, wireframe SVG (`tools/wireframes/`), `api-design`, `ac`.
 
 ## 1. Giới thiệu
 
@@ -150,82 +150,28 @@ Scenario: AC-04 Hủy hoặc lỗi ở phía Google
 
 ## 5. Wireframe
 
-_Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe ASCII là căn cứ cho DoR. Quy tắc: vẽ đủ mọi màn hình, hộp thoại và trạng thái mà AC của story nhắc tới._
+_Wireframe mức thấp (khung xám, đúng bố cục màn hình thật) vẽ bằng script `tools/wireframes/` và lưu ở [wireframes/](../wireframes/); sửa script rồi chạy `python3 tools/wireframes/build.py` và `python3 tools/wireframes/sync_docs.py`, không sửa tay file SVG. Quy tắc: vẽ đủ mọi màn hình, hộp thoại và trạng thái mà AC của story nhắc tới. Các màn hình đăng nhập và nhập mã (W-AUTH-01 → 08) là ảnh xuất từ Figma, đặt ở [design-assets/](../design-assets/)._
 
 ### W-AUTH-01 — Đăng nhập: trạng thái ban đầu (`/auth/login`)
 
-```text
-┌────────────────────────────────────────────────────────────────┐
-│                         [Logo Lingozi]                         │
-│                                                                │
-│         ┌────────────────────────────────────────────┐         │
-│         │ Đăng nhập                                  │         │
-│         │ Đăng nhập hoặc tạo tài khoản mới.          │         │
-│         │                                            │         │
-│         │ [ G   Tiếp tục với Google     ]            │         │
-│         │ [ f   Tiếp tục với Facebook   ]            │         │
-│         │ ────────────── hoặc ──────────────         │         │
-│         │ [     Tiếp tục với email      ]            │         │
-│         └────────────────────────────────────────────┘         │
-│                                                                │
-│            Chính sách quyền riêng tư · Xóa dữ liệu             │
-└────────────────────────────────────────────────────────────────┘
-```
+![W-AUTH-01 Đăng nhập: trạng thái ban đầu](../design-assets/W-AUTH-01-login-initial.webp)
 
-- Ba phương thức theo thứ tự: Google, Facebook, email. Facebook thay cho Apple.
-- Ô email ẩn cho tới khi bấm "Tiếp tục với email".
-- Không có ô mật khẩu và không có liên kết "Quên mật khẩu".
-- Chân trang có liên kết tới `/privacy` và `/data-deletion`.
+- Ba phương thức theo thứ tự: Google, Facebook, email. Facebook thay cho Apple. Không có ô mật khẩu và không có liên kết "Quên mật khẩu".
+- Ô email ẩn cho tới khi bấm "Tiếp tục với email". Chân trang có liên kết tới `/privacy` và `/data-deletion`.
 - Nút Google và Facebook hiện nhưng không bấm được cho tới US-AUTH-04 và US-AUTH-05; mô tả cho trình đọc màn hình: "chưa khả dụng".
 
 ### W-AUTH-10 — Đăng nhập: lỗi nhà cung cấp hoặc phiên chờ hết hạn (ERR-AUTH-502-01, ERR-AUTH-400-04)
 
-```text
-┌────────────────────────────────────────────────────────────────┐
-│                         [Logo Lingozi]                         │
-│                                                                │
-│         ┌────────────────────────────────────────────┐         │
-│         │ Đăng nhập                                  │         │
-│         │ (!) Không đăng nhập được bằng Facebook.    │         │
-│         │     Vui lòng thử lại.                      │         │
-│         │                                            │         │
-│         │ [ G   Tiếp tục với Google     ]            │         │
-│         │ [ f   Tiếp tục với Facebook   ]            │         │
-│         │ ────────────── hoặc ──────────────         │         │
-│         │ [     Tiếp tục với email      ]            │         │
-│         └────────────────────────────────────────────┘         │
-│                                                                │
-│            Chính sách quyền riêng tư · Xóa dữ liệu             │
-└────────────────────────────────────────────────────────────────┘
-```
+![W-AUTH-10 Đăng nhập: lỗi nhà cung cấp hoặc phiên chờ hết hạn](../wireframes/W-AUTH-10.svg)
 
 - Hiện khi trang mở với `?error=external` (hủy hoặc lỗi nhà cung cấp) hoặc khi phiên chờ Facebook hết hạn (400-04: "Phiên đăng nhập bằng Facebook đã hết hạn. Vui lòng thử lại.").
 - Không có tài khoản nào được tạo.
 
 ### W-AUTH-11 — Đăng nhập: Google chưa xác minh email (ERR-AUTH-409-02)
 
-```text
-┌────────────────────────────────────────────────────────────────┐
-│                         [Logo Lingozi]                         │
-│                                                                │
-│         ┌────────────────────────────────────────────┐         │
-│         │ Đăng nhập                                  │         │
-│         │ Đăng nhập hoặc tạo tài khoản mới.          │         │
-│         │                                            │         │
-│         │ [ G   Tiếp tục với Google     ]            │         │
-│         │ (!) Email này chưa được Google xác minh.   │         │
-│         │     Hãy dùng Tiếp tục với email.           │         │
-│         │ [ f   Tiếp tục với Facebook   ]            │         │
-│         │ ────────────── hoặc ──────────────         │         │
-│         │ [     Tiếp tục với email      ]            │         │
-│         └────────────────────────────────────────────┘         │
-│                                                                │
-│            Chính sách quyền riêng tư · Xóa dữ liệu             │
-└────────────────────────────────────────────────────────────────┘
-```
+![W-AUTH-11 Đăng nhập: Google chưa xác minh email](../wireframes/W-AUTH-11.svg)
 
-- Hiện khi trang mở với `?error=google-unverified`.
-- Thông báo nằm ngay dưới nút Google; không đăng nhập và không tạo tài khoản.
+- Hiện khi trang mở với `?error=google-unverified`. Thông báo nằm ngay dưới nút Google; không đăng nhập và không tạo tài khoản.
 
 ## 6. API
 

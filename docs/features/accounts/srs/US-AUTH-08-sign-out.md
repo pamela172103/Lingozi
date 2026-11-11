@@ -5,7 +5,7 @@
 - Phiên bản 0.3 (2026-11-09). Trạng thái: **chờ duyệt**.
 - Tài liệu chung: [README.md](README.md) (danh mục FR, BR, ERR, NFR, quy ước API, ngữ cảnh).
 - Test case: [testing/test-cases.md](../testing/test-cases.md).
-- Skill OpenBA áp dụng: `srs` (FR, BR, ERR, NFR), `user-flow`, `sequence`, `wireframe-ascii`, `api-design`, `ac`.
+- Skill OpenBA áp dụng: `srs` (FR, BR, ERR, NFR), `user-flow`, `sequence`, wireframe SVG (`tools/wireframes/`), `api-design`, `ac`.
 
 ## 1. Giới thiệu
 
@@ -118,75 +118,27 @@ Scenario: AC-03 Đăng xuất khi phiên đã hết hạn
 
 ## 5. Wireframe
 
-_Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe ASCII là căn cứ cho DoR. Quy tắc: vẽ đủ mọi màn hình, hộp thoại và trạng thái mà AC của story nhắc tới._
+_Wireframe mức thấp (khung xám, đúng bố cục màn hình thật) vẽ bằng script `tools/wireframes/` và lưu ở [wireframes/](../wireframes/); sửa script rồi chạy `python3 tools/wireframes/build.py` và `python3 tools/wireframes/sync_docs.py`, không sửa tay file SVG. Quy tắc: vẽ đủ mọi màn hình, hộp thoại và trạng thái mà AC của story nhắc tới. Các màn hình đăng nhập và nhập mã (W-AUTH-01 → 08) là ảnh xuất từ Figma, đặt ở [design-assets/](../design-assets/)._
 
 ### W-AUTH-15 — Cài đặt tài khoản: mặc định (`/settings/account`)
 
-```text
-┌──────────────┬──────────────────────────────────────────────────────────────┐
-│Lingozi       │ Cài đặt tài khoản                                            │
-│              │ ┌─ Thông tin ──────────────────────────────────────────────┐ │
-│▸ Thư viện    │ │ Email    an@example.com    ✓ Đã xác minh                 │ │
-│▸ Luyện tập   │ └──────────────────────────────────────────────────────────┘ │
-│              │ ┌─ Phương thức đăng nhập ──────────────────────────────────┐ │
-│              │ │ Email (mã đăng nhập)     ✓ Luôn có                       │ │
-│              │ │ Google                   ✓ Đã liên kết                   │ │
-│⚙ Cài đặt     │ │ Facebook                 [ Liên kết Facebook ]           │ │
-│              │ └──────────────────────────────────────────────────────────┘ │
-│              │                                                              │
-│              │ [ Đăng xuất ]                                                │
-└──────────────┴──────────────────────────────────────────────────────────────┘
-```
+![W-AUTH-15 Cài đặt tài khoản: mặc định](../wireframes/W-AUTH-15.svg)
 
-- Nằm trong khung ứng dụng có sidebar.
-- Phương thức đã liên kết hiện "Đã liên kết" thay cho nút; chưa liên kết thì hiện nút "Liên kết ...".
-- Không có mục đổi hoặc đặt mật khẩu.
-- Nút "Đăng xuất": đang xử lý thì có spinner và giữ nguyên chiều rộng (xem W-AUTH-23).
+- Nằm trong khung ứng dụng có menu bên. Phương thức đã liên kết hiện "Đã liên kết" thay cho nút; chưa liên kết thì hiện nút "Liên kết ...".
+- Không có mục đổi hoặc đặt mật khẩu. Nút "Đăng xuất": đang xử lý thì có spinner và giữ nguyên chiều rộng (xem W-AUTH-23).
 
 ### W-AUTH-23 — Cài đặt tài khoản: đang đăng xuất
 
-```text
-┌──────────────┬──────────────────────────────────────────────────────────────┐
-│Lingozi       │ Cài đặt tài khoản                                            │
-│              │ ┌─ Thông tin ──────────────────────────────────────────────┐ │
-│▸ Thư viện    │ │ Email    an@example.com    ✓ Đã xác minh                 │ │
-│▸ Luyện tập   │ └──────────────────────────────────────────────────────────┘ │
-│              │ ┌─ Phương thức đăng nhập ──────────────────────────────────┐ │
-│              │ │ Email (mã đăng nhập)     ✓ Luôn có                       │ │
-│              │ │ Google                   ✓ Đã liên kết                   │ │
-│⚙ Cài đặt     │ │ Facebook                 [ Liên kết Facebook ]           │ │
-│              │ └──────────────────────────────────────────────────────────┘ │
-│              │                                                              │
-│              │ [ ◌  Đang đăng xuất ]                                        │
-└──────────────┴──────────────────────────────────────────────────────────────┘
-```
+![W-AUTH-23 Cài đặt tài khoản: đang đăng xuất](../wireframes/W-AUTH-23.svg)
 
 - Sau khi xong, chuyển tới W-AUTH-01. Đăng xuất luôn thành công, không hiện lỗi (kể cả khi phiên đã hết hạn).
 
 ### W-AUTH-01 — Đăng nhập: trạng thái ban đầu (`/auth/login`)
 
-```text
-┌────────────────────────────────────────────────────────────────┐
-│                         [Logo Lingozi]                         │
-│                                                                │
-│         ┌────────────────────────────────────────────┐         │
-│         │ Đăng nhập                                  │         │
-│         │ Đăng nhập hoặc tạo tài khoản mới.          │         │
-│         │                                            │         │
-│         │ [ G   Tiếp tục với Google     ]            │         │
-│         │ [ f   Tiếp tục với Facebook   ]            │         │
-│         │ ────────────── hoặc ──────────────         │         │
-│         │ [     Tiếp tục với email      ]            │         │
-│         └────────────────────────────────────────────┘         │
-│                                                                │
-│            Chính sách quyền riêng tư · Xóa dữ liệu             │
-└────────────────────────────────────────────────────────────────┘
-```
+![W-AUTH-01 Đăng nhập: trạng thái ban đầu](../design-assets/W-AUTH-01-login-initial.webp)
 
-- Ba phương thức theo thứ tự: Google, Facebook, email. Facebook thay cho Apple.
-- Ô email ẩn cho tới khi bấm "Tiếp tục với email".
-- Không có ô mật khẩu và không có liên kết "Quên mật khẩu".
-- Chân trang có liên kết tới `/privacy` và `/data-deletion`.
+- Ba phương thức theo thứ tự: Google, Facebook, email. Facebook thay cho Apple. Không có ô mật khẩu và không có liên kết "Quên mật khẩu".
+- Ô email ẩn cho tới khi bấm "Tiếp tục với email". Chân trang có liên kết tới `/privacy` và `/data-deletion`.
 - Nút Google và Facebook hiện nhưng không bấm được cho tới US-AUTH-04 và US-AUTH-05; mô tả cho trình đọc màn hình: "chưa khả dụng".
 
 ## 6. API

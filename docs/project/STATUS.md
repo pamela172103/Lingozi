@@ -1,8 +1,8 @@
 # Trạng thái dự án Lingozi
 
-- Cập nhật: 2026-11-10.
+- Cập nhật: 2026-11-11.
 - Giai đoạn: **Vòng 1 — Lưu được kiến thức của riêng mình** (2026-11-08 → 2026-11-21), đang ở bước ② Thiết kế. Vòng 0 xong phần việc. Xem [lộ trình](../product/roadmap.md) §5.
-- Phiên gần nhất: [Chi tiết, sửa và gợi ý theo form mới](sessions/2026-11-11-23-knowledge-detail-and-suggestions.md).
+- Phiên gần nhất: [Tách thư viện Từ vựng và Ngữ pháp, vẽ lại wireframe bằng SVG](sessions/2026-11-11-24-separate-libraries-and-svg-wireframes.md).
 - Đã đọc và gộp 4 commit từ `origin/work` vào `main` theo fast-forward, tới `61514e0`. Bàn giao phiên 05 được lưu cùng commit tài liệu tiếp theo; tra bằng `git log -- docs/project/`.
 
 ## Đã hoàn thành
@@ -19,6 +19,8 @@
 - Vòng 0: chủ dự án duyệt ADR 0001–0006 (2026-11-08), chọn máy chủ riêng + SQL Server. Viết [ERD tổng thể](../architecture/erd.md); duyệt 2026-11-08.
 - Chủ dự án yêu cầu thêm **đăng nhập Facebook** (2026-11-08): cập nhật ADR 0004, PRD 0.2.0, MVP, ERD, brainstorm (`Q-12` về xóa dữ liệu).
 - Vòng 0: viết [design system nền](../architecture/design-system.md) với token trong `design-tokens.json`, gồm 2 theme (default, coquette; chủ dự án chọn Coquette 2026-11-08) đạt WCAG AA cho 19/19 cặp màu mỗi theme; script `tools/design-tokens/check_contrast.py` (Draft).
+
+- Phiên 24 (2026-11-11): FEAT-02 tách thành hai thư viện Từ vựng và Ngữ pháp (thiết kế v0.5, chờ duyệt); toàn bộ wireframe FEAT-01 và FEAT-02 đổi từ ASCII sang SVG sinh bằng `tools/wireframes/` (50 màn hình), CI thêm job `feature-docs`.
 
 ## Hiện trạng các phần
 

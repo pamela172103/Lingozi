@@ -5,7 +5,7 @@
 - Phiên bản 0.3 (2026-11-09). Trạng thái: **chờ duyệt**.
 - Tài liệu chung: [README.md](README.md) (danh mục FR, BR, ERR, NFR, quy ước API, ngữ cảnh).
 - Test case: [testing/test-cases.md](../testing/test-cases.md).
-- Skill OpenBA áp dụng: `srs` (FR, BR, ERR, NFR), `user-flow`, `sequence`, `state`, `wireframe-ascii`, `api-design`, `ac`.
+- Skill OpenBA áp dụng: `srs` (FR, BR, ERR, NFR), `user-flow`, `sequence`, `state`, wireframe SVG (`tools/wireframes/`), `api-design`, `ac`.
 
 ## 1. Giới thiệu
 
@@ -226,163 +226,47 @@ Scenario: AC-05 Hết thời gian chờ
 
 ## 5. Wireframe
 
-_Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe ASCII là căn cứ cho DoR. Quy tắc: vẽ đủ mọi màn hình, hộp thoại và trạng thái mà AC của story nhắc tới._
+_Wireframe mức thấp (khung xám, đúng bố cục màn hình thật) vẽ bằng script `tools/wireframes/` và lưu ở [wireframes/](../wireframes/); sửa script rồi chạy `python3 tools/wireframes/build.py` và `python3 tools/wireframes/sync_docs.py`, không sửa tay file SVG. Quy tắc: vẽ đủ mọi màn hình, hộp thoại và trạng thái mà AC của story nhắc tới. Các màn hình đăng nhập và nhập mã (W-AUTH-01 → 08) là ảnh xuất từ Figma, đặt ở [design-assets/](../design-assets/)._
 
 ### W-AUTH-01 — Đăng nhập: trạng thái ban đầu (`/auth/login`)
 
-```text
-┌────────────────────────────────────────────────────────────────┐
-│                         [Logo Lingozi]                         │
-│                                                                │
-│         ┌────────────────────────────────────────────┐         │
-│         │ Đăng nhập                                  │         │
-│         │ Đăng nhập hoặc tạo tài khoản mới.          │         │
-│         │                                            │         │
-│         │ [ G   Tiếp tục với Google     ]            │         │
-│         │ [ f   Tiếp tục với Facebook   ]            │         │
-│         │ ────────────── hoặc ──────────────         │         │
-│         │ [     Tiếp tục với email      ]            │         │
-│         └────────────────────────────────────────────┘         │
-│                                                                │
-│            Chính sách quyền riêng tư · Xóa dữ liệu             │
-└────────────────────────────────────────────────────────────────┘
-```
+![W-AUTH-01 Đăng nhập: trạng thái ban đầu](../design-assets/W-AUTH-01-login-initial.webp)
 
-- Ba phương thức theo thứ tự: Google, Facebook, email. Facebook thay cho Apple.
-- Ô email ẩn cho tới khi bấm "Tiếp tục với email".
-- Không có ô mật khẩu và không có liên kết "Quên mật khẩu".
-- Chân trang có liên kết tới `/privacy` và `/data-deletion`.
+- Ba phương thức theo thứ tự: Google, Facebook, email. Facebook thay cho Apple. Không có ô mật khẩu và không có liên kết "Quên mật khẩu".
+- Ô email ẩn cho tới khi bấm "Tiếp tục với email". Chân trang có liên kết tới `/privacy` và `/data-deletion`.
 - Nút Google và Facebook hiện nhưng không bấm được cho tới US-AUTH-04 và US-AUTH-05; mô tả cho trình đọc màn hình: "chưa khả dụng".
 
 ### W-AUTH-12 — Facebook: nhập email (`/auth/facebook-email`)
 
-```text
-┌────────────────────────────────────────────────────────────────┐
-│                         [Logo Lingozi]                         │
-│                                                                │
-│         ┌────────────────────────────────────────────┐         │
-│         │ Nhập email để tiếp tục                     │         │
-│         │ Facebook không chia sẻ email của bạn.      │         │
-│         │ Chúng tôi sẽ gửi mã xác nhận tới email này.│         │
-│         │                                            │         │
-│         │ Email *                                    │         │
-│         │ [__________________________________]       │         │
-│         │ [             Gửi mã             ]         │         │
-│         │                                            │         │
-│         │ Hủy và quay lại đăng nhập                  │         │
-│         └────────────────────────────────────────────┘         │
-│                                                                │
-│            Chính sách quyền riêng tư · Xóa dữ liệu             │
-└────────────────────────────────────────────────────────────────┘
-```
+![W-AUTH-12 Facebook: nhập email](../wireframes/W-AUTH-12.svg)
 
 - Chỉ mở khi cookie chờ Facebook còn hạn (10 phút); hết hạn thì hiện W-AUTH-10 (ERR-AUTH-400-04).
 - Email sai định dạng hiện lỗi dưới ô như W-AUTH-03.
 
 ### W-AUTH-13 — Nhập mã sau Facebook: tài khoản mới
 
-```text
-┌────────────────────────────────────────────────────────────────┐
-│                         [Logo Lingozi]                         │
-│                                                                │
-│         ┌────────────────────────────────────────────┐         │
-│         │ (i) Nhập mã để hoàn tất đăng ký.           │         │
-│         │                                            │         │
-│         │ Nhập mã                                    │         │
-│         │ Chúng tôi đã gửi mã 6 số tới               │         │
-│         │ chi@example.com.                           │         │
-│         │                                            │         │
-│         │ [ ] [ ] [ ] [ ] [ ] [ ]                    │         │
-│         │                                            │         │
-│         │ [            Xác nhận            ]         │         │
-│         │                                            │         │
-│         │ Không nhận được mã?   Đổi email            │         │
-│         └────────────────────────────────────────────┘         │
-│                                                                │
-│            Chính sách quyền riêng tư · Xóa dữ liệu             │
-└────────────────────────────────────────────────────────────────┘
-```
+![W-AUTH-13 Nhập mã sau Facebook: tài khoản mới](../wireframes/W-AUTH-13.svg)
 
 - Dòng thông báo (info) ở đầu màn hình Nhập mã khi luồng đến từ Facebook và email chưa có tài khoản.
 - Tài khoản chỉ được tạo sau khi nhập đúng mã (BR-AUTH-005).
 
 ### W-AUTH-14 — Nhập mã sau Facebook: liên kết vào tài khoản đã có (ERR-AUTH-409-02)
 
-```text
-┌────────────────────────────────────────────────────────────────┐
-│                         [Logo Lingozi]                         │
-│                                                                │
-│         ┌────────────────────────────────────────────┐         │
-│         │ (i) Email này đã có tài khoản Lingozi.     │         │
-│         │     Nhập mã để xác nhận và liên kết        │         │
-│         │     Facebook vào tài khoản đó.             │         │
-│         │                                            │         │
-│         │ Nhập mã                                    │         │
-│         │ Chúng tôi đã gửi mã 6 số tới               │         │
-│         │ chi@example.com.                           │         │
-│         │                                            │         │
-│         │ [ ] [ ] [ ] [ ] [ ] [ ]                    │         │
-│         │                                            │         │
-│         │ [            Xác nhận            ]         │         │
-│         │                                            │         │
-│         │ Không nhận được mã?   Đổi email            │         │
-│         └────────────────────────────────────────────┘         │
-│                                                                │
-│            Chính sách quyền riêng tư · Xóa dữ liệu             │
-└────────────────────────────────────────────────────────────────┘
-```
+![W-AUTH-14 Nhập mã sau Facebook: liên kết vào tài khoản đã có](../wireframes/W-AUTH-14.svg)
 
 - Không tạo tài khoản mới và không liên kết trước khi có mã đúng.
 - Facebook đã thuộc tài khoản khác thì hiện lỗi ERR-AUTH-409-01 sau khi nhập mã.
 
 ### W-AUTH-05 — Nhập mã: trạng thái ban đầu (`/auth/code`)
 
-```text
-┌────────────────────────────────────────────────────────────────┐
-│                         [Logo Lingozi]                         │
-│                                                                │
-│         ┌────────────────────────────────────────────┐         │
-│         │ Nhập mã                                    │         │
-│         │ Chúng tôi đã gửi mã 6 số tới               │         │
-│         │ an@example.com.                            │         │
-│         │ Mã có hiệu lực 10 phút (còn 09:58).        │         │
-│         │                                            │         │
-│         │ [ ] [ ] [ ] [ ] [ ] [ ]                    │         │
-│         │                                            │         │
-│         │ [            Xác nhận            ]         │         │
-│         │                                            │         │
-│         │ Không nhận được mã?   Đổi email            │         │
-│         └────────────────────────────────────────────┘         │
-│                                                                │
-│            Chính sách quyền riêng tư · Xóa dữ liệu             │
-└────────────────────────────────────────────────────────────────┘
-```
+![W-AUTH-05 Nhập mã: trạng thái ban đầu](../design-assets/W-AUTH-05-code-entry.webp)
 
-- Sáu ô, mỗi ô có nhãn riêng; `autocomplete="one-time-code"`, `inputmode="numeric"`.
-- Dán 6 số vào ô đầu thì điền cả sáu ô; đủ 6 số thì tự gửi xác nhận.
-- Đếm ngược 10 phút theo thời hạn của mã.
-- Không có ô mật khẩu.
+- Sáu ô, mỗi ô có nhãn riêng; `autocomplete="one-time-code"`, `inputmode="numeric"`. Dán 6 số vào ô đầu thì điền cả sáu ô; đủ 6 số thì tự gửi xác nhận.
+- Đếm ngược 10 phút theo thời hạn của mã. Không có ô mật khẩu.
 
 ### W-AUTH-10 — Đăng nhập: lỗi nhà cung cấp hoặc phiên chờ hết hạn (ERR-AUTH-502-01, ERR-AUTH-400-04)
 
-```text
-┌────────────────────────────────────────────────────────────────┐
-│                         [Logo Lingozi]                         │
-│                                                                │
-│         ┌────────────────────────────────────────────┐         │
-│         │ Đăng nhập                                  │         │
-│         │ (!) Không đăng nhập được bằng Facebook.    │         │
-│         │     Vui lòng thử lại.                      │         │
-│         │                                            │         │
-│         │ [ G   Tiếp tục với Google     ]            │         │
-│         │ [ f   Tiếp tục với Facebook   ]            │         │
-│         │ ────────────── hoặc ──────────────         │         │
-│         │ [     Tiếp tục với email      ]            │         │
-│         └────────────────────────────────────────────┘         │
-│                                                                │
-│            Chính sách quyền riêng tư · Xóa dữ liệu             │
-└────────────────────────────────────────────────────────────────┘
-```
+![W-AUTH-10 Đăng nhập: lỗi nhà cung cấp hoặc phiên chờ hết hạn](../wireframes/W-AUTH-10.svg)
 
 - Hiện khi trang mở với `?error=external` (hủy hoặc lỗi nhà cung cấp) hoặc khi phiên chờ Facebook hết hạn (400-04: "Phiên đăng nhập bằng Facebook đã hết hạn. Vui lòng thử lại.").
 - Không có tài khoản nào được tạo.

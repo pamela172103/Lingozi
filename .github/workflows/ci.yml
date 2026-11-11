@@ -23,6 +23,18 @@ jobs:
       - name: Generated tokens.css is up to date
         run: python3 tools/design-tokens/build_css.py --check
 
+  feature-docs:
+    name: Feature docs and wireframes
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - name: Story SRS match user stories, links and wireframes resolve
+        run: python3 -I tools/feature-docs/check_feature_docs.py
+      - name: Wireframe SVG files are up to date with tools/wireframes
+        run: python3 tools/wireframes/build.py --check
+      - name: Wireframe blocks in SRS are up to date
+        run: python3 tools/wireframes/sync_docs.py --check
+
   web:
     name: Web (lint, typecheck, unit tests, build)
     runs-on: ubuntu-24.04

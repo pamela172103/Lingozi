@@ -5,7 +5,7 @@
 - Phiên bản 0.3 (2026-11-09). Trạng thái: **chờ duyệt**.
 - Tài liệu chung: [README.md](README.md) (danh mục FR, BR, ERR, NFR, quy ước API, ngữ cảnh).
 - Test case: [testing/test-cases.md](../testing/test-cases.md).
-- Skill OpenBA áp dụng: `srs` (FR, BR, ERR, NFR), `user-flow`, `sequence`, `wireframe-ascii`, `api-design`, `ac`.
+- Skill OpenBA áp dụng: `srs` (FR, BR, ERR, NFR), `user-flow`, `sequence`, wireframe SVG (`tools/wireframes/`), `api-design`, `ac`.
 
 ## 1. Giới thiệu
 
@@ -139,109 +139,36 @@ Scenario: AC-03 Đã liên kết rồi
 
 ## 5. Wireframe
 
-_Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe ASCII là căn cứ cho DoR. Quy tắc: vẽ đủ mọi màn hình, hộp thoại và trạng thái mà AC của story nhắc tới._
+_Wireframe mức thấp (khung xám, đúng bố cục màn hình thật) vẽ bằng script `tools/wireframes/` và lưu ở [wireframes/](../wireframes/); sửa script rồi chạy `python3 tools/wireframes/build.py` và `python3 tools/wireframes/sync_docs.py`, không sửa tay file SVG. Quy tắc: vẽ đủ mọi màn hình, hộp thoại và trạng thái mà AC của story nhắc tới. Các màn hình đăng nhập và nhập mã (W-AUTH-01 → 08) là ảnh xuất từ Figma, đặt ở [design-assets/](../design-assets/)._
 
 ### W-AUTH-15 — Cài đặt tài khoản: mặc định (`/settings/account`)
 
-```text
-┌──────────────┬──────────────────────────────────────────────────────────────┐
-│Lingozi       │ Cài đặt tài khoản                                            │
-│              │ ┌─ Thông tin ──────────────────────────────────────────────┐ │
-│▸ Thư viện    │ │ Email    an@example.com    ✓ Đã xác minh                 │ │
-│▸ Luyện tập   │ └──────────────────────────────────────────────────────────┘ │
-│              │ ┌─ Phương thức đăng nhập ──────────────────────────────────┐ │
-│              │ │ Email (mã đăng nhập)     ✓ Luôn có                       │ │
-│              │ │ Google                   ✓ Đã liên kết                   │ │
-│⚙ Cài đặt     │ │ Facebook                 [ Liên kết Facebook ]           │ │
-│              │ └──────────────────────────────────────────────────────────┘ │
-│              │                                                              │
-│              │ [ Đăng xuất ]                                                │
-└──────────────┴──────────────────────────────────────────────────────────────┘
-```
+![W-AUTH-15 Cài đặt tài khoản: mặc định](../wireframes/W-AUTH-15.svg)
 
-- Nằm trong khung ứng dụng có sidebar.
-- Phương thức đã liên kết hiện "Đã liên kết" thay cho nút; chưa liên kết thì hiện nút "Liên kết ...".
-- Không có mục đổi hoặc đặt mật khẩu.
-- Nút "Đăng xuất": đang xử lý thì có spinner và giữ nguyên chiều rộng (xem W-AUTH-23).
+- Nằm trong khung ứng dụng có menu bên. Phương thức đã liên kết hiện "Đã liên kết" thay cho nút; chưa liên kết thì hiện nút "Liên kết ...".
+- Không có mục đổi hoặc đặt mật khẩu. Nút "Đăng xuất": đang xử lý thì có spinner và giữ nguyên chiều rộng (xem W-AUTH-23).
 
 ### W-AUTH-16 — Cài đặt tài khoản: đang tải
 
-```text
-┌──────────────┬──────────────────────────────────────────────────────────────┐
-│Lingozi       │ Cài đặt tài khoản                                            │
-│              │ ┌─ Thông tin ──────────────────────────────────────────────┐ │
-│▸ Thư viện    │ │ ░░░░░░░░░░░░░░░░░░░░░░░░                                 │ │
-│▸ Luyện tập   │ │ ░░░░░░░░░░░░                                             │ │
-│              │ └──────────────────────────────────────────────────────────┘ │
-│              │ ┌─ Phương thức đăng nhập ──────────────────────────────────┐ │
-│              │ │ ░░░░░░░░░░░░░░░░░░░░░░░░                                 │ │
-│⚙ Cài đặt     │ │ ░░░░░░░░░░░░░░░░░░░░                                     │ │
-│              │ │ ░░░░░░░░░░░░░░░░                                         │ │
-│              │ └──────────────────────────────────────────────────────────┘ │
-└──────────────┴──────────────────────────────────────────────────────────────┘
-```
+![W-AUTH-16 Cài đặt tài khoản: đang tải](../wireframes/W-AUTH-16.svg)
 
-- `Skeleton` cho hai khối trong lúc gọi `/api/auth/me`; `aria-busy="true"`.
+- `Skeleton` cho các khối thông tin; trang có `aria-busy="true"`.
 
 ### W-AUTH-17 — Cài đặt tài khoản: đã liên kết Facebook (thông báo thành công)
 
-```text
-┌──────────────┬──────────────────────────────────────────────────────────────┐
-│Lingozi       │ [ ✓ Đã liên kết Facebook. ]                                  │
-│              │ Cài đặt tài khoản                                            │
-│▸ Thư viện    │ ┌─ Thông tin ──────────────────────────────────────────────┐ │
-│▸ Luyện tập   │ │ Email    an@example.com    ✓ Đã xác minh                 │ │
-│              │ └──────────────────────────────────────────────────────────┘ │
-│              │ ┌─ Phương thức đăng nhập ──────────────────────────────────┐ │
-│              │ │ Email (mã đăng nhập)     ✓ Luôn có                       │ │
-│⚙ Cài đặt     │ │ Google                   ✓ Đã liên kết                   │ │
-│              │ │ Facebook                 ✓ Đã liên kết                   │ │
-│              │ └──────────────────────────────────────────────────────────┘ │
-│              │                                                              │
-│              │ [ Đăng xuất ]                                                │
-└──────────────┴──────────────────────────────────────────────────────────────┘
-```
+![W-AUTH-17 Cài đặt tài khoản: đã liên kết Facebook](../wireframes/W-AUTH-17.svg)
 
-- Hiện khi trang mở với `?linked=facebook`; `Toast` có `role="status"`.
-- Cả Google và Facebook đều hiện "Đã liên kết", không còn nút liên kết.
+- Hiện khi trang mở với `?linked=facebook`; `Toast` có `role="status"`. Cả Google và Facebook đều hiện "Đã liên kết", không còn nút liên kết.
 
 ### W-AUTH-18 — Cài đặt tài khoản: tài khoản ngoài đã thuộc người khác (ERR-AUTH-409-01)
 
-```text
-┌──────────────┬──────────────────────────────────────────────────────────────┐
-│Lingozi       │ (!) Tài khoản Facebook này đã liên kết với một               │
-│              │     tài khoản Lingozi khác.                                  │
-│▸ Thư viện    │ Cài đặt tài khoản                                            │
-│▸ Luyện tập   │ ┌─ Thông tin ──────────────────────────────────────────────┐ │
-│              │ │ Email    an@example.com    ✓ Đã xác minh                 │ │
-│              │ └──────────────────────────────────────────────────────────┘ │
-│              │ ┌─ Phương thức đăng nhập ──────────────────────────────────┐ │
-│⚙ Cài đặt     │ │ Email (mã đăng nhập)     ✓ Luôn có                       │ │
-│              │ │ Google                   ✓ Đã liên kết                   │ │
-│              │ │ Facebook                 [ Liên kết Facebook ]           │ │
-│              │ └──────────────────────────────────────────────────────────┘ │
-│              │                                                              │
-│              │ [ Đăng xuất ]                                                │
-└──────────────┴──────────────────────────────────────────────────────────────┘
-```
+![W-AUTH-18 Cài đặt tài khoản: tài khoản ngoài đã thuộc người khác](../wireframes/W-AUTH-18.svg)
 
-- Hiện khi trang mở với `?error=409-01`; không liên kết.
-- Người dùng ở lại Cài đặt tài khoản.
+- Hiện khi trang mở với `?error=409-01`; không liên kết. Người dùng ở lại Cài đặt tài khoản.
 
 ### W-AUTH-19 — Cài đặt tài khoản: lỗi tải
 
-```text
-┌──────────────┬──────────────────────────────────────────────────────────────┐
-│Lingozi       │ Cài đặt tài khoản                                            │
-│              │ (!) Không tải được thông tin tài khoản.                      │
-│▸ Thư viện    │ [ Thử lại ]                                                  │
-│▸ Luyện tập   │                                                              │
-│              │                                                              │
-│              │                                                              │
-│              │                                                              │
-│⚙ Cài đặt     │                                                              │
-└──────────────┴──────────────────────────────────────────────────────────────┘
-```
+![W-AUTH-19 Cài đặt tài khoản: lỗi tải](../wireframes/W-AUTH-19.svg)
 
 - Hiện khi `/api/auth/me` lỗi (không phải 401). 401 thì chuyển tới đăng nhập.
 

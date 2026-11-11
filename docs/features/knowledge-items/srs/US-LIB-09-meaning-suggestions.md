@@ -2,10 +2,10 @@
 
 - Tính năng: FEAT-02 Mục kiến thức (`knowledge-items`).
 - User story: [US-LIB-09](../requirements/user-stories.md#us-lib-09--gợi-ý-nghĩa-khi-nhập).
-- Phiên bản 0.4 (2026-11-11). Trạng thái: **chờ duyệt**.
+- Phiên bản 0.5 (2026-11-11). Trạng thái: **chờ duyệt**.
 - Tài liệu chung: [README.md](README.md) (danh mục FR, BR, ERR, NFR, quy ước API, ngữ cảnh).
 - Test case: [testing/test-cases.md](../testing/test-cases.md).
-- Skill OpenBA áp dụng: `srs` (FR, BR, ERR, NFR), `user-flow`, `sequence`, `wireframe-ascii`, `api-design`, `ac`.
+- Skill OpenBA áp dụng: `srs` (FR, BR, ERR, NFR), `user-flow`, `sequence`, wireframe SVG (`tools/wireframes/`), `api-design`, `ac`.
 
 ## 1. Giới thiệu
 
@@ -42,6 +42,7 @@ Phát biểu theo dạng KHI, THÌ, NGOẠI LỆ (`rules/02`). Nội dung chính
 | --- | --- | --- | --- | --- |
 | `BR-LIB-014` | Gợi ý nghĩa và phiên âm | Gọi gợi ý | Gợi ý chỉ lấy từ (a) mục của **chính người dùng** có cùng `NormalizedTerm`, và (b) nguồn từ điển được cấu hình (ADR 0007). Không bao giờ lấy dữ liệu của người dùng khác. Gợi ý chỉ điền vào form khi người dùng bấm; API không tự ghi gợi ý vào mục | — |
 | `BR-LIB-015` | Lỗi nguồn từ điển | Gọi nguồn | Timeout 3 giây. Lỗi hoặc timeout của nguồn **không phải lỗi nghiệp vụ**: API trả 200 với danh sách gợi ý rỗng kèm `sourceAvailable = false`, UI hiện dòng "Không lấy được phiên âm tự động" và cho phép nhập tay. Log ghi tên nguồn và loại lỗi, không ghi từ tra cứu gắn với người dùng | — |
+| `BR-LIB-017` | Hai thư viện tách nhau | Mở, liệt kê, tạo, xem, sửa, xóa, gợi ý | Từ vựng (`/library/vocabulary`, `kind` = `word`) và Ngữ pháp (`/library/grammar`, `kind` = `grammar`) là hai mục riêng trong menu. Danh sách, form, gợi ý mục tương tự và gợi ý nghĩa chỉ dùng mục cùng loại. Mục mở bằng route của thư viện kia thì web hiện "Không tìm thấy" như ERR-LIB-404-01. Giới hạn 10.000 mục (BR-LIB-005) tính chung cả hai thư viện | — |
 
 ### 2.3 Ma trận lỗi (ERR)
 
@@ -105,9 +106,10 @@ _Skill `ac`. Văn bản Gherkin trùng với [user story](../requirements/user-s
 
 ```gherkin
 Scenario: AC-01 Gợi ý từ mục của chính tôi
-  Given tôi đã lưu "give up" với nghĩa "từ bỏ"
-  When tôi nhập "give up" ở bất kỳ loại nào
+  Given tôi đã lưu từ vựng "give up" với nghĩa "từ bỏ"
+  When tôi nhập "give up" ở form thêm từ vựng
   Then ô nghĩa hiện gợi ý "từ bỏ" với nhãn "Từ mục của bạn"
+  And ở form thêm ngữ pháp, ô "Ý nghĩa" chỉ gợi ý từ các mục ngữ pháp của chính tôi (không từ từ vựng, không từ từ điển)
   And ô nghĩa vẫn trống cho tới khi tôi bấm gợi ý
 
 Scenario: AC-02 Gợi ý từ nguồn từ điển
@@ -131,73 +133,42 @@ Scenario: AC-05 Không có gợi ý
 
 | AC | Nội dung | FR | BR | ERR | Wireframe | Test case |
 | --- | --- | --- | --- | --- | --- | --- |
-| AC-01 | Gợi ý từ mục của chính tôi | `FR-LIB-ITEM-009` | `BR-LIB-014` | — | W-LIB-27 | TC-LIB-045 |
-| AC-02 | Gợi ý từ nguồn từ điển | `FR-LIB-ITEM-009` | `BR-LIB-014` | — | W-LIB-28 | TC-LIB-046 |
-| AC-03 | Không gợi ý dữ liệu của người khác | `FR-LIB-ITEM-009` | `BR-LIB-014` | — | W-LIB-29 | TC-LIB-047 |
-| AC-04 | Bấm gợi ý mới điền | `FR-LIB-ITEM-009` | `BR-LIB-014` | — | W-LIB-30 | TC-LIB-048 |
-| AC-05 | Không có gợi ý | `FR-LIB-ITEM-009` | `BR-LIB-015` | — | W-LIB-29 | TC-LIB-049 |
+| AC-01 | Gợi ý từ mục của chính tôi | `FR-LIB-ITEM-009` | `BR-LIB-014` | — | W-LIB-32 | TC-LIB-045 |
+| AC-02 | Gợi ý từ nguồn từ điển | `FR-LIB-ITEM-009` | `BR-LIB-014` | — | W-LIB-33 | TC-LIB-046 |
+| AC-03 | Không gợi ý dữ liệu của người khác | `FR-LIB-ITEM-009` | `BR-LIB-014` | — | W-LIB-34 | TC-LIB-047 |
+| AC-04 | Bấm gợi ý mới điền | `FR-LIB-ITEM-009` | `BR-LIB-014` | — | W-LIB-35 | TC-LIB-048 |
+| AC-05 | Không có gợi ý | `FR-LIB-ITEM-009` | `BR-LIB-015` | — | W-LIB-34 | TC-LIB-049 |
 
 ## 5. Wireframe
 
-_Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe ASCII là căn cứ cho DoR. Quy tắc: vẽ đủ mọi màn hình, hộp thoại và trạng thái mà AC của story nhắc tới._
+_Wireframe mức thấp (khung xám, đúng bố cục màn hình thật) vẽ bằng script `tools/wireframes/` và lưu ở [wireframes/](../wireframes/); sửa script rồi chạy `python3 tools/wireframes/build.py` và `python3 tools/wireframes/sync_docs.py`, không sửa tay file SVG. Quy tắc: vẽ đủ mọi màn hình, hộp thoại và trạng thái mà AC của story nhắc tới._
 
-### W-LIB-27 — Gợi ý nghĩa: từ mục của bạn
+### W-LIB-32 — Gợi ý nghĩa: từ mục của bạn
 
-```text
-┌─ Form (một phần) ────────────────────────────────────────┐
-│ Từ *                                                     │
-│ [give up__________________]                              │
-│ Nghĩa *                                                  │
-│ [__________________________]                             │
-│ Gợi ý:  ( từ bỏ · Từ mục của bạn )                       │
-└──────────────────────────────────────────────────────────┘
-```
+![W-LIB-32 Gợi ý nghĩa: từ mục của bạn](../wireframes/W-LIB-32.svg)
 
-- Chip gợi ý có nhãn nguồn bằng chữ; ô "Nghĩa" vẫn trống cho tới khi bấm chip.
-- Vùng gợi ý có `aria-live="polite"`.
+- Chip gợi ý có nhãn nguồn bằng chữ; ô "Nghĩa" vẫn trống cho tới khi bấm chip. Vùng gợi ý có `aria-live="polite"`.
+- Chỉ gợi ý từ mục cùng loại của chính người dùng (ở form từ vựng thì từ thư viện Từ vựng).
+- Form Ngữ pháp dùng cùng thành phần cho ô "Ý nghĩa": chỉ gợi ý từ mục ngữ pháp của chính người dùng, không có gợi ý từ điển.
 
-### W-LIB-28 — Gợi ý nghĩa: từ mục của bạn và từ điển
+### W-LIB-33 — Gợi ý nghĩa: từ mục của bạn và từ điển
 
-```text
-┌─ Form (một phần) ────────────────────────────────────────┐
-│ Từ *                                                     │
-│ [give up__________________]                              │
-│ Nghĩa *                                                  │
-│ [__________________________]                             │
-│ Gợi ý:  ( từ bỏ · Từ mục của bạn )                       │
-│         ( to stop trying · Từ từ điển )                  │
-└──────────────────────────────────────────────────────────┘
-```
+![W-LIB-33 Gợi ý nghĩa: từ mục của bạn và từ điển](../wireframes/W-LIB-33.svg)
 
 - Tối đa 5 gợi ý; gợi ý của chính người dùng luôn hiện trước gợi ý từ điển.
 
-### W-LIB-29 — Gợi ý nghĩa: không có gợi ý
+### W-LIB-34 — Gợi ý nghĩa: không có gợi ý
 
-```text
-┌─ Form (một phần) ────────────────────────────────────────┐
-│ Từ *                                                     │
-│ [xyzzy___________________]                               │
-│ Nghĩa *                                                  │
-│ [__________________________]                             │
-└──────────────────────────────────────────────────────────┘
-```
+![W-LIB-34 Gợi ý nghĩa: không có gợi ý](../wireframes/W-LIB-34.svg)
 
-- Không hiện chip và không có thông báo; nghĩa vẫn không bắt buộc.
-- Gợi ý của người dùng khác không bao giờ xuất hiện: người dùng chưa có mục nào thì không có gợi ý "own".
+- Không hiện chip và không có thông báo lỗi; ô "Nghĩa" vẫn trống để người dùng tự nhập (nghĩa của từ vựng là bắt buộc).
+- Gợi ý của người dùng khác không bao giờ xuất hiện: người dùng chưa có mục nào thì không có gợi ý "Từ mục của bạn".
 
-### W-LIB-30 — Gợi ý nghĩa: sau khi bấm một gợi ý
+### W-LIB-35 — Gợi ý nghĩa: sau khi bấm một gợi ý
 
-```text
-┌─ Form (một phần) ────────────────────────────────────────┐
-│ Từ *                                                     │
-│ [give up__________________]                              │
-│ Nghĩa *                                                  │
-│ [từ bỏ____________________]                              │
-│ Gợi ý:  ( từ bỏ · Từ mục của bạn )                       │
-└──────────────────────────────────────────────────────────┘
-```
+![W-LIB-35 Gợi ý nghĩa: sau khi bấm một gợi ý](../wireframes/W-LIB-35.svg)
 
-- Bấm chip mới điền vào ô "Nghĩa"; người dùng vẫn sửa được.
+- Bấm chip mới điền vào ô "Nghĩa"; người dùng vẫn sửa được. Chip đã chọn được đánh dấu.
 
 ## 6. API
 
@@ -236,3 +207,4 @@ Tối đa 5 nghĩa. Nguồn lỗi hoặc quá 3 giây: `sourceAvailable = false`
 | --- | --- | --- |
 | 0.3 | 2026-11-09 | Tách từ `srs.md` và `design/` thành file riêng cho story; thêm FR chi tiết, sequence, state, bảng AC → FR/BR/ERR/TC. |
 | 0.4 | 2026-11-11 | Theo quyết định của chủ dự án (2026-11-11): bỏ "Nguồn" khỏi chi tiết và form sửa; thêm loại từ, công thức, ý nghĩa theo loại; gợi ý nghĩa vẫn có; sửa nhãn "Nghĩa" thành bắt buộc khi là từ vựng. |
+| 0.5 | 2026-11-11 | Gợi ý theo thư viện: ô "Nghĩa" (từ vựng) lấy từ mục từ vựng của người dùng và từ điển; ô "Ý nghĩa" (ngữ pháp) chỉ từ mục ngữ pháp của người dùng; thay wireframe ASCII bằng SVG (W-LIB-32 → 35). |

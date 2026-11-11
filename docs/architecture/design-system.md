@@ -141,8 +141,8 @@ Script này chỉ kiểm tra màu đặc. Chữ đặt trên ảnh nền, gradie
 
 **Khung ứng dụng (app shell):**
 
-- **Sidebar:** logo; hai khu chính Library và Practice (tổng quan §3); dưới cùng là cài đặt theme và tài khoản.
-- **Thanh trên:** ô tìm kiếm toàn cục (FEAT-04, phím tắt `/`), nút "Lưu kiến thức" (FEAT-02, phím tắt `N`).
+- **Sidebar:** logo; nhóm "Thư viện" gồm hai mục riêng "Từ vựng" và "Ngữ pháp" (FEAT-02, quyết định 2026-11-11), nhóm "Học" gồm "Luyện tập" (tổng quan §3); dưới cùng là "Cài đặt" và tài khoản.
+- **Thanh trên:** ô tìm kiếm toàn cục (FEAT-04, phím tắt `/`). Nút thêm nằm ở đầu từng danh sách ("+ Thêm từ vựng", "+ Thêm ngữ pháp"; phím tắt `N` mở form của thư viện đang xem).
 - **Phím tắt:** không kích hoạt khi đang gõ trong ô nhập.
 
 ## 5. Lớp trang trí và cá nhân hóa

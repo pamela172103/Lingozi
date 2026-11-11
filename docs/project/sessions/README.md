@@ -32,5 +32,6 @@ Mỗi phiên dùng một file `YYYY-MM-DD-NN-short-topic.md`, theo [mẫu](../se
 - [2026-11-10 · 21 · Code US-AUTH-02](2026-11-10-21-code-us-auth-02.md).
 - [2026-11-11 · 22 · US-LIB-01: đổi form theo loại](2026-11-11-22-us-lib-01-form-change.md).
 - [2026-11-11 · 23 · Chi tiết, sửa và gợi ý theo form mới](2026-11-11-23-knowledge-detail-and-suggestions.md).
+- [2026-11-11 · 24 · Tách thư viện Từ vựng và Ngữ pháp, vẽ lại wireframe bằng SVG](2026-11-11-24-separate-libraries-and-svg-wireframes.md).
 
 Thêm liên kết nhật ký mới vào danh sách này sau mỗi phiên.

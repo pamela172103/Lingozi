@@ -13,7 +13,7 @@ Dùng checkout hỗ trợ symlink (môi trường Linux hiện tại đã hỗ t
 | PRD và roadmap | `prd`, `roadmap` |
 | Làm rõ yêu cầu | `brainstorm`, `urd`, `brd`, `srs` |
 | User story và tiêu chí nghiệm thu | `userstory`, `ac` |
-| Luồng và thiết kế | `user-flow`, `sequence`, `erd`, `wireframe-html` |
+| Luồng và thiết kế | `user-flow`, `sequence`, `erd`, `wireframe-html` (Lingozi không dùng ASCII; wireframe là SVG sinh bằng `tools/wireframes/`) |
 | Kế hoạch kiểm thử | `test-checklist`, `test-cases` |
 | Kiểm soát thay đổi | `cr`, `gap`, `doc-drift` |
 

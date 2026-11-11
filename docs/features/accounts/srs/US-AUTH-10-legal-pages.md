@@ -5,7 +5,7 @@
 - Phiên bản 0.3 (2026-11-09). Trạng thái: **chờ duyệt**.
 - Tài liệu chung: [README.md](README.md) (danh mục FR, BR, ERR, NFR, quy ước API, ngữ cảnh).
 - Test case: [testing/test-cases.md](../testing/test-cases.md).
-- Skill OpenBA áp dụng: `srs` (FR, BR, ERR, NFR), `user-flow`, `wireframe-ascii`, `api-design`, `ac`.
+- Skill OpenBA áp dụng: `srs` (FR, BR, ERR, NFR), `user-flow`, wireframe SVG (`tools/wireframes/`), `api-design`, `ac`.
 
 ## 1. Giới thiệu
 
@@ -88,82 +88,28 @@ Scenario: AC-03 Liên kết ở trang đăng nhập
 
 ## 5. Wireframe
 
-_Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe ASCII là căn cứ cho DoR. Quy tắc: vẽ đủ mọi màn hình, hộp thoại và trạng thái mà AC của story nhắc tới._
+_Wireframe mức thấp (khung xám, đúng bố cục màn hình thật) vẽ bằng script `tools/wireframes/` và lưu ở [wireframes/](../wireframes/); sửa script rồi chạy `python3 tools/wireframes/build.py` và `python3 tools/wireframes/sync_docs.py`, không sửa tay file SVG. Quy tắc: vẽ đủ mọi màn hình, hộp thoại và trạng thái mà AC của story nhắc tới. Các màn hình đăng nhập và nhập mã (W-AUTH-01 → 08) là ảnh xuất từ Figma, đặt ở [design-assets/](../design-assets/)._
 
 ### W-AUTH-20 — Chính sách quyền riêng tư (`/privacy`)
 
-```text
-┌────────────────────────────────────────────────────────────────┐
-│                         [Logo Lingozi]                         │
-│                                                                │
-│  Chính sách quyền riêng tư                    h1               │
-│                                                                │
-│  (i) Bản nháp chờ duyệt                 (khi chưa duyệt)       │
-│                                                                │
-│  Dữ liệu chúng tôi thu thập                 h2                 │
-│    ...                                                         │
-│  Cách chúng tôi dùng dữ liệu                h2                 │
-│    ...                                                         │
-│  Quyền của bạn                              h2                 │
-│    ...                                                         │
-│                                                                │
-│  ← Về trang đăng nhập                                          │
-└────────────────────────────────────────────────────────────────┘
-```
+![W-AUTH-20 Chính sách quyền riêng tư](../wireframes/W-AUTH-20.svg)
 
 - Trang công khai, không cần đăng nhập; văn bản một cột, rộng tối đa 72 ký tự.
 - Khi nội dung chưa được chủ dự án duyệt, đầu trang có thông báo "Bản nháp chờ duyệt".
 
 ### W-AUTH-21 — Hướng dẫn xóa dữ liệu (`/data-deletion`)
 
-```text
-┌────────────────────────────────────────────────────────────────┐
-│                         [Logo Lingozi]                         │
-│                                                                │
-│  Hướng dẫn xóa dữ liệu                       h1                │
-│                                                                │
-│  (i) Bản nháp chờ duyệt                 (khi chưa duyệt)       │
-│                                                                │
-│  Cách gửi yêu cầu                           h2                 │
-│    Gửi email tới <địa chỉ nhận yêu cầu>.                       │
-│  Thông tin cần gửi                          h2                 │
-│    Email đăng nhập của bạn.                                    │
-│  Thời hạn xử lý                             h2                 │
-│    Tối đa 30 ngày kể từ khi nhận yêu cầu.                      │
-│  Dữ liệu bị xóa                             h2                 │
-│    Tài khoản và toàn bộ mục kiến thức.                         │
-│                                                                │
-│  ← Về trang đăng nhập                                          │
-└────────────────────────────────────────────────────────────────┘
-```
+![W-AUTH-21 Hướng dẫn xóa dữ liệu](../wireframes/W-AUTH-21.svg)
 
 - Nêu đủ bốn nội dung: email nhận yêu cầu, thông tin cần gửi, thời hạn tối đa 30 ngày (`Q-12`), dữ liệu nào bị xóa.
 - Địa chỉ nhận yêu cầu là biến cấu hình, chưa có giá trị thật; nội dung do chủ dự án duyệt.
 
 ### W-AUTH-01 — Đăng nhập: trạng thái ban đầu (`/auth/login`)
 
-```text
-┌────────────────────────────────────────────────────────────────┐
-│                         [Logo Lingozi]                         │
-│                                                                │
-│         ┌────────────────────────────────────────────┐         │
-│         │ Đăng nhập                                  │         │
-│         │ Đăng nhập hoặc tạo tài khoản mới.          │         │
-│         │                                            │         │
-│         │ [ G   Tiếp tục với Google     ]            │         │
-│         │ [ f   Tiếp tục với Facebook   ]            │         │
-│         │ ────────────── hoặc ──────────────         │         │
-│         │ [     Tiếp tục với email      ]            │         │
-│         └────────────────────────────────────────────┘         │
-│                                                                │
-│            Chính sách quyền riêng tư · Xóa dữ liệu             │
-└────────────────────────────────────────────────────────────────┘
-```
+![W-AUTH-01 Đăng nhập: trạng thái ban đầu](../design-assets/W-AUTH-01-login-initial.webp)
 
-- Ba phương thức theo thứ tự: Google, Facebook, email. Facebook thay cho Apple.
-- Ô email ẩn cho tới khi bấm "Tiếp tục với email".
-- Không có ô mật khẩu và không có liên kết "Quên mật khẩu".
-- Chân trang có liên kết tới `/privacy` và `/data-deletion`.
+- Ba phương thức theo thứ tự: Google, Facebook, email. Facebook thay cho Apple. Không có ô mật khẩu và không có liên kết "Quên mật khẩu".
+- Ô email ẩn cho tới khi bấm "Tiếp tục với email". Chân trang có liên kết tới `/privacy` và `/data-deletion`.
 - Nút Google và Facebook hiện nhưng không bấm được cho tới US-AUTH-04 và US-AUTH-05; mô tả cho trình đọc màn hình: "chưa khả dụng".
 
 ## 6. API

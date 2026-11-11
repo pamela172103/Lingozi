@@ -5,7 +5,7 @@
 - Phiên bản 0.4 (2026-11-10). Trạng thái thiết kế: **chờ duyệt**. Trạng thái triển khai: đã code backend, frontend và test (xem [README tính năng](../README.md#trạng-thái-triển-khai)).
 - Tài liệu chung: [README.md](README.md) (danh mục FR, BR, ERR, NFR, quy ước API, ngữ cảnh).
 - Test case: [testing/test-cases.md](../testing/test-cases.md).
-- Skill OpenBA áp dụng: `srs` (FR, BR, ERR, NFR), `user-flow`, `sequence`, `state`, `wireframe-ascii`, `api-design`, `ac`.
+- Skill OpenBA áp dụng: `srs` (FR, BR, ERR, NFR), `user-flow`, `sequence`, `state`, wireframe SVG (`tools/wireframes/`), `api-design`, `ac`.
 
 ## 1. Giới thiệu
 
@@ -204,107 +204,30 @@ Scenario: AC-07 Mã mới làm mã cũ mất hiệu lực
 
 ## 5. Wireframe
 
-_Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe ASCII là căn cứ cho DoR. Quy tắc: vẽ đủ mọi màn hình, hộp thoại và trạng thái mà AC của story nhắc tới._
+_Wireframe mức thấp (khung xám, đúng bố cục màn hình thật) vẽ bằng script `tools/wireframes/` và lưu ở [wireframes/](../wireframes/); sửa script rồi chạy `python3 tools/wireframes/build.py` và `python3 tools/wireframes/sync_docs.py`, không sửa tay file SVG. Quy tắc: vẽ đủ mọi màn hình, hộp thoại và trạng thái mà AC của story nhắc tới. Các màn hình đăng nhập và nhập mã (W-AUTH-01 → 08) là ảnh xuất từ Figma, đặt ở [design-assets/](../design-assets/)._
 
 ### W-AUTH-05 — Nhập mã: trạng thái ban đầu (`/auth/code`)
 
-```text
-┌────────────────────────────────────────────────────────────────┐
-│                         [Logo Lingozi]                         │
-│                                                                │
-│         ┌────────────────────────────────────────────┐         │
-│         │ Nhập mã                                    │         │
-│         │ Chúng tôi đã gửi mã 6 số tới               │         │
-│         │ an@example.com.                            │         │
-│         │ Mã có hiệu lực 10 phút (còn 09:58).        │         │
-│         │                                            │         │
-│         │ [ ] [ ] [ ] [ ] [ ] [ ]                    │         │
-│         │                                            │         │
-│         │ [            Xác nhận            ]         │         │
-│         │                                            │         │
-│         │ Không nhận được mã?   Đổi email            │         │
-│         └────────────────────────────────────────────┘         │
-│                                                                │
-│            Chính sách quyền riêng tư · Xóa dữ liệu             │
-└────────────────────────────────────────────────────────────────┘
-```
+![W-AUTH-05 Nhập mã: trạng thái ban đầu](../design-assets/W-AUTH-05-code-entry.webp)
 
-- Sáu ô, mỗi ô có nhãn riêng; `autocomplete="one-time-code"`, `inputmode="numeric"`.
-- Dán 6 số vào ô đầu thì điền cả sáu ô; đủ 6 số thì tự gửi xác nhận.
-- Đếm ngược 10 phút theo thời hạn của mã.
-- Không có ô mật khẩu.
+- Sáu ô, mỗi ô có nhãn riêng; `autocomplete="one-time-code"`, `inputmode="numeric"`. Dán 6 số vào ô đầu thì điền cả sáu ô; đủ 6 số thì tự gửi xác nhận.
+- Đếm ngược 10 phút theo thời hạn của mã. Không có ô mật khẩu.
 
 ### W-AUTH-06 — Nhập mã: mã sai (ERR-AUTH-401-01)
 
-```text
-┌────────────────────────────────────────────────────────────────┐
-│                         [Logo Lingozi]                         │
-│                                                                │
-│         ┌────────────────────────────────────────────┐         │
-│         │ Nhập mã                                    │         │
-│         │ Chúng tôi đã gửi mã 6 số tới               │         │
-│         │ an@example.com.                            │         │
-│         │ Mã có hiệu lực 10 phút (còn 09:58).        │         │
-│         │                                            │         │
-│         │ [ ] [ ] [ ] [ ] [ ] [ ]                    │         │
-│         │ (!) Mã không đúng. Bạn còn 4 lần thử.      │         │
-│         │ [            Xác nhận            ]         │         │
-│         │                                            │         │
-│         │ Không nhận được mã?   Đổi email            │         │
-│         └────────────────────────────────────────────┘         │
-│                                                                │
-│            Chính sách quyền riêng tư · Xóa dữ liệu             │
-└────────────────────────────────────────────────────────────────┘
-```
+![W-AUTH-06 Nhập mã: mã sai](../design-assets/W-AUTH-06-code-wrong.webp)
 
-- Cả sáu ô được xóa và focus về ô đầu tiên; thông báo có `role="alert"`.
-- Số lần còn lại giảm theo mỗi lần sai (tối đa 5 lần).
+- Cả sáu ô được xóa và focus về ô đầu tiên; thông báo có `role="alert"`. Số lần còn lại giảm theo mỗi lần sai (tối đa 5 lần).
 
 ### W-AUTH-07 — Nhập mã: mã bị khóa (ERR-AUTH-403-02)
 
-```text
-┌────────────────────────────────────────────────────────────────┐
-│                         [Logo Lingozi]                         │
-│                                                                │
-│         ┌────────────────────────────────────────────┐         │
-│         │ Nhập mã                                    │         │
-│         │ Mã này đã bị khóa.                         │         │
-│         │                                            │         │
-│         │ [x] [x] [x] [x] [x] [x]  (vô hiệu)         │         │
-│         │ (!) Mã này đã bị khóa do nhập sai          │         │
-│         │     nhiều lần. Hãy yêu cầu mã mới.         │         │
-│         │ [           Gửi mã mới           ]         │         │
-│         │                                            │         │
-│         │ Đổi email                                  │         │
-│         └────────────────────────────────────────────┘         │
-│                                                                │
-│            Chính sách quyền riêng tư · Xóa dữ liệu             │
-└────────────────────────────────────────────────────────────────┘
-```
+![W-AUTH-07 Nhập mã: mã bị khóa](../design-assets/W-AUTH-07-code-locked.webp)
 
-- Sáu ô bị vô hiệu; nút "Gửi mã mới" nổi bật (tuân thủ giới hạn BR-AUTH-009).
-- Mã đã khóa không dùng được dù nhập đúng.
+- Sáu ô bị vô hiệu; nút "Gửi mã mới" nổi bật (tuân thủ giới hạn BR-AUTH-009). Mã đã khóa không dùng được dù nhập đúng.
 
 ### W-AUTH-08 — Nhập mã: hết hạn hoặc đã dùng (ERR-AUTH-400-03)
 
-```text
-┌────────────────────────────────────────────────────────────────┐
-│                         [Logo Lingozi]                         │
-│                                                                │
-│         ┌────────────────────────────────────────────┐         │
-│         │ Nhập mã                                    │         │
-│         │                                            │         │
-│         │ [ ] [ ] [ ] [ ] [ ] [ ]                    │         │
-│         │ (!) Mã đã hết hạn hoặc đã dùng.            │         │
-│         │     Hãy yêu cầu mã mới.                    │         │
-│         │ [           Gửi mã mới           ]         │         │
-│         │                                            │         │
-│         │ Đổi email                                  │         │
-│         └────────────────────────────────────────────┘         │
-│                                                                │
-│            Chính sách quyền riêng tư · Xóa dữ liệu             │
-└────────────────────────────────────────────────────────────────┘
-```
+![W-AUTH-08 Nhập mã: hết hạn hoặc đã dùng](../design-assets/W-AUTH-08-code-expired.webp)
 
 - Dùng chung cho mã quá 10 phút, mã đã dùng, và mã bị thay bằng mã mới hơn.
 

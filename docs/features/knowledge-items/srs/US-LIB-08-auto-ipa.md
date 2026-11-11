@@ -2,10 +2,10 @@
 
 - Tính năng: FEAT-02 Mục kiến thức (`knowledge-items`).
 - User story: [US-LIB-08](../requirements/user-stories.md#us-lib-08--tự-điền-phiên-âm-ipa-cho-từ-vựng).
-- Phiên bản 0.3 (2026-11-09). Trạng thái: **chờ duyệt**.
+- Phiên bản 0.5 (2026-11-11). Trạng thái: **chờ duyệt**.
 - Tài liệu chung: [README.md](README.md) (danh mục FR, BR, ERR, NFR, quy ước API, ngữ cảnh).
 - Test case: [testing/test-cases.md](../testing/test-cases.md).
-- Skill OpenBA áp dụng: `srs` (FR, BR, ERR, NFR), `user-flow`, `sequence`, `state`, `wireframe-ascii`, `api-design`, `ac`.
+- Skill OpenBA áp dụng: `srs` (FR, BR, ERR, NFR), `user-flow`, `sequence`, `state`, wireframe SVG (`tools/wireframes/`), `api-design`, `ac`.
 
 ## 1. Giới thiệu
 
@@ -15,7 +15,7 @@ Phụ thuộc: nguồn từ điển chưa được chọn (ADR 0007). Trạng th
 
 **Trong phạm vi:**
 
-- Ô "Phiên âm" chỉ có ở loại Từ vựng.
+- Ô "Phiên âm" chỉ có ở form Từ vựng (nằm ngay sau ô "Từ"); form Ngữ pháp không có.
 - Tự điền phiên âm Anh-Anh khi nguồn có (có nhãn "Tự động").
 - Sửa, tự nhập, xóa phiên âm; kiểm tra ký tự.
 - Ghi nguồn Wiktionary (CC BY-SA 3.0) khi hiển thị.
@@ -67,7 +67,7 @@ _Skill `user-flow`: màn hình và chuyển đổi, kèm các trạng thái giao
 
 ```mermaid
 flowchart TD
-    A[Chọn Từ vựng, nhập Từ] --> B{Rời ô Từ hoặc 500 ms}
+    A[Mở form thêm từ vựng, nhập Từ] --> B{Rời ô Từ hoặc 500 ms}
     B --> C[GET /suggestions?term&kind=word]
     C --> D{Có phiên âm Anh-Anh?}
     D -- Có --> E[Điền phiên âm, nhãn Tự động]
@@ -154,7 +154,7 @@ _Skill `ac`. Văn bản Gherkin trùng với [user story](../requirements/user-s
 
 ```gherkin
 Scenario: AC-01 Tự điền phiên âm Anh-Anh
-  Given tôi chọn "Từ vựng" và nhập "water"
+  Given tôi mở form thêm từ vựng và nhập "water"
   When tôi rời ô "Từ" (hoặc sau 500 ms không gõ)
   Then ô "Phiên âm" được điền "/ˈwɔːtə/" với nhãn "Tự động từ điển (Anh-Anh)" và "Nguồn: Wiktionary, CC BY-SA 3.0"
   And tôi có thể lưu mà không sửa gì
@@ -195,120 +195,67 @@ Scenario: AC-07 Xóa phiên âm
   Then mục lưu Ipa = null và IpaSource = null
 
 Scenario: AC-08 Không có ô phiên âm cho Ngữ pháp
-  When tôi chọn "Ngữ pháp"
+  When tôi mở form thêm ngữ pháp
   Then không có ô phiên âm và không gọi nguồn phiên âm
 ```
 
 | AC | Nội dung | FR | BR | ERR | Wireframe | Test case |
 | --- | --- | --- | --- | --- | --- | --- |
-| AC-01 | Tự điền phiên âm Anh-Anh | `FR-LIB-ITEM-008` | `BR-LIB-013` | — | W-LIB-22 | TC-LIB-038 |
-| AC-01a | Chỉ điền khi có phiên âm Anh-Anh được gắn nhãn | `FR-LIB-ITEM-008` | `BR-LIB-013` | — | W-LIB-24 | TC-LIB-038 |
-| AC-02 | Sửa phiên âm do máy điền | `FR-LIB-ITEM-008` | `BR-LIB-013` | — | W-LIB-23 | TC-LIB-039 |
-| AC-03 | Không có phiên âm từ nguồn | `FR-LIB-ITEM-008` | `BR-LIB-013`, `BR-LIB-015` | — | W-LIB-24 | TC-LIB-040 |
-| AC-04 | Tự nhập phiên âm | `FR-LIB-ITEM-008` | `BR-LIB-013` | — | W-LIB-23 | TC-LIB-040 |
-| AC-05 | Phiên âm sai ký tự | `FR-LIB-ITEM-008` | `BR-LIB-013` | `ERR-LIB-400-02` | W-LIB-26 | TC-LIB-041 |
-| AC-06 | Nguồn lỗi hoặc quá thời gian | `FR-LIB-ITEM-008` | `BR-LIB-015` | — | W-LIB-25 | TC-LIB-042 |
-| AC-07 | Xóa phiên âm | `FR-LIB-ITEM-008` | `BR-LIB-013` | — | W-LIB-24 | TC-LIB-043 |
-| AC-08 | Không có ô phiên âm cho Ngữ pháp | `FR-LIB-ITEM-008` | `BR-LIB-013` | — | W-LIB-09 | TC-LIB-044, TC-LIB-050 |
+| AC-01 | Tự điền phiên âm Anh-Anh | `FR-LIB-ITEM-008` | `BR-LIB-013` | — | W-LIB-27 | TC-LIB-038 |
+| AC-01a | Chỉ điền khi có phiên âm Anh-Anh được gắn nhãn | `FR-LIB-ITEM-008` | `BR-LIB-013` | — | W-LIB-29 | TC-LIB-038 |
+| AC-02 | Sửa phiên âm do máy điền | `FR-LIB-ITEM-008` | `BR-LIB-013` | — | W-LIB-28 | TC-LIB-039 |
+| AC-03 | Không có phiên âm từ nguồn | `FR-LIB-ITEM-008` | `BR-LIB-013`, `BR-LIB-015` | — | W-LIB-29 | TC-LIB-040 |
+| AC-04 | Tự nhập phiên âm | `FR-LIB-ITEM-008` | `BR-LIB-013` | — | W-LIB-28 | TC-LIB-040 |
+| AC-05 | Phiên âm sai ký tự | `FR-LIB-ITEM-008` | `BR-LIB-013` | `ERR-LIB-400-02` | W-LIB-31 | TC-LIB-041 |
+| AC-06 | Nguồn lỗi hoặc quá thời gian | `FR-LIB-ITEM-008` | `BR-LIB-015` | — | W-LIB-30 | TC-LIB-042 |
+| AC-07 | Xóa phiên âm | `FR-LIB-ITEM-008` | `BR-LIB-013` | — | W-LIB-29 | TC-LIB-043 |
+| AC-08 | Không có ô phiên âm cho Ngữ pháp | `FR-LIB-ITEM-008` | `BR-LIB-013` | — | W-LIB-09 | TC-LIB-044 |
 
 ## 5. Wireframe
 
-_Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe ASCII là căn cứ cho DoR. Quy tắc: vẽ đủ mọi màn hình, hộp thoại và trạng thái mà AC của story nhắc tới._
+_Wireframe mức thấp (khung xám, đúng bố cục màn hình thật) vẽ bằng script `tools/wireframes/` và lưu ở [wireframes/](../wireframes/); sửa script rồi chạy `python3 tools/wireframes/build.py` và `python3 tools/wireframes/sync_docs.py`, không sửa tay file SVG. Quy tắc: vẽ đủ mọi màn hình, hộp thoại và trạng thái mà AC của story nhắc tới._
 
-### W-LIB-22 — Ô phiên âm: tự điền từ nguồn
+### W-LIB-27 — Ô phiên âm: tự điền từ nguồn
 
-```text
-┌─ Form Từ vựng (một phần) ────────────────────────────────┐
-│ Từ *                                                     │
-│ [water____________________]                              │
-│ Phiên âm                                                 │
-│ [/ˈwɔːtə/________________]                               │
-│ ✓ Tự động (Anh-Anh) · Wiktionary, CC BY-SA 3.0  [Sửa]    │
-└──────────────────────────────────────────────────────────┘
-```
+![W-LIB-27 Ô phiên âm: tự điền từ nguồn](../wireframes/W-LIB-27.svg)
 
-- Gọi nguồn khi rời ô "Từ" hoặc sau 500 ms không gõ; chỉ điền khi nguồn có phiên âm Anh-Anh (file audio `-uk`).
-- Lưu không sửa gì thì `ipaSource` là `dictionary`.
+- Gọi nguồn khi rời ô "Từ" hoặc sau 500 ms không gõ; chỉ điền khi nguồn có phiên âm Anh-Anh (file audio `-uk`). Chỉ có ở form từ vựng.
+- Hiện nhãn nguồn bằng chữ và ghi nguồn bắt buộc theo giấy phép; lưu không sửa gì thì `ipaSource` là `dictionary`.
 
-### W-LIB-23 — Ô phiên âm: người dùng sửa hoặc tự nhập
+### W-LIB-28 — Ô phiên âm: người dùng sửa hoặc tự nhập
 
-```text
-┌─ Form Từ vựng (một phần) ────────────────────────────────┐
-│ Từ *                                                     │
-│ [water____________________]                              │
-│ Phiên âm                                                 │
-│ [/ˈwɔːtə/ (ghi chú của tôi)_]                            │
-│ Bạn đã chỉnh sửa                                         │
-└──────────────────────────────────────────────────────────┘
-```
+![W-LIB-28 Ô phiên âm: người dùng sửa hoặc tự nhập](../wireframes/W-LIB-28.svg)
 
-- Sau khi sửa phiên âm do hệ thống điền, nhãn đổi thành "Bạn đã chỉnh sửa"; tự nhập thì nhãn "Bạn đã nhập".
-- Lưu thì `ipaSource` là `user`.
+- Sau khi sửa phiên âm do hệ thống điền, nhãn đổi thành "Bạn đã chỉnh sửa"; tự nhập thì nhãn "Bạn đã nhập". Lưu thì `ipaSource` là `user`.
 
-### W-LIB-24 — Ô phiên âm: trống (chưa có phiên âm Anh-Anh)
+### W-LIB-29 — Ô phiên âm: trống (chưa có phiên âm Anh-Anh)
 
-```text
-┌─ Form Từ vựng (một phần) ────────────────────────────────┐
-│ Từ *                                                     │
-│ [learn____________________]                              │
-│ Phiên âm                                                 │
-│ [__________________________]                             │
-│ Chưa có phiên âm Anh-Anh, bạn có thể tự nhập.            │
-└──────────────────────────────────────────────────────────┘
-```
+![W-LIB-29 Ô phiên âm: trống](../wireframes/W-LIB-29.svg)
 
 - Hiện khi nguồn không có phiên âm Anh-Anh được gắn nhãn; không điền phiên âm Anh-Mỹ hay không nhãn.
 - Xóa hết phiên âm rồi lưu thì `ipa` và `ipaSource` là trống. Lưu vẫn được khi ô trống.
 
-### W-LIB-25 — Ô phiên âm: nguồn lỗi hoặc quá 3 giây
+### W-LIB-30 — Ô phiên âm: nguồn lỗi hoặc quá 3 giây
 
-```text
-┌─ Form Từ vựng (một phần) ────────────────────────────────┐
-│ Từ *                                                     │
-│ [water____________________]                              │
-│ Phiên âm                                                 │
-│ [__________________________]                             │
-│ Không lấy được phiên âm tự động.                         │
-└──────────────────────────────────────────────────────────┘
-```
+![W-LIB-30 Ô phiên âm: nguồn lỗi hoặc quá 3 giây](../wireframes/W-LIB-30.svg)
 
 - Dòng thông báo màu `text.muted`, không đỏ; form vẫn dùng bình thường.
 
-### W-LIB-26 — Ô phiên âm: ký tự không hợp lệ (ERR-LIB-400-02)
+### W-LIB-31 — Ô phiên âm: ký tự không hợp lệ (ERR-LIB-400-02)
 
-```text
-┌─ Form Từ vựng (một phần) ────────────────────────────────┐
-│ Từ *                                                     │
-│ [water____________________]                              │
-│ Phiên âm                                                 │
-│ [<b>give</b>_______________]                             │
-│ (!) Phiên âm chỉ được chứa ký tự IPA.                    │
-└──────────────────────────────────────────────────────────┘
-```
+![W-LIB-31 Ô phiên âm: ký tự không hợp lệ](../wireframes/W-LIB-31.svg)
 
 - Lỗi dưới ô; không lưu được cho tới khi sửa.
 
-### W-LIB-09 — Form Ngữ pháp: mặc định
+### W-LIB-09 — Thêm ngữ pháp: form mặc định (`/library/grammar/new`)
 
-```text
-┌──────────────┬────────────────────────────────────────────────────────────────┐
-│Lingozi       │ ← Thư viện    Ngữ pháp · [Đổi loại]   h1                       │
-│              │ ┌────────────────────────────┐  ┌────────────────────────────┐ │
-│▸ Thư viện    │ │ Tên cấu trúc *             │  │ Ví dụ (0/20)               │ │
-│▸ Luyện tập   │ │ [Present perfect___]       │  │ [ + Thêm ví dụ ]           │ │
-│              │ │ Công thức *                │  │                            │ │
-│              │ │ [have/has + V3_____]       │  │ Ghi chú cá nhân            │ │
-│              │ │ Ý nghĩa (không bắt buộc)   │  │ [________________]         │ │
-│⚙ Cài đặt     │ │ [________________]         │  └────────────────────────────┘ │
-│              │ └────────────────────────────┘                                 │
-│              │                                                                │
-│              │                      [ Hủy ]   [ Lưu ]                         │
-└──────────────┴────────────────────────────────────────────────────────────────┘
-```
+![W-LIB-09 Thêm ngữ pháp: form mặc định](../wireframes/W-LIB-09.svg)
 
-- Ngữ pháp: bắt buộc "Tên cấu trúc" và "Công thức"; ý nghĩa, ví dụ và ghi chú không bắt buộc.
-- Không có ô phiên âm và không có ô loại từ.
-- Ý nghĩa chỉ gồm khoảng trắng được lưu là trống.
+- Mở từ nút "+ Thêm ngữ pháp" của thư viện Ngữ pháp.
+- Thứ tự trường: Tên cấu trúc\*, Công thức\*, Ý nghĩa, Ví dụ, Ghi chú. Bắt buộc: Tên cấu trúc và Công thức.
+- Không có ô phiên âm và không có ô loại từ. Ý nghĩa chỉ gồm khoảng trắng được lưu là trống.
+- Ô "Công thức" dùng phông đơn cách (monospace) để thẳng hàng các ký hiệu.
+
 ## 6. API
 
 _Skill `api-design`; lỗi theo Problem Details (RFC 9457) như ADR 0002. Quy ước chung ở [README.md](README.md)._
@@ -340,10 +287,10 @@ Khi lưu, client gửi `ipa` và `ipaSource`; server đặt lại `ipaSource` th
 | `TC-LIB-042` | INT + UNIT (Vitest) | Provider timeout 3 giây | `suggestions` trả 200 với `sourceAvailable=false`; form lưu được; không có thông báo đỏ |
 | `TC-LIB-043` | INT | Xóa phiên âm rồi lưu | `ipa` null; `ipaSource` null |
 | `TC-LIB-044` | INT | POST `kind=grammar` kèm `ipa` khác null | 400-01 ở trường `ipa`; nguồn phiên âm không được gọi (đếm lần gọi bằng provider giả) |
-| `TC-LIB-050` | E2E | Chọn Từ vựng, nhập phiên âm, đổi sang Ngữ pháp rồi xác nhận | Hộp xác nhận; khi đồng ý phiên âm bị xóa, nội dung chung giữ lại |
 
 ## 8. Lịch sử sửa đổi
 
 | Phiên bản | Ngày | Thay đổi |
 | --- | --- | --- |
 | 0.3 | 2026-11-09 | Tách từ `srs.md` và `design/` thành file riêng cho story; thêm FR chi tiết, sequence, state, bảng AC → FR/BR/ERR/TC. |
+| 0.5 | 2026-11-11 | Form thêm từ vựng riêng (ô Phiên âm ngay sau ô Từ); thay wireframe ASCII bằng SVG (W-LIB-27 → 31, 09). |

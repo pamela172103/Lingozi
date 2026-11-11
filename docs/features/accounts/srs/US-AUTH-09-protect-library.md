@@ -5,7 +5,7 @@
 - Phiên bản 0.3 (2026-11-09). Trạng thái: **chờ duyệt**.
 - Tài liệu chung: [README.md](README.md) (danh mục FR, BR, ERR, NFR, quy ước API, ngữ cảnh).
 - Test case: [testing/test-cases.md](../testing/test-cases.md).
-- Skill OpenBA áp dụng: `srs` (FR, BR, ERR, NFR), `user-flow`, `sequence`, `wireframe-ascii`, `api-design`, `ac`.
+- Skill OpenBA áp dụng: `srs` (FR, BR, ERR, NFR), `user-flow`, `sequence`, wireframe SVG (`tools/wireframes/`), `api-design`, `ac`.
 
 ## 1. Giới thiệu
 
@@ -132,51 +132,22 @@ Scenario: AC-03 Không chuyển hướng ra ngoài
 
 ## 5. Wireframe
 
-_Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe ASCII là căn cứ cho DoR. Quy tắc: vẽ đủ mọi màn hình, hộp thoại và trạng thái mà AC của story nhắc tới._
+_Wireframe mức thấp (khung xám, đúng bố cục màn hình thật) vẽ bằng script `tools/wireframes/` và lưu ở [wireframes/](../wireframes/); sửa script rồi chạy `python3 tools/wireframes/build.py` và `python3 tools/wireframes/sync_docs.py`, không sửa tay file SVG. Quy tắc: vẽ đủ mọi màn hình, hộp thoại và trạng thái mà AC của story nhắc tới. Các màn hình đăng nhập và nhập mã (W-AUTH-01 → 08) là ảnh xuất từ Figma, đặt ở [design-assets/](../design-assets/)._
 
 ### W-AUTH-01 — Đăng nhập: trạng thái ban đầu (`/auth/login`)
 
-```text
-┌────────────────────────────────────────────────────────────────┐
-│                         [Logo Lingozi]                         │
-│                                                                │
-│         ┌────────────────────────────────────────────┐         │
-│         │ Đăng nhập                                  │         │
-│         │ Đăng nhập hoặc tạo tài khoản mới.          │         │
-│         │                                            │         │
-│         │ [ G   Tiếp tục với Google     ]            │         │
-│         │ [ f   Tiếp tục với Facebook   ]            │         │
-│         │ ────────────── hoặc ──────────────         │         │
-│         │ [     Tiếp tục với email      ]            │         │
-│         └────────────────────────────────────────────┘         │
-│                                                                │
-│            Chính sách quyền riêng tư · Xóa dữ liệu             │
-└────────────────────────────────────────────────────────────────┘
-```
+![W-AUTH-01 Đăng nhập: trạng thái ban đầu](../design-assets/W-AUTH-01-login-initial.webp)
 
-- Ba phương thức theo thứ tự: Google, Facebook, email. Facebook thay cho Apple.
-- Ô email ẩn cho tới khi bấm "Tiếp tục với email".
-- Không có ô mật khẩu và không có liên kết "Quên mật khẩu".
-- Chân trang có liên kết tới `/privacy` và `/data-deletion`.
+- Ba phương thức theo thứ tự: Google, Facebook, email. Facebook thay cho Apple. Không có ô mật khẩu và không có liên kết "Quên mật khẩu".
+- Ô email ẩn cho tới khi bấm "Tiếp tục với email". Chân trang có liên kết tới `/privacy` và `/data-deletion`.
 - Nút Google và Facebook hiện nhưng không bấm được cho tới US-AUTH-04 và US-AUTH-05; mô tả cho trình đọc màn hình: "chưa khả dụng".
 
 ### W-AUTH-22 — Thông báo lỗi phiên làm việc (ERR-AUTH-400-05)
 
-```text
-┌──────────────┬──────────────────────────────────────────────────────────────┐
-│Lingozi       │ Lưu kiến thức mới                                            │
-│              │ ┌──────────────────────────────────────────────────────────┐ │
-│▸ Thư viện    │ │ (!) Phiên làm việc không hợp lệ.                         │ │
-│▸ Luyện tập   │ │     Vui lòng tải lại trang.        [ Tải lại ]           │ │
-│              │ └──────────────────────────────────────────────────────────┘ │
-│              │                                                              │
-│              │ (nội dung form giữ nguyên)                                   │
-│⚙ Cài đặt     │                                                              │
-└──────────────┴──────────────────────────────────────────────────────────────┘
-```
+![W-AUTH-22 Thông báo lỗi phiên làm việc](../wireframes/W-AUTH-22.svg)
 
 - Hiện trên mọi form khi request thay đổi dữ liệu thiếu hoặc sai token antiforgery.
-- Giao diện lấy lại token và cho thử lại một lần; không mất dữ liệu đã nhập.
+- Giao diện lấy lại token và cho thử lại một lần; không mất dữ liệu đã nhập (form giữ nguyên nội dung).
 
 ### Điều hướng và liên kết màn hình
 

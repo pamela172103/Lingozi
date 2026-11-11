@@ -35,7 +35,7 @@ Mỗi file story có các mục: 1 giới thiệu, 2 yêu cầu áp dụng (FR, 
 | Luồng người dùng và trạng thái giao diện | `user-flow` | Mermaid `flowchart` |
 | Tương tác thành phần | `sequence` | Mermaid `sequenceDiagram`, có `autonumber` |
 | Vòng đời đối tượng | `state` | Mermaid `stateDiagram-v2` và ma trận chuyển trạng thái (`rules/12`) |
-| Wireframe | `wireframe-ascii` | Figma bị chặn (`DES-01`) |
+| Wireframe | Script `tools/wireframes/` | Ảnh SVG sinh bằng script, đúng bố cục màn hình thật; màn hình đăng nhập và nhập mã dùng ảnh Figma |
 | API | `api-design` | Theo ADR 0002 (Problem Details), khác mẫu bọc `success/data/error` của `rules/10` |
 | Tiêu chí nghiệm thu | `ac` | Gherkin theo `rules/08`; nguồn chính thức ở [user stories](../requirements/user-stories.md) |
 

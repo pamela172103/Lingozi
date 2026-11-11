@@ -1,42 +1,48 @@
 # User story và tiêu chí nghiệm thu — FEAT-02 Mục kiến thức
 
-- Cập nhật: 2026-11-08. Trạng thái: **chờ duyệt**.
+- Cập nhật: 2026-11-11. Trạng thái: **chờ duyệt**.
 - Mọi story yêu cầu người dùng đã đăng nhập và đã xác thực email (FEAT-01, BR-AUTH-003). Mã BR và ERR xem [srs/README.md](../srs/README.md).
+- Thư viện **Từ vựng** và **Ngữ pháp** là hai mục riêng trong menu (quyết định 2026-11-11): mỗi thư viện có danh sách, form thêm, chi tiết, sửa và xóa riêng; không có màn hình "chọn loại". Loại của mục do thư viện đang mở quyết định.
 - Câu đặt trong ngoặc kép là thông báo hiển thị cho người dùng. Câu chữ cuối cùng nằm trong `messages/vi.json`.
 
-## US-LIB-01 — Chọn loại và lưu mục kiến thức
+## US-LIB-01 — Lưu từ vựng và ngữ pháp
 
-Là người tự học, tôi muốn chọn loại kiến thức trước (từ vựng, ngữ pháp, cụm từ…) và chỉ phải nhập đúng phần bắt buộc của loại đó, để lưu nhanh.
+Là người tự học, tôi muốn lưu từ vựng trong thư viện Từ vựng và lưu cấu trúc ngữ pháp trong thư viện Ngữ pháp, mỗi nơi chỉ có đúng các ô cần thiết, để lưu nhanh và dễ tìm lại.
 
-Quy ước (cập nhật 2026-11-11): loại không có mặc định; Vòng 1 chỉ có hai loại là Từ vựng và Ngữ pháp. Từ vựng bắt buộc "Từ" và "Nghĩa"; Ngữ pháp bắt buộc "Tên cấu trúc" và "Công thức". Các trường còn lại không bắt buộc. Form không có trường "Nguồn". Gợi ý nghĩa (US-LIB-09) vẫn áp dụng cho ô "Nghĩa" của từ vựng.
+Quy ước (cập nhật 2026-11-11): hai thư viện tách riêng, không có bước chọn loại. Form Từ vựng gồm các ô theo thứ tự: Từ\*, Phiên âm, Nghĩa\*, Loại từ, Ví dụ, Ghi chú. Form Ngữ pháp gồm: Tên cấu trúc\*, Công thức\*, Ý nghĩa, Ví dụ, Ghi chú. Dấu \* là bắt buộc; các trường còn lại không bắt buộc. Form không có trường "Nguồn". Mỗi form là một cột, các ô xếp từ trên xuống theo đúng thứ tự trên. Gợi ý nghĩa (US-LIB-09) vẫn áp dụng cho ô "Nghĩa" của từ vựng.
 
 ```gherkin
-Scenario: AC-01 Chọn loại trước khi nhập
-  Given tôi mở "Lưu kiến thức"
-  Then tôi thấy hai loại: "Từ vựng" và "Ngữ pháp"
-  And chưa có ô nhập nào hiện ra cho tới khi tôi chọn một loại
+Scenario: AC-01 Mỗi thư viện có form riêng
+  Given tôi đang ở thư viện "Từ vựng"
+  When tôi bấm "Thêm từ vựng"
+  Then tôi thấy form với các ô theo thứ tự: "Từ" (bắt buộc), "Phiên âm", "Nghĩa" (bắt buộc), "Loại từ", "Ví dụ", "Ghi chú"
+  And không có ô "Tên cấu trúc", "Công thức" hay "Ý nghĩa"
+  Given tôi đang ở thư viện "Ngữ pháp"
+  When tôi bấm "Thêm ngữ pháp"
+  Then tôi thấy form với các ô theo thứ tự: "Tên cấu trúc" (bắt buộc), "Công thức" (bắt buộc), "Ý nghĩa", "Ví dụ", "Ghi chú"
+  And không có ô "Từ", "Phiên âm", "Nghĩa" hay "Loại từ"
 
 Scenario: AC-02 Từ vựng bắt buộc "Từ" và "Nghĩa"
-  Given tôi chọn "Từ vựng"
+  Given tôi mở form thêm từ vựng
   When tôi nhập "Từ" là "give up", "Nghĩa" là "từ bỏ", rồi bấm "Lưu"
-  Then mục được lưu với loại "word", và tôi thấy trang chi tiết với thông báo "Đã lưu"
+  Then mục được lưu với loại "word", và tôi thấy trang chi tiết từ vựng với thông báo "Đã lưu"
   When tôi để trống "Nghĩa" hoặc chỉ nhập khoảng trắng, rồi bấm "Lưu"
   Then mục không được lưu và ô "Nghĩa" hiện "Vui lòng nhập nghĩa." (ERR-LIB-400-01)
 
 Scenario: AC-03 Ngữ pháp bắt buộc "Tên cấu trúc" và "Công thức"
-  Given tôi chọn "Ngữ pháp"
+  Given tôi mở form thêm ngữ pháp
   When tôi để trống "Tên cấu trúc" hoặc "Công thức", rồi bấm "Lưu"
   Then mục không được lưu và ô trống hiện "Vui lòng nhập tên cấu trúc." hoặc "Vui lòng nhập công thức." (ERR-LIB-400-01)
   When tôi nhập "Tên cấu trúc" là "Present perfect" và "Công thức" là "have/has + V3", rồi bấm "Lưu"
-  Then mục được lưu với loại "grammar"
+  Then mục được lưu với loại "grammar", và tôi thấy trang chi tiết ngữ pháp với thông báo "Đã lưu"
 
-Scenario: AC-04 Chỉ có hai loại trong Vòng 1
-  Given tôi mở form tạo
-  Then không có loại nào khác "Từ vựng" và "Ngữ pháp" để chọn
+Scenario: AC-04 Loại do thư viện quyết định, không có bước chọn loại
+  Given tôi mở form thêm ở thư viện "Từ vựng" hoặc "Ngữ pháp"
+  Then form không có ô hay nút chọn loại, và mục lưu ra có loại tương ứng với thư viện đang mở
   And API từ chối "kind" nằm ngoài {word, grammar} với ERR-LIB-400-01
 
 Scenario: AC-05 Ý nghĩa ngữ pháp không bắt buộc, khoảng trắng được coi là trống
-  Given tôi chọn "Ngữ pháp" và đã nhập "Tên cấu trúc" và "Công thức"
+  Given tôi mở form thêm ngữ pháp và đã nhập "Tên cấu trúc" và "Công thức"
   When tôi nhập "Ý nghĩa" chỉ gồm khoảng trắng rồi bấm "Lưu"
   Then mục được lưu và ý nghĩa được lưu là null
 
@@ -56,8 +62,8 @@ Scenario: AC-08 Bấm Lưu hai lần hoặc mạng gửi lại
   Then chỉ có một mục được tạo (BR-LIB-008)
 
 Scenario: AC-09 Đạt giới hạn số mục
-  Given tôi đã có 10.000 mục
-  When tôi lưu thêm một mục
+  Given tôi đã có 10.000 mục (tính chung cả từ vựng và ngữ pháp)
+  When tôi lưu thêm một mục ở thư viện nào
   Then không lưu được và thấy ERR-LIB-422-01
 
 Scenario: AC-10 API từ chối yêu cầu thiếu loại
@@ -65,7 +71,7 @@ Scenario: AC-10 API từ chối yêu cầu thiếu loại
   Then API trả 400 ERR-LIB-400-01 với lỗi ở trường "kind" và không tạo mục
 
 Scenario: AC-11 Loại từ không bắt buộc, chỉ nhận giá trị trong danh sách
-  Given tôi chọn "Từ vựng" và đã nhập "Từ" và "Nghĩa"
+  Given tôi mở form thêm từ vựng và đã nhập "Từ" và "Nghĩa"
   When tôi không chọn "Loại từ" rồi bấm "Lưu", hoặc chọn "Động từ" rồi bấm "Lưu"
   Then mục được lưu và loại từ được lưu là null hoặc "Động từ"
   And API từ chối loại từ ngoài danh sách với ERR-LIB-400-01 ở trường "partOfSpeech"
@@ -74,12 +80,12 @@ Scenario: AC-11 Loại từ không bắt buộc, chỉ nhận giá trị trong d
 
 ## US-LIB-02 — Được gợi ý khi lưu mục tương tự
 
-Là người tự học, tôi muốn biết mình đã lưu nội dung này chưa, để bổ sung vào mục cũ thay vì tạo bản trùng.
+Là người tự học, tôi muốn biết mình đã lưu nội dung này trong cùng thư viện chưa, để bổ sung vào mục cũ thay vì tạo bản trùng. Mục tương tự chỉ được tìm trong **cùng thư viện** đang lưu (từ vựng với từ vựng, ngữ pháp với ngữ pháp).
 
 ```gherkin
 Scenario: AC-01 Có mục tương tự
-  Given tôi đã có mục "Give up" nghĩa "từ bỏ"
-  When tôi tạo mục mới với nội dung "  give   UP " và bấm "Lưu"
+  Given tôi đã có từ vựng "Give up" nghĩa "từ bỏ"
+  When tôi thêm từ vựng mới với nội dung "  give   UP " và bấm "Lưu"
   Then mục chưa được lưu
   And hộp thoại "Bạn đã lưu nội dung tương tự" liệt kê mục "Give up" với nghĩa và ngày tạo
   And có hai lựa chọn "Mở mục cũ để bổ sung" và "Vẫn tạo mục mới"
@@ -94,30 +100,41 @@ Scenario: AC-03 Vẫn tạo mục mới
   Then mục mới được lưu, và mục cũ không thay đổi
 
 Scenario: AC-04 Không gợi ý mục của người khác
-  Given người dùng khác có mục "give up"
+  Given người dùng khác có từ vựng "give up"
   And tôi chưa có
-  When tôi lưu "give up"
+  When tôi lưu từ vựng "give up"
   Then không có hộp thoại gợi ý và mục được lưu ngay
 
 Scenario: AC-05 Nhiều mục tương tự
-  Given tôi có 7 mục cùng nội dung chuẩn hóa "give up"
+  Given tôi có 7 mục cùng loại và cùng nội dung chuẩn hóa "give up"
   Then hộp thoại hiện 5 mục mới nhất và dòng "và 2 mục khác"
+
+Scenario: AC-06 Không gợi ý mục ở thư viện kia
+  Given tôi có mục ngữ pháp tên "give up" nhưng chưa có từ vựng "give up"
+  When tôi thêm từ vựng "give up" và bấm "Lưu"
+  Then không có hộp thoại gợi ý và từ vựng được lưu ngay
 ```
 
-## US-LIB-03 — Xem danh sách thư viện
+## US-LIB-03 — Xem danh sách thư viện Từ vựng và Ngữ pháp
 
-Là người tự học, tôi muốn xem các mục đã lưu, mới nhất trước.
+Là người tự học, tôi muốn xem các từ vựng và các cấu trúc ngữ pháp đã lưu ở hai thư viện riêng, mới nhất trước.
 
 ```gherkin
 Scenario: AC-01 Danh sách có dữ liệu
-  Given tôi có 25 mục
-  When tôi mở Thư viện
-  Then tôi thấy 20 mục mới nhất, mỗi mục hiện nội dung, nghĩa (cắt ở 2 dòng), loại và ngày tạo
+  Given tôi có 25 từ vựng và 12 mục ngữ pháp
+  When tôi mở thư viện "Từ vựng"
+  Then tôi thấy 20 từ vựng mới nhất, mỗi mục hiện từ, phiên âm (nếu có), loại từ (nếu có), nghĩa (cắt ở 2 dòng) và ngày tạo
   And có phân trang để xem 5 mục còn lại
+  When tôi mở thư viện "Ngữ pháp"
+  Then tôi thấy 12 mục mới nhất, mỗi mục hiện tên cấu trúc, công thức, ý nghĩa (nếu có, cắt ở 2 dòng) và ngày tạo
 
 Scenario: AC-02 Thư viện trống
-  Given tôi chưa có mục nào
-  Then tôi thấy trạng thái trống "Thư viện của bạn đang trống" kèm nút "Lưu kiến thức đầu tiên"
+  Given tôi chưa có từ vựng nào
+  When tôi mở thư viện "Từ vựng"
+  Then tôi thấy trạng thái trống "Chưa có từ vựng nào" kèm nút "Thêm từ vựng đầu tiên"
+  Given tôi chưa có mục ngữ pháp nào
+  When tôi mở thư viện "Ngữ pháp"
+  Then tôi thấy trạng thái trống "Chưa có ngữ pháp nào" kèm nút "Thêm ngữ pháp đầu tiên"
 
 Scenario: AC-03 Lỗi tải
   When API trả lỗi hoặc mạng mất
@@ -127,27 +144,39 @@ Scenario: AC-04 Tham số trang ngoài giới hạn
   When tôi mở trang 999 hoặc pageSize 1000 qua URL
   Then trang ngoài phạm vi hiện danh sách trống kèm link về trang 1
   And pageSize lớn hơn 50 được giới hạn về 50
+
+Scenario: AC-05 Hai thư viện tách nhau trong menu
+  Given tôi có 3 từ vựng và 2 mục ngữ pháp
+  Then menu bên trái có hai mục riêng "Từ vựng" và "Ngữ pháp", mục đang mở được đánh dấu
+  When tôi mở "Từ vựng"
+  Then tôi chỉ thấy 3 từ vựng, không thấy mục ngữ pháp
+  When tôi mở "Ngữ pháp"
+  Then tôi chỉ thấy 2 mục ngữ pháp, không thấy từ vựng
 ```
 
-## US-LIB-04 — Xem chi tiết một mục
+## US-LIB-04 — Xem chi tiết từ vựng hoặc ngữ pháp
 
 ```gherkin
 Scenario: AC-01 Xem chi tiết
-  When tôi mở một mục của mình
-  Then tôi thấy nội dung (cỡ chữ term), loại; với từ vựng là loại từ (nếu có), phiên âm (nếu có) và nghĩa; với ngữ pháp là công thức và ý nghĩa (nếu có); các ví dụ theo thứ tự, ghi chú, ngày tạo và ngày sửa
+  When tôi mở một mục của mình trong thư viện tương ứng
+  Then với từ vựng tôi thấy từ (cỡ chữ term), phiên âm (nếu có), loại từ (nếu có) và nghĩa
+  And với ngữ pháp tôi thấy tên cấu trúc (cỡ chữ term), công thức và ý nghĩa (nếu có)
+  And cả hai đều có các ví dụ theo thứ tự, ghi chú, ngày tạo và ngày sửa, cùng nút "Sửa" và "Xóa", và nút quay lại về đúng thư viện của mục
 
 Scenario: AC-02 Mục không tồn tại hoặc của người khác
-  When tôi mở đường dẫn tới mục không tồn tại, hoặc mục của người khác
+  When tôi mở đường dẫn tới mục không tồn tại, mục của người khác, hoặc mục mở sai thư viện (ví dụ một mục ngữ pháp mở bằng đường dẫn của từ vựng)
   Then tôi thấy cùng màn hình "Không tìm thấy mục này" (ERR-LIB-404-01)
 
 Scenario: AC-03 Mục không có trường tùy chọn
   Given mục từ vựng chỉ có từ và nghĩa
   Then các khối ví dụ, ghi chú, loại từ, phiên âm không hiển thị, không để khối trống
+  Given mục ngữ pháp chỉ có tên cấu trúc và công thức
+  Then các khối ý nghĩa, ví dụ, ghi chú không hiển thị, không để khối trống
 ```
 
-## US-LIB-05 — Sửa mục
+## US-LIB-05 — Sửa từ vựng hoặc ngữ pháp
 
-Là người tự học, tôi muốn bổ sung hoặc sửa mục đã lưu khi hiểu thêm về nó.
+Là người tự học, tôi muốn bổ sung hoặc sửa từ vựng hoặc ngữ pháp đã lưu khi hiểu thêm về nó. Form sửa có cùng các ô, cùng thứ tự với form thêm của thư viện đó, và không cho đổi sang loại khác.
 
 ```gherkin
 Scenario: AC-01 Sửa thành công
@@ -171,14 +200,14 @@ Scenario: AC-04 Sửa mục của người khác
   Then API trả 404 ERR-LIB-404-01, dữ liệu không đổi
 ```
 
-## US-LIB-06 — Xóa mục
+## US-LIB-06 — Xóa từ vựng hoặc ngữ pháp
 
 ```gherkin
 Scenario: AC-01 Xóa có xác nhận
   When tôi chọn "Xóa" ở một mục
   Then hộp thoại "Xóa mục 'give up'? Hành động này không thể hoàn tác." hiện ra, focus mặc định ở nút "Hủy"
   And khi tôi chọn "Xóa" (nút kiểu viền, có icon cảnh báo, theo design system) thì mục và các ví dụ bị xóa
-  And tôi về Thư viện với thông báo "Đã xóa"
+  And tôi về đúng thư viện của mục đó (Từ vựng hoặc Ngữ pháp) với thông báo "Đã xóa"
 
 Scenario: AC-02 Hủy xóa
   When tôi chọn "Hủy" hoặc nhấn Esc
@@ -186,7 +215,7 @@ Scenario: AC-02 Hủy xóa
 
 Scenario: AC-03 Xóa mục đã bị xóa ở nơi khác
   When tôi xác nhận xóa một mục vừa bị xóa ở tab khác
-  Then tôi thấy "Mục này không còn tồn tại" và được đưa về Thư viện (không hiện lỗi hệ thống)
+  Then tôi thấy "Mục này không còn tồn tại" và được đưa về đúng thư viện của mục (không hiện lỗi hệ thống)
 ```
 
 ## US-LIB-07 — Thư viện riêng tư
@@ -194,7 +223,7 @@ Scenario: AC-03 Xóa mục đã bị xóa ở nơi khác
 ```gherkin
 Scenario: AC-01 Không thấy dữ liệu người khác
   Given user A và user B đều có mục
-  Then danh sách, chi tiết, gợi ý trùng của A chỉ chứa mục của A
+  Then danh sách (cả Từ vựng và Ngữ pháp), chi tiết, gợi ý trùng của A chỉ chứa mục của A
 
 Scenario: AC-02 Mọi thao tác với ID của người khác
   When A gọi GET, PUT, DELETE với ID mục của B
@@ -213,7 +242,7 @@ Phụ thuộc: nguồn từ điển chưa được chọn (ADR 0007). Trạng th
 
 ```gherkin
 Scenario: AC-01 Tự điền phiên âm Anh-Anh
-  Given tôi chọn "Từ vựng" và nhập "water"
+  Given tôi mở form thêm từ vựng và nhập "water"
   When tôi rời ô "Từ" (hoặc sau 500 ms không gõ)
   Then ô "Phiên âm" được điền "/ˈwɔːtə/" với nhãn "Tự động từ điển (Anh-Anh)" và "Nguồn: Wiktionary, CC BY-SA 3.0"
   And tôi có thể lưu mà không sửa gì
@@ -254,7 +283,7 @@ Scenario: AC-07 Xóa phiên âm
   Then mục lưu Ipa = null và IpaSource = null
 
 Scenario: AC-08 Không có ô phiên âm cho Ngữ pháp
-  When tôi chọn "Ngữ pháp"
+  When tôi mở form thêm ngữ pháp
   Then không có ô phiên âm và không gọi nguồn phiên âm
 ```
 
@@ -264,9 +293,10 @@ Là người học, tôi muốn được gợi ý nghĩa để nhanh hơn, nhưn
 
 ```gherkin
 Scenario: AC-01 Gợi ý từ mục của chính tôi
-  Given tôi đã lưu "give up" với nghĩa "từ bỏ"
-  When tôi nhập "give up" ở bất kỳ loại nào
+  Given tôi đã lưu từ vựng "give up" với nghĩa "từ bỏ"
+  When tôi nhập "give up" ở form thêm từ vựng
   Then ô nghĩa hiện gợi ý "từ bỏ" với nhãn "Từ mục của bạn"
+  And ở form thêm ngữ pháp, ô "Ý nghĩa" chỉ gợi ý từ các mục ngữ pháp của chính tôi (không từ từ vựng, không từ từ điển)
   And ô nghĩa vẫn trống cho tới khi tôi bấm gợi ý
 
 Scenario: AC-02 Gợi ý từ nguồn từ điển

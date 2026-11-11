@@ -1,11 +1,11 @@
-# SRS US-LIB-06 — Xóa mục
+# SRS US-LIB-06 — Xóa từ vựng hoặc ngữ pháp
 
 - Tính năng: FEAT-02 Mục kiến thức (`knowledge-items`).
-- User story: [US-LIB-06](../requirements/user-stories.md#us-lib-06--xóa-mục).
-- Phiên bản 0.3 (2026-11-09). Trạng thái: **chờ duyệt**.
+- User story: [US-LIB-06](../requirements/user-stories.md#us-lib-06--xóa-từ-vựng-hoặc-ngữ-pháp).
+- Phiên bản 0.4 (2026-11-11). Trạng thái: **chờ duyệt**.
 - Tài liệu chung: [README.md](README.md) (danh mục FR, BR, ERR, NFR, quy ước API, ngữ cảnh).
 - Test case: [testing/test-cases.md](../testing/test-cases.md).
-- Skill OpenBA áp dụng: `srs` (FR, BR, ERR, NFR), `user-flow`, `sequence`, `wireframe-ascii`, `api-design`, `ac`.
+- Skill OpenBA áp dụng: `srs` (FR, BR, ERR, NFR), `user-flow`, `sequence`, wireframe SVG (`tools/wireframes/`), `api-design`, `ac`.
 
 ## 1. Giới thiệu
 
@@ -37,6 +37,7 @@ Phát biểu theo dạng KHI, THÌ, NGOẠI LỆ (`rules/02`). Nội dung chính
 | --- | --- | --- | --- | --- |
 | `BR-LIB-006` | Chủ sở hữu | Mọi thao tác | `UserId` lấy từ phiên đăng nhập. Mục không thuộc người dùng thì xử lý như không tồn tại (404). Bỏ qua `userId` trong body | — |
 | `BR-LIB-009` | Xóa | Xóa | Xóa cứng mục và các ví dụ trong một transaction; không phục hồi được (MVP). Xóa mục không tồn tại thì trả 404 | — |
+| `BR-LIB-017` | Hai thư viện tách nhau | Mở, liệt kê, tạo, xem, sửa, xóa, gợi ý | Từ vựng (`/library/vocabulary`, `kind` = `word`) và Ngữ pháp (`/library/grammar`, `kind` = `grammar`) là hai mục riêng trong menu. Danh sách, form, gợi ý mục tương tự và gợi ý nghĩa chỉ dùng mục cùng loại. Mục mở bằng route của thư viện kia thì web hiện "Không tìm thấy" như ERR-LIB-404-01. Giới hạn 10.000 mục (BR-LIB-005) tính chung cả hai thư viện | — |
 
 ### 2.3 Ma trận lỗi (ERR)
 
@@ -44,7 +45,7 @@ Theo `rules/03` và `rules/11`. Nội dung chính thức nằm ở [README.md](R
 
 | Mã ERR | HTTP | Điều kiện phát sinh | Khóa i18n | Thông báo người dùng | Mức độ | Hành động trên giao diện | Ghi log (không ghi nội dung người dùng) |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| `ERR-LIB-404-01` | 404 | Mục không tồn tại, không thuộc người dùng, hoặc `id` sai định dạng | `library.error.404-01` | "Không tìm thấy mục này." | Medium | Màn hình "Không tìm thấy", nút về Thư viện | Item not found for user: itemId |
+| `ERR-LIB-404-01` | 404 | Mục không tồn tại, không thuộc người dùng, hoặc `id` sai định dạng | `library.error.404-01` | "Không tìm thấy mục này." | Medium | Màn hình "Không tìm thấy", nút "Về thư viện" (thư viện đang mở) | Item not found for user: itemId |
 
 ### 2.4 Yêu cầu phi chức năng (NFR)
 
@@ -63,8 +64,8 @@ flowchart TD
     C -- Hủy hoặc Esc --> D[Đóng, focus về nút Xóa]
     C -- Xóa --> E[DELETE /api/library/items/id]
     E --> F{Kết quả}
-    F -- 204 --> G[Về Thư viện + Đã xóa]
-    F -- 404 --> H[Mục này không còn tồn tại, về Thư viện]
+    F -- 204 --> G[Về đúng thư viện (Từ vựng hoặc Ngữ pháp) + Đã xóa]
+    F -- 404 --> H[Mục này không còn tồn tại, về thư viện của mục]
 ```
 
 | Trạng thái | Hiển thị |
@@ -72,7 +73,7 @@ flowchart TD
 | Bình thường | Nút "Xóa" kiểu viền, có icon cảnh báo, ở trang chi tiết. |
 | Đang tải | Nút "Xóa" trong hộp thoại có spinner. |
 | Trống | Không áp dụng. |
-| Lỗi | 404-01: "Mục này không còn tồn tại", về Thư viện. |
+| Lỗi | 404-01: "Mục này không còn tồn tại", về thư viện của mục. |
 | Mất kết nối | Không hỗ trợ ngoại tuyến. Hiện "Mất kết nối" và nút "Thử lại"; không mất dữ liệu đã nhập. |
 
 ### 3.2 Sequence
@@ -95,10 +96,10 @@ sequenceDiagram
         A->>DB: DELETE mục và ví dụ (một transaction)
         alt Thành công
             A-->>W: 204
-            W-->>U: Về Thư viện + "Đã xóa"
+            W-->>U: Về đúng thư viện + "Đã xóa"
         else Đã bị xóa ở nơi khác
             A-->>W: 404 ERR-LIB-404-01
-            W-->>U: "Mục này không còn tồn tại", về Thư viện
+            W-->>U: "Mục này không còn tồn tại", về thư viện của mục
         end
     end
 ```
@@ -112,7 +113,7 @@ Scenario: AC-01 Xóa có xác nhận
   When tôi chọn "Xóa" ở một mục
   Then hộp thoại "Xóa mục 'give up'? Hành động này không thể hoàn tác." hiện ra, focus mặc định ở nút "Hủy"
   And khi tôi chọn "Xóa" (nút kiểu viền, có icon cảnh báo, theo design system) thì mục và các ví dụ bị xóa
-  And tôi về Thư viện với thông báo "Đã xóa"
+  And tôi về đúng thư viện của mục đó (Từ vựng hoặc Ngữ pháp) với thông báo "Đã xóa"
 
 Scenario: AC-02 Hủy xóa
   When tôi chọn "Hủy" hoặc nhấn Esc
@@ -120,80 +121,38 @@ Scenario: AC-02 Hủy xóa
 
 Scenario: AC-03 Xóa mục đã bị xóa ở nơi khác
   When tôi xác nhận xóa một mục vừa bị xóa ở tab khác
-  Then tôi thấy "Mục này không còn tồn tại" và được đưa về Thư viện (không hiện lỗi hệ thống)
+  Then tôi thấy "Mục này không còn tồn tại" và được đưa về đúng thư viện của mục (không hiện lỗi hệ thống)
 ```
 
 | AC | Nội dung | FR | BR | ERR | Wireframe | Test case |
 | --- | --- | --- | --- | --- | --- | --- |
-| AC-01 | Xóa có xác nhận | `FR-LIB-ITEM-006` | `BR-LIB-009` | — | W-LIB-20, W-LIB-21 | TC-LIB-023 |
-| AC-02 | Hủy xóa | `FR-LIB-ITEM-006` | — | — | W-LIB-20 | TC-LIB-024 |
-| AC-03 | Xóa mục đã bị xóa ở nơi khác | `FR-LIB-ITEM-006` | `BR-LIB-009` | `ERR-LIB-404-01` | W-LIB-21 | TC-LIB-025 |
+| AC-01 | Xóa có xác nhận | `FR-LIB-ITEM-006` | `BR-LIB-009` | — | W-LIB-24, W-LIB-25 | TC-LIB-023 |
+| AC-02 | Hủy xóa | `FR-LIB-ITEM-006` | — | — | W-LIB-24 | TC-LIB-024 |
+| AC-03 | Xóa mục đã bị xóa ở nơi khác | `FR-LIB-ITEM-006` | `BR-LIB-009` | `ERR-LIB-404-01` | W-LIB-26 | TC-LIB-025 |
 
 ## 5. Wireframe
 
-_Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe ASCII là căn cứ cho DoR. Quy tắc: vẽ đủ mọi màn hình, hộp thoại và trạng thái mà AC của story nhắc tới._
+_Wireframe mức thấp (khung xám, đúng bố cục màn hình thật) vẽ bằng script `tools/wireframes/` và lưu ở [wireframes/](../wireframes/); sửa script rồi chạy `python3 tools/wireframes/build.py` và `python3 tools/wireframes/sync_docs.py`, không sửa tay file SVG. Quy tắc: vẽ đủ mọi màn hình, hộp thoại và trạng thái mà AC của story nhắc tới._
 
-### W-LIB-14 — Chi tiết mục: đầy đủ (`/library/items/{id}`)
+### W-LIB-24 — Hộp thoại xác nhận xóa
 
-```text
-┌──────────────┬────────────────────────────────────────────────────────────────┐
-│Lingozi       │ [ ✓ Đã lưu ]  (toast sau khi lưu)                              │
-│              │ ← Thư viện                            [ Sửa ]  [ x Xóa ]       │
-│▸ Thư viện    │ give up                                         term           │
-│▸ Luyện tập   │ Từ vựng · /ɡɪv ʌp/ · Động từ                                   │
-│              │                                                                │
-│              │ Nghĩa   h2                                                     │
-│              │ từ bỏ                                                          │
-│⚙ Cài đặt     │                                                                │
-│              │ Ví dụ   h2                                                     │
-│              │ 1. Don't give up. — Đừng bỏ cuộc.                              │
-│              │                                                                │
-│              │ Ghi chú: Thường dùng trong văn nói                             │
-│              │                                                                │
-│              │ Tạo 08/11/2026 14:00 · Sửa 08/11/2026 14:05                    │
-└──────────────┴────────────────────────────────────────────────────────────────┘
-```
-- Nội dung hiện cỡ `text.term`. Từ vựng: hiện loại từ (nếu có) và phiên âm (nếu có; kèm nguồn khi do hệ thống điền). Ngữ pháp: thay khối Nghĩa bằng khối Công thức; hiện Ý nghĩa nếu có. Ghi chú hiện ở cuối; không còn dòng Nguồn.
-- Nút "Xóa" kiểu viền, có icon cảnh báo, không dùng nền đặc giống nút chính.
-- Toast "Đã lưu" (`role="status"`) chỉ hiện ngay sau khi lưu.
-### W-LIB-20 — Hộp thoại xác nhận xóa
-
-```text
-┌──────────────┬────────────────────────────────────────────────────────────────┐
-│Lingozi       │ (nền mờ: trang chi tiết)                                       │
-│              │                                                                │
-│▸ Thư viện    │ ┌──────────────────────────────────────────────────────────┐   │
-│▸ Luyện tập   │ │ Xóa mục "give up"?   h2                                  │   │
-│              │ │                                                          │   │
-│              │ │ Hành động này không thể hoàn tác. Mục và các             │   │
-│              │ │ ví dụ sẽ bị xóa vĩnh viễn.                               │   │
-│⚙ Cài đặt     │ │                                                          │   │
-│              │ │        [ Hủy ] (focus mặc định)   [ ! Xóa ]              │   │
-│              │ └──────────────────────────────────────────────────────────┘   │
-└──────────────┴────────────────────────────────────────────────────────────────┘
-```
+![W-LIB-24 Hộp thoại xác nhận xóa](../wireframes/W-LIB-24.svg)
 
 - Focus mặc định ở "Hủy"; Esc tương đương "Hủy" và trả focus về nút "Xóa".
-- Nút "Xóa" kiểu viền, màu `status.danger`, có icon cảnh báo, phân biệt với nút chính ở cả hai theme.
-- Xác nhận xong thì xóa cứng; không phục hồi được ở MVP.
+- Nút "Xóa" kiểu viền, màu `status.danger`, có icon cảnh báo, phân biệt với nút chính. Xác nhận xong thì xóa cứng; không phục hồi được ở MVP.
+- Hộp thoại giống hệt cho ngữ pháp, chỉ đổi tên mục trong câu hỏi.
 
-### W-LIB-21 — Thư viện sau khi xóa (hoặc mục không còn tồn tại)
+### W-LIB-25 — Thư viện sau khi xóa
 
-```text
-┌──────────────┬────────────────────────────────────────────────────────────────┐
-│Lingozi       │ [ ✓ Đã xóa ]  (toast)   hoặc   [ i Mục này không còn tồn tại ] │
-│              │ Thư viện                         24 mục   h1                   │
-│▸ Thư viện    │ ┌────────────────────────────┐  ┌────────────────────────────┐ │
-│▸ Luyện tập   │ │ give up         Từ vựng    │  │ Present perfect Ngữ pháp   │ │
-│              │ │ từ bỏ                      │  │ Thì hiện tại hoàn thành    │ │
-│              │ │                 08/11/2026 │  │                 07/11/2026 │ │
-│              │ └────────────────────────────┘  └────────────────────────────┘ │
-│⚙ Cài đặt     │                                                                │
-└──────────────┴────────────────────────────────────────────────────────────────┘
-```
+![W-LIB-25 Thư viện sau khi xóa](../wireframes/W-LIB-25.svg)
 
-- Xóa thành công: về Thư viện với toast "Đã xóa".
-- Mục đã bị xóa ở nơi khác: hiện "Mục này không còn tồn tại" và về Thư viện; không hiện lỗi hệ thống.
+- Xóa thành công: về đúng thư viện của mục vừa xóa (Từ vựng hoặc Ngữ pháp) với toast "Đã xóa".
+
+### W-LIB-26 — Thư viện: mục không còn tồn tại
+
+![W-LIB-26 Thư viện: mục không còn tồn tại](../wireframes/W-LIB-26.svg)
+
+- Mục đã bị xóa ở nơi khác: hiện thông báo "Mục này không còn tồn tại" và về thư viện của loại đó; không hiện lỗi hệ thống.
 
 ## 6. API
 
@@ -223,3 +182,4 @@ Phản hồi `204`. Mục không tồn tại hoặc đã bị xóa: `404 ERR-LIB
 | Phiên bản | Ngày | Thay đổi |
 | --- | --- | --- |
 | 0.3 | 2026-11-09 | Tách từ `srs.md` và `design/` thành file riêng cho story; thêm FR chi tiết, sequence, state, bảng AC → FR/BR/ERR/TC. |
+| 0.4 | 2026-11-11 | Xóa xong về đúng thư viện của mục; thay wireframe ASCII bằng SVG (W-LIB-24 → 26). |

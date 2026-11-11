@@ -52,7 +52,7 @@ Mỗi file story có các mục: 1 giới thiệu, 2 yêu cầu áp dụng (FR, 
 
 | Mã FR | Tên | Ưu tiên | SRS theo story | BR | ERR |
 | --- | --- | --- | --- | --- | --- |
-| `FR-LIB-ITEM-001` | Tạo mục kiến thức kèm ví dụ | P0 | [US-LIB-01](US-LIB-01-choose-type-and-save.md) | 001–005, 008, 010 | 400-01, 422-01 |
+| `FR-LIB-ITEM-001` | Tạo mục kiến thức kèm ví dụ | P0 | [US-LIB-01](US-LIB-01-choose-type-and-save.md) | 001–005, 008, 010, 016 | 400-01, 422-01 |
 | `FR-LIB-ITEM-002` | Kiểm tra mục tương tự trước khi tạo | P0 | [US-LIB-02](US-LIB-02-similar-item-hint.md) | 003, 006 | — |
 | `FR-LIB-ITEM-003` | Liệt kê mục, mới nhất trước, phân trang | P0 | [US-LIB-03](US-LIB-03-list-items.md) | 006, 011 | 400-01 |
 | `FR-LIB-ITEM-004` | Xem chi tiết mục | P0 | [US-LIB-04](US-LIB-04-view-item.md) | 006 | 404-01 |
@@ -69,7 +69,7 @@ Mô tả Input, Xử lý, Output của từng FR nằm trong file SRS của stor
 
 | Mã BR | Quy tắc | KHI | THÌ | NGOẠI LỆ |
 | --- | --- | --- | --- | --- |
-| `BR-LIB-001` | Trường bắt buộc và độ dài | Tạo hoặc sửa | Sau khi trim: `term` 1–1000 ký tự và là trường bắt buộc của mọi loại (xem BR-LIB-012); `meaning` không bắt buộc, rỗng sau trim thì lưu null, có thì 1–2000; `note` ≤ 4000, `source` ≤ 300; mỗi ví dụ `text` 1–1000, `translation` ≤ 1000 ký tự; chuỗi tùy chọn rỗng sau trim được lưu là null | — |
+| `BR-LIB-001` | Trường bắt buộc và độ dài | Tạo hoặc sửa | Sau khi trim: `term` 1–1000 ký tự và bắt buộc với mọi loại; `meaning` bắt buộc với `word` (1–2000); với `grammar` không bắt buộc (rỗng sau trim thì null, có thì 1–2000); `formula` bắt buộc với `grammar` (1–1000), null với `word`; `note` ≤ 4000; mỗi ví dụ `text` 1–1000, `translation` ≤ 1000 ký tự; chuỗi tùy chọn rỗng sau trim được lưu là null | — |
 | `BR-LIB-002` | Loại nội dung | Tạo hoặc sửa | `kind` là **bắt buộc**, không có mặc định, và thuộc danh mục mở trong Vòng 1: `word` (Từ vựng) và `grammar` (Ngữ pháp). Database lưu `Kind` = 1 và 5 (ERD, CHECK `Kind IN (1, 5)`). Các loại khác (cụm từ, thành ngữ…) đã có mã dự phòng nhưng **chưa mở**; mở thêm cần đổi đặc tả và migration. Đổi loại khi sửa thì áp dụng quy tắc của loại mới | — |
 | `BR-LIB-003` | Chuẩn hóa và mục tương tự | Tạo, sửa, kiểm tra trùng | `NormalizedTerm` = `term` chuyển chữ thường (culture-invariant), trim, gộp mọi chuỗi khoảng trắng thành một dấu cách. Hai mục là "tương tự" khi `NormalizedTerm` bằng nhau và cùng chủ sở hữu. Chỉ **gợi ý**, không chặn và không tự gộp (tổng quan §4.1) | — |
 | `BR-LIB-004` | Số ví dụ | Tạo hoặc sửa | Tối đa 20 ví dụ mỗi mục | — |
@@ -80,10 +80,11 @@ Mô tả Input, Xử lý, Output của từng FR nằm trong file SRS của stor
 | `BR-LIB-009` | Xóa | Xóa | Xóa cứng mục và các ví dụ trong một transaction; không phục hồi được (MVP). Xóa mục không tồn tại thì trả 404 | — |
 | `BR-LIB-010` | Thời gian | Tạo hoặc sửa | `CreatedAt` và `UpdatedAt` lưu UTC; hiển thị theo múi giờ `Asia/Ho_Chi_Minh` (MVP) | — |
 | `BR-LIB-011` | Phân trang | Liệt kê | `page` ≥ 1 (mặc định 1), `pageSize` 1–50 (mặc định 20; lớn hơn thì giới hạn về 50). Sắp theo `CreatedAt` giảm dần, rồi `Id` giảm dần để thứ tự ổn định | — |
-| `BR-LIB-012` | Trường bắt buộc theo loại | Tạo hoặc sửa | Nhãn và trường bắt buộc: `word` → "Từ"; `grammar` → "Điểm ngữ pháp". Trường này là `term`, luôn bắt buộc. Nghĩa, ví dụ, ghi chú, nguồn và phiên âm không bắt buộc | — |
+| `BR-LIB-012` | Trường bắt buộc theo loại | Tạo hoặc sửa | `word` (Từ vựng): bắt buộc "Từ" (`term`) và "Nghĩa" (`meaning`). `grammar` (Ngữ pháp): bắt buộc "Tên cấu trúc" (`term`) và "Công thức" (`formula`). Ý nghĩa (ngữ pháp), ví dụ, ghi chú, phiên âm và loại từ không bắt buộc. Form không có trường nguồn | — |
 | `BR-LIB-013` | Phiên âm IPA | Tạo hoặc sửa | **Nguồn và giọng:** chỉ tự điền phiên âm có nhãn Anh-Anh, tức là mục phonetics có `audio` kết thúc bằng `-uk.mp3`; không có thì để trống. Không dùng phiên âm không nhãn hoặc nhãn Anh-Mỹ. Khi hiển thị, ghi "Nguồn: Wiktionary, CC BY-SA 3.0" (ghi nguồn bắt buộc theo giấy phép). Chỉ có với `word`; với `grammar` `ipa` phải null. Sau khi trim, 1–200 ký tự; chỉ chứa ký tự IPA (nhóm Unicode IPA Extensions và Spacing Modifier Letters), `/ [ ] ˈ ˌ ː . ‿` và dấu cách; không chứa `<`, `>`, `&` hay ký tự điều khiển. `IpaSource` = 1 (từ điển) khi giá trị khớp đúng gợi ý nhận được lúc lưu, ngược lại = 2 (người dùng); null khi `ipa` null | Khi nguồn không có phiên âm, người dùng tự nhập thì `IpaSource` = 2 |
 | `BR-LIB-014` | Gợi ý nghĩa và phiên âm | Gọi gợi ý | Gợi ý chỉ lấy từ (a) mục của **chính người dùng** có cùng `NormalizedTerm`, và (b) nguồn từ điển được cấu hình (ADR 0007). Không bao giờ lấy dữ liệu của người dùng khác. Gợi ý chỉ điền vào form khi người dùng bấm; API không tự ghi gợi ý vào mục | — |
 | `BR-LIB-015` | Lỗi nguồn từ điển | Gọi nguồn | Timeout 3 giây. Lỗi hoặc timeout của nguồn **không phải lỗi nghiệp vụ**: API trả 200 với danh sách gợi ý rỗng kèm `sourceAvailable = false`, UI hiện dòng "Không lấy được phiên âm tự động" và cho phép nhập tay. Log ghi tên nguồn và loại lỗi, không ghi từ tra cứu gắn với người dùng | — |
+| `BR-LIB-016` | Loại từ | Tạo hoặc sửa | `partOfSpeech` chỉ dùng cho `word`, không bắt buộc. Giá trị thuộc danh sách: Danh từ, Động từ, Tính từ, Trạng từ, Giới từ, Liên từ, Thán từ, Cụm từ, Khác. Giá trị khác bị từ chối với ERR-LIB-400-01 ở trường `partOfSpeech`. Với `grammar` luôn là null | — |
 
 ### 4.3 Giao diện ngoài
 
@@ -191,13 +192,13 @@ Lỗi xác thực (401, 400-05) theo [FEAT-01](../../accounts/srs/README.md). N�
 
 | FR | Story | Test case |
 | --- | --- | --- |
-| `FR-LIB-ITEM-001` | US-LIB-01 | TC-LIB-001, 002, 004, 036 |
+| `FR-LIB-ITEM-001` | US-LIB-01 | TC-LIB-001 → 006, 034, 035, 051 |
 | `FR-LIB-ITEM-002` | US-LIB-02 | TC-LIB-007 → 012 |
 | `FR-LIB-ITEM-003` | US-LIB-03 | TC-LIB-013 → 016 |
 | `FR-LIB-ITEM-004` | US-LIB-04 | TC-LIB-017, 018 |
 | `FR-LIB-ITEM-005` | US-LIB-05 | TC-LIB-019 → 022 |
 | `FR-LIB-ITEM-006` | US-LIB-06 | TC-LIB-023 → 025 |
-| `FR-LIB-ITEM-007` | US-LIB-01 | TC-LIB-003, 033 → 037, 050 |
+| `FR-LIB-ITEM-007` | US-LIB-01 | TC-LIB-033 → 037, 050 |
 | `FR-LIB-ITEM-008` | US-LIB-08 | TC-LIB-038 → 044, 050 |
 | `FR-LIB-ITEM-009` | US-LIB-09 | TC-LIB-045 → 049 |
 | `FR-LIB-SEC-001` | US-LIB-07 | TC-LIB-018, 022, 026 → 028, 047 |

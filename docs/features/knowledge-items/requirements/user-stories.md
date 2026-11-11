@@ -8,7 +8,7 @@
 
 Là người tự học, tôi muốn chọn loại kiến thức trước (từ vựng, ngữ pháp, cụm từ…) và chỉ phải nhập đúng phần bắt buộc của loại đó, để lưu nhanh.
 
-Quy ước (cập nhật 2026-11-08): loại không có mặc định; Vòng 1 chỉ có hai loại là Từ vựng và Ngữ pháp; mỗi loại chỉ có một trường bắt buộc; nghĩa không bắt buộc và được gợi ý (US-LIB-09).
+Quy ước (cập nhật 2026-11-11): loại không có mặc định; Vòng 1 chỉ có hai loại là Từ vựng và Ngữ pháp. Từ vựng bắt buộc "Từ" và "Nghĩa"; Ngữ pháp bắt buộc "Tên cấu trúc" và "Công thức". Các trường còn lại không bắt buộc. Form không có trường "Nguồn". Gợi ý nghĩa (US-LIB-09) vẫn áp dụng cho ô "Nghĩa" của từ vựng.
 
 ```gherkin
 Scenario: AC-01 Chọn loại trước khi nhập
@@ -16,17 +16,18 @@ Scenario: AC-01 Chọn loại trước khi nhập
   Then tôi thấy hai loại: "Từ vựng" và "Ngữ pháp"
   And chưa có ô nhập nào hiện ra cho tới khi tôi chọn một loại
 
-Scenario: AC-02 Từ vựng chỉ bắt buộc "Từ"
+Scenario: AC-02 Từ vựng bắt buộc "Từ" và "Nghĩa"
   Given tôi chọn "Từ vựng"
-  When tôi nhập "Từ" là "give up", để trống nghĩa, rồi bấm "Lưu"
-  Then mục được lưu với loại "word" và nghĩa là null
-  And tôi thấy trang chi tiết với thông báo "Đã lưu"
+  When tôi nhập "Từ" là "give up", "Nghĩa" là "từ bỏ", rồi bấm "Lưu"
+  Then mục được lưu với loại "word", và tôi thấy trang chi tiết với thông báo "Đã lưu"
+  When tôi để trống "Nghĩa" hoặc chỉ nhập khoảng trắng, rồi bấm "Lưu"
+  Then mục không được lưu và ô "Nghĩa" hiện "Vui lòng nhập nghĩa." (ERR-LIB-400-01)
 
-Scenario: AC-03 Ngữ pháp chỉ bắt buộc "Điểm ngữ pháp"
+Scenario: AC-03 Ngữ pháp bắt buộc "Tên cấu trúc" và "Công thức"
   Given tôi chọn "Ngữ pháp"
-  When tôi để trống "Điểm ngữ pháp" và bấm "Lưu"
-  Then mục không được lưu và ô hiện "Vui lòng nhập điểm ngữ pháp" (ERR-LIB-400-01)
-  When tôi nhập "Present perfect" và để trống nghĩa rồi bấm "Lưu"
+  When tôi để trống "Tên cấu trúc" hoặc "Công thức", rồi bấm "Lưu"
+  Then mục không được lưu và ô trống hiện "Vui lòng nhập tên cấu trúc." hoặc "Vui lòng nhập công thức." (ERR-LIB-400-01)
+  When tôi nhập "Tên cấu trúc" là "Present perfect" và "Công thức" là "have/has + V3", rồi bấm "Lưu"
   Then mục được lưu với loại "grammar"
 
 Scenario: AC-04 Chỉ có hai loại trong Vòng 1
@@ -34,15 +35,15 @@ Scenario: AC-04 Chỉ có hai loại trong Vòng 1
   Then không có loại nào khác "Từ vựng" và "Ngữ pháp" để chọn
   And API từ chối "kind" nằm ngoài {word, grammar} với ERR-LIB-400-01
 
-Scenario: AC-05 Nghĩa không bắt buộc, khoảng trắng được coi là trống
-  Given tôi chọn "Ngữ pháp" và nhập điểm ngữ pháp "Present perfect"
-  When tôi nhập nghĩa chỉ gồm khoảng trắng rồi bấm "Lưu"
-  Then mục được lưu và nghĩa được lưu là null
+Scenario: AC-05 Ý nghĩa ngữ pháp không bắt buộc, khoảng trắng được coi là trống
+  Given tôi chọn "Ngữ pháp" và đã nhập "Tên cấu trúc" và "Công thức"
+  When tôi nhập "Ý nghĩa" chỉ gồm khoảng trắng rồi bấm "Lưu"
+  Then mục được lưu và ý nghĩa được lưu là null
 
 Scenario: AC-06 Giới hạn độ dài
-  When tôi nhập nội dung dài 1001 ký tự, hoặc nghĩa dài 2001 ký tự
+  When tôi nhập "Từ", "Tên cấu trúc" hoặc "Công thức" dài 1001 ký tự, hoặc "Nghĩa" hoặc "Ý nghĩa" dài 2001 ký tự
   Then không lưu được và ô tương ứng hiện lỗi ERR-LIB-400-01
-  And nội dung dài đúng 1000 ký tự và nghĩa dài đúng 2000 ký tự thì lưu được
+  And độ dài đúng 1000 ký tự (với "Từ", "Tên cấu trúc", "Công thức") và đúng 2000 ký tự (với "Nghĩa", "Ý nghĩa") thì lưu được
 
 Scenario: AC-07 Ví dụ không bắt buộc
   Given tôi đã nhập đủ trường bắt buộc
@@ -62,6 +63,13 @@ Scenario: AC-09 Đạt giới hạn số mục
 Scenario: AC-10 API từ chối yêu cầu thiếu loại
   When một client gửi POST không có "kind"
   Then API trả 400 ERR-LIB-400-01 với lỗi ở trường "kind" và không tạo mục
+
+Scenario: AC-11 Loại từ không bắt buộc, chỉ nhận giá trị trong danh sách
+  Given tôi chọn "Từ vựng" và đã nhập "Từ" và "Nghĩa"
+  When tôi không chọn "Loại từ" rồi bấm "Lưu", hoặc chọn "Động từ" rồi bấm "Lưu"
+  Then mục được lưu và loại từ được lưu là null hoặc "Động từ"
+  And API từ chối loại từ ngoài danh sách với ERR-LIB-400-01 ở trường "partOfSpeech"
+
 ```
 
 ## US-LIB-02 — Được gợi ý khi lưu mục tương tự

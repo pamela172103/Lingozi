@@ -42,7 +42,7 @@ Phát biểu theo dạng KHI, THÌ, NGOẠI LỆ (`rules/02`). Nội dung chính
 
 | Mã BR | Quy tắc | KHI | THÌ | NGOẠI LỆ |
 | --- | --- | --- | --- | --- |
-| `BR-LIB-012` | Trường bắt buộc theo loại | Tạo hoặc sửa | Nhãn và trường bắt buộc: `word` → "Từ"; `grammar` → "Điểm ngữ pháp". Trường này là `term`, luôn bắt buộc. Nghĩa, ví dụ, ghi chú, nguồn và phiên âm không bắt buộc | — |
+| `BR-LIB-012` | Trường bắt buộc theo loại | Tạo hoặc sửa | `word` (Từ vựng): bắt buộc "Từ" (`term`) và "Nghĩa" (`meaning`). `grammar` (Ngữ pháp): bắt buộc "Tên cấu trúc" (`term`) và "Công thức" (`formula`). Ý nghĩa (ngữ pháp), ví dụ, ghi chú, phiên âm và loại từ không bắt buộc. Form không có trường nguồn | — |
 | `BR-LIB-013` | Phiên âm IPA | Tạo hoặc sửa | **Nguồn và giọng:** chỉ tự điền phiên âm có nhãn Anh-Anh, tức là mục phonetics có `audio` kết thúc bằng `-uk.mp3`; không có thì để trống. Không dùng phiên âm không nhãn hoặc nhãn Anh-Mỹ. Khi hiển thị, ghi "Nguồn: Wiktionary, CC BY-SA 3.0" (ghi nguồn bắt buộc theo giấy phép). Chỉ có với `word`; với `grammar` `ipa` phải null. Sau khi trim, 1–200 ký tự; chỉ chứa ký tự IPA (nhóm Unicode IPA Extensions và Spacing Modifier Letters), `/ [ ] ˈ ˌ ː . ‿` và dấu cách; không chứa `<`, `>`, `&` hay ký tự điều khiển. `IpaSource` = 1 (từ điển) khi giá trị khớp đúng gợi ý nhận được lúc lưu, ngược lại = 2 (người dùng); null khi `ipa` null | Khi nguồn không có phiên âm, người dùng tự nhập thì `IpaSource` = 2 |
 | `BR-LIB-015` | Lỗi nguồn từ điển | Gọi nguồn | Timeout 3 giây. Lỗi hoặc timeout của nguồn **không phải lỗi nghiệp vụ**: API trả 200 với danh sách gợi ý rỗng kèm `sourceAvailable = false`, UI hiện dòng "Không lấy được phiên âm tự động" và cho phép nhập tay. Log ghi tên nguồn và loại lỗi, không ghi từ tra cứu gắn với người dùng | — |
 
@@ -294,23 +294,21 @@ _Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe A
 ┌──────────────┬────────────────────────────────────────────────────────────────┐
 │Lingozi       │ ← Thư viện    Ngữ pháp · [Đổi loại]   h1                       │
 │              │ ┌────────────────────────────┐  ┌────────────────────────────┐ │
-│▸ Thư viện    │ │ Điểm ngữ pháp *            │  │ Ví dụ (0/20)               │ │
+│▸ Thư viện    │ │ Tên cấu trúc *             │  │ Ví dụ (0/20)               │ │
 │▸ Luyện tập   │ │ [Present perfect___]       │  │ [ + Thêm ví dụ ]           │ │
-│              │ │                            │  │                            │ │
-│              │ │ Nghĩa / giải thích         │  │ Ghi chú cá nhân            │ │
-│              │ │ (không bắt buộc)           │  │ [________________]         │ │
-│⚙ Cài đặt     │ │ [________________]         │  │                            │ │
-│              │ │ [________________]         │  │ Nguồn (gặp ở đâu)          │ │
-│              │ │ Gợi ý: (chưa có)           │  │ [________________]         │ │
-│              │ └────────────────────────────┘  └────────────────────────────┘ │
+│              │ │ Công thức *                │  │                            │ │
+│              │ │ [have/has + V3_____]       │  │ Ghi chú cá nhân            │ │
+│              │ │ Ý nghĩa (không bắt buộc)   │  │ [________________]         │ │
+│⚙ Cài đặt     │ │ [________________]         │  └────────────────────────────┘ │
+│              │ └────────────────────────────┘                                 │
 │              │                                                                │
 │              │                      [ Hủy ]   [ Lưu ]                         │
 └──────────────┴────────────────────────────────────────────────────────────────┘
 ```
 
-- Nhãn bắt buộc là "Điểm ngữ pháp"; không có ô "Phiên âm" và không gọi nguồn phiên âm.
-- Nghĩa chỉ gồm khoảng trắng được lưu là trống.
-
+- Ngữ pháp: bắt buộc "Tên cấu trúc" và "Công thức"; ý nghĩa, ví dụ và ghi chú không bắt buộc.
+- Không có ô phiên âm và không có ô loại từ.
+- Ý nghĩa chỉ gồm khoảng trắng được lưu là trống.
 ## 6. API
 
 _Skill `api-design`; lỗi theo Problem Details (RFC 9457) như ADR 0002. Quy ước chung ở [README.md](README.md)._

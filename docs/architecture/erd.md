@@ -1,7 +1,7 @@
 # ERD tổng thể — Lingozi
 
 - Cập nhật: 2026-11-08.
-- Trạng thái: **đã duyệt** ngày 2026-11-08, ở mức phác thảo tổng thể của Vòng 0. **Sửa đổi 2026-11-09:** không dùng mật khẩu để đăng nhập; thêm bảng `accounts.EmailLoginCodes`; `PasswordHash` luôn null. **Sửa đổi 2026-11-08:** `Meaning` không bắt buộc; thêm `Ipa`, `IpaSource`; `Kind` không có mặc định (theo yêu cầu chủ dự án cho FEAT-02). Các điểm mở ở §5 vẫn chốt theo từng vòng. Bảng của từng tính năng được chốt chi tiết ở bước Thiết kế của vòng tương ứng, trong `docs/features/<feature>/srs/`. Migration chỉ được tạo từ phần đã chốt.
+- Trạng thái: **đã duyệt** ngày 2026-11-08, ở mức phác thảo tổng thể của Vòng 0. **Sửa đổi 2026-11-09:** không dùng mật khẩu để đăng nhập; thêm bảng `accounts.EmailLoginCodes`; `PasswordHash` luôn null. **Sửa đổi 2026-11-11:** `KnowledgeItems` có `Formula` (bắt buộc với ngữ pháp) và `PartOfSpeech` (từ vựng); `Meaning` bắt buộc với từ vựng; cột `Source` không dùng ở Vòng 1. **Sửa đổi 2026-11-08:** `Meaning` không bắt buộc; thêm `Ipa`, `IpaSource`; `Kind` không có mặc định (theo yêu cầu chủ dự án cho FEAT-02). Các điểm mở ở §5 vẫn chốt theo từng vòng. Bảng của từng tính năng được chốt chi tiết ở bước Thiết kế của vòng tương ứng, trong `docs/features/<feature>/srs/`. Migration chỉ được tạo từ phần đã chốt.
 - Nguồn:
   - [ADR 0001](../decisions/0001-system-architecture-and-repo-layout.md): mỗi module một schema và một `DbContext`.
   - [ADR 0002](../decisions/0002-backend-stack.md): SQL Server 2025, EF Core 10.
@@ -76,10 +76,12 @@ erDiagram
         nvarchar Term
         nvarchar NormalizedTerm
         nvarchar Meaning
+        nvarchar Formula
+        nvarchar PartOfSpeech
         nvarchar Ipa "chỉ từ vựng, null nếu không có"
         tinyint IpaSource "1 từ điển, 2 người dùng"
         nvarchar Note
-        nvarchar Source
+        nvarchar Source "không dùng ở Vòng 1"
         nvarchar SearchText
         uniqueidentifier ClientRequestId
         datetime2 CreatedAt
@@ -239,14 +241,16 @@ Mỗi email chỉ có một mã còn hiệu lực (mã mới vô hiệu mã cũ)
 | Mã mục | `Id` | uniqueidentifier | — | Không | PK | Sequential GUID | — |
 | Chủ sở hữu | `UserId` | uniqueidentifier | — | Không | FK → `accounts.Users` | NO ACTION; UK (`Id`, `UserId`) phục vụ FK ghép | — |
 | Loại nội dung | `Kind` | tinyint | — | Không | — | Vòng 1: CHECK `Kind IN (1, 5)`: 1 Word (Từ vựng), 5 Grammar (Ngữ pháp). Các mã 2–4, 6–9 đã dự phòng trong danh mục nhưng **chưa mở** ở Vòng 1; mở thêm loại = đổi CHECK bằng migration. **Không có mặc định**: người dùng phải chọn loại trước khi nhập (cập nhật 2026-11-08) | Một form chung kèm trường loại; trường bắt buộc và nhãn phụ thuộc loại (`BR-LIB-012`) |
-| Nội dung tiếng Anh | `Term` | nvarchar | 1000 | Không | — | Sau khi trim phải có ít nhất 1 ký tự | "Từ" bắt buộc. Đủ dài cho câu hoặc đoạn trích |
+| Nội dung tiếng Anh | `Term` | nvarchar | 1000 | Không | — | Sau khi trim phải có ít nhất 1 ký tự | "Từ" (từ vựng) hoặc "Tên cấu trúc" (ngữ pháp); bắt buộc với mọi loại (cập nhật 2026-11-11) |
 | Nội dung chuẩn hóa | `NormalizedTerm` | nvarchar | 1000 | Không | — | Ứng dụng tính: chữ thường, trim, gộp khoảng trắng | Dùng để gợi ý mục trùng (`Q-03`). **Không unique**, vì người dùng được phép tạo mục riêng |
-| Nghĩa | `Meaning` | nvarchar | 2000 | **Có** | — | Sau khi trim: null nếu rỗng; nếu có thì 1–2000 ký tự | Không bắt buộc cho mọi loại (cập nhật 2026-11-08). Có thể được điền từ gợi ý (`BR-LIB-014`) |
+| Nghĩa | `Meaning` | nvarchar | 2000 | **Có** | — | Với `Kind = 1` (Từ vựng): bắt buộc, 1–2000 ký tự sau trim. Với `Kind = 5` (Ngữ pháp): null nếu rỗng, nếu có thì 1–2000 ký tự | Từ vựng: bắt buộc (cập nhật 2026-11-11). Ngữ pháp: "Ý nghĩa", không bắt buộc. Có thể được điền từ gợi ý (`BR-LIB-014`) |
+| Công thức | `Formula` | nvarchar | 1000 | **Có** | — | Với `Kind = 5` (Ngữ pháp): bắt buộc, 1–1000 ký tự sau trim; với `Kind = 1`: null | Cấu trúc ngữ pháp, ví dụ "have/has + V3" (cập nhật 2026-11-11) |
+| Loại từ | `PartOfSpeech` | nvarchar | 30 | **Có** | — | Chỉ với `Kind = 1`; giá trị thuộc danh sách của `BR-LIB-016`; null với `Kind = 5` | Danh từ, Động từ, … (cập nhật 2026-11-11) |
 | Phiên âm | `Ipa` | nvarchar | 200 | Có | — | Chỉ có với `Kind = 1` (Từ vựng); ký tự theo `BR-LIB-013` | Phiên âm IPA của từ. Tự điền từ nguồn từ điển khi có (ADR 0007), người dùng sửa hoặc tự thêm được |
 | Nguồn phiên âm | `IpaSource` | tinyint | — | Có | — | CHECK: 1 = từ điển, 2 = người dùng; null khi `Ipa` là null | Biết phiên âm do máy điền hay do người dùng nhập/sửa |
 | Ghi chú | `Note` | nvarchar | 4000 | Có | — | — | Ghi chú cá nhân, cách dùng |
-| Nguồn / bối cảnh | `Source` | nvarchar | 300 | Có | — | — | Gặp ở đâu: phim, sách, bài hát… |
-| Văn bản tìm kiếm | `SearchText` | nvarchar | max | Không | — | Ứng dụng tính lại mỗi khi lưu: ghép Term, Meaning, Note, Source và các ví dụ; chữ thường, bỏ dấu tiếng Việt, đ → d | Tìm kiếm Vòng 2 (`Q-07`). Cách đánh index chốt ở Vòng 2 (mục 5) |
+| Nguồn / bối cảnh | `Source` | nvarchar | 300 | Có | — | — | Không còn trên form Vòng 1 (cập nhật 2026-11-11); cột giữ lại, chưa ghi dữ liệu. Quyết định bỏ hẳn cột chờ chủ dự án xác nhận |
+| Văn bản tìm kiếm | `SearchText` | nvarchar | max | Không | — | Ứng dụng tính lại mỗi khi lưu: ghép Term, Formula, Meaning, PartOfSpeech, Note và các ví dụ; chữ thường, bỏ dấu tiếng Việt, đ → d | Tìm kiếm Vòng 2 (`Q-07`). Cách đánh index chốt ở Vòng 2 (mục 5) |
 | Mã yêu cầu tạo | `ClientRequestId` | uniqueidentifier | — | Có | — | Unique có lọc (`UserId`, `ClientRequestId`) WHERE NOT NULL | Idempotency: gửi lại cùng yêu cầu tạo thì không sinh mục trùng |
 | Tạo lúc | `CreatedAt` | datetime2(3) | — | Không | — | UTC | Mốc của dòng thời gian (`Q-06`) |
 | Sửa lúc | `UpdatedAt` | datetime2(3) | — | Không | — | UTC | — |
@@ -370,7 +374,7 @@ Các bảng dưới chưa có thiết kế chi tiết và **không tạo migrati
 | ID | Vấn đề | Chốt ở | Ghi chú |
 | --- | --- | --- | --- |
 | `ERD-01` | Cách tìm kiếm trên `SearchText`: `LIKE` sau khi đã lọc theo `UserId`, hay Full-Text Search | Vòng 2 | Image Docker SQL Server trên Linux không có sẵn Full-Text Search (cần cài thêm gói), Express edition cũng có giới hạn. Với 5.000 mục mỗi user, `LIKE` sau khi lọc theo `UserId` có thể đạt NFR-PERF-001; **phải đo trước khi chốt** |
-| `ERD-02` | Độ dài tối đa của `Term`, `Meaning`, `Note` | Vòng 1 | Đang đề xuất 1000 / 2000 / 4000 ký tự. `Meaning` nay không bắt buộc (2026-11-08) |
+| `ERD-02` | Độ dài tối đa của `Term`, `Formula`, `Meaning`, `Note` | Vòng 1 | Đang đề xuất 1000 / 1000 / 2000 / 4000 ký tự. `Meaning` bắt buộc với từ vựng, không bắt buộc với ngữ pháp (cập nhật 2026-11-11) |
 | `ERD-03` | Giới hạn số mục mỗi user (chống lạm dụng, giới hạn 10 GB của Express) | Vòng 1 | Phụ thuộc `HOST-02` |
 | `ERD-04` | Tên bộ sưu tập và thẻ có bắt buộc unique theo user không | Vòng 2 | Đang đề xuất có |
 | `ERD-05` | Xóa tài khoản và dữ liệu (quyền của người dùng) | Sau MVP | FK `NO ACTION` đã chừa sẵn đường cho việc xóa có thứ tự |

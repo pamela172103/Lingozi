@@ -8,11 +8,11 @@
 
 | TC | Story / AC | Loại | Bước chính | Kết quả mong đợi |
 | --- | --- | --- | --- | --- |
-| `TC-LIB-001` | US-LIB-01 AC-02 | INT + E2E | POST `kind=word`, term "give up", không có meaning | 201; `kind=word`; `meaning` null; có `Location`; UI hiện trang chi tiết và toast "Đã lưu" |
-| `TC-LIB-002` | US-LIB-01 AC-07, 08 | INT | POST đủ trường (`kind=word`, 2 ví dụ, ghi chú, nguồn) | Chi tiết trả đúng mọi trường; ví dụ đúng thứ tự; `ipa` null nếu không nhập |
-| `TC-LIB-003` | US-LIB-01 AC-03, 05 | INT + UNIT (Vitest) | `kind=grammar` không có term; `kind=word` term "  "; grammar có meaning chỉ khoảng trắng | 400 ERR-LIB-400-01 với nhãn đúng ("Điểm ngữ pháp" hoặc "Từ"); meaning chỉ khoảng trắng → lưu null; UI focus ô lỗi đầu tiên |
-| `TC-LIB-004` | US-LIB-01 AC-06 | INT | term 1000 và 1001 ký tự; meaning 2000 và 2001; 20 và 21 ví dụ; note 4000 và 4001 | Đúng giới hạn: 201; vượt: 400-01 |
-| `TC-LIB-005` | US-LIB-01 AC-05 | INT | POST 2 lần cùng `clientRequestId`, gồm cả gửi song song | Đúng 1 dòng trong database; lần sau trả 200 với cùng `id` |
+| `TC-LIB-001` | US-LIB-01 AC-02 | INT + E2E | POST `kind=word`, term "give up", meaning "từ bỏ", không có partOfSpeech | 201; `kind=word`; `meaning` "từ bỏ"; `partOfSpeech` null; có `Location`; UI hiện trang chi tiết và toast "Đã lưu" |
+| `TC-LIB-002` | US-LIB-01 AC-07 | INT | POST đủ trường (`kind=word`, `partOfSpeech` "Động từ", 2 ví dụ, ghi chú) | Chi tiết trả đúng mọi trường; ví dụ đúng thứ tự; `ipa` null nếu không nhập |
+| `TC-LIB-003` | US-LIB-01 AC-03, 05 | INT + UNIT (Vitest) | `kind=grammar` thiếu `term` hoặc `formula`; `kind=word` thiếu `meaning` hoặc `term` chỉ khoảng trắng; `kind=grammar` có `meaning` chỉ khoảng trắng | 400 ERR-LIB-400-01 đúng trường (`term`, `formula`, `meaning`); meaning grammar chỉ khoảng trắng → lưu null; UI focus ô lỗi đầu tiên |
+| `TC-LIB-004` | US-LIB-01 AC-06 | INT | term 1000 và 1001 ký tự; meaning (word) 2000 và 2001; formula 1000 và 1001; 20 và 21 ví dụ; note 4000 và 4001 | Đúng giới hạn: 201; vượt: 400-01 |
+| `TC-LIB-005` | US-LIB-01 AC-08 | INT | POST 2 lần cùng `clientRequestId`, gồm cả gửi song song | Đúng 1 dòng trong database; lần sau trả 200 với cùng `id` |
 | `TC-LIB-006` | US-LIB-01 AC-09 | INT | Seed 10.000 mục (insert hàng loạt bằng SQL) → POST | 422 ERR-LIB-422-01 |
 | `TC-LIB-007` | BR-LIB-003 | UNIT (.NET) | Chuẩn hóa `"  Give   UP "`, `"give\tup"`, `"GIVE UP"`, `"İ"` | Đều thành `"give up"`; dùng culture-invariant |
 | `TC-LIB-008` | US-LIB-02 AC-01 | INT + E2E | Có "Give up" → tạo "  give   UP " | `/similar` trả 1 mục; UI hiện dialog; database chưa có mục mới |
@@ -41,8 +41,8 @@
 | `TC-LIB-031` | NFR-UX-001 | E2E | /library và form ở 1440, 1024, 768, 375 px | Không cuộn ngang; form 2 cột ở 1440, 1 cột ở < 1024 |
 | `TC-LIB-032` | Log an toàn | INT | Tạo mục có term đặc biệt, rồi đọc log thu được trong test | Log không chứa term, meaning, note |
 | `TC-LIB-033` | US-LIB-01 AC-01 | E2E | Mở "Lưu kiến thức" | Thấy đúng 2 thẻ "Từ vựng" và "Ngữ pháp"; không có ô nhập nào; nút Tiếp tục disabled |
-| `TC-LIB-034` | US-LIB-01 AC-02 | E2E | Chọn Từ vựng, nhập "give up", để trống nghĩa, Lưu | Lưu được; nghĩa hiển thị là trống (không có chuỗi "null") |
-| `TC-LIB-035` | US-LIB-01 AC-03 | E2E | Chọn Ngữ pháp, để trống; nhập "Present perfect", Lưu | Lỗi "Vui lòng nhập điểm ngữ pháp" rồi lưu được với `kind=grammar` |
+| `TC-LIB-034` | US-LIB-01 AC-02 | E2E | Chọn Từ vựng, nhập "give up", để trống "Nghĩa", Lưu; rồi nhập "từ bỏ" và Lưu | Lần đầu: lỗi "Vui lòng nhập nghĩa." dưới ô Nghĩa, không lưu; lần sau lưu được |
+| `TC-LIB-035` | US-LIB-01 AC-03 | E2E | Chọn Ngữ pháp; để trống "Tên cấu trúc", Lưu; nhập "Present perfect", để trống "Công thức", Lưu; nhập "have/has + V3", Lưu | Lỗi "Vui lòng nhập tên cấu trúc.", rồi "Vui lòng nhập công thức."; cuối cùng lưu được với `kind=grammar` |
 | `TC-LIB-036` | US-LIB-01 AC-04 | INT + E2E | Mở form (chỉ 2 thẻ); POST với `kind=idiom` (mã ngoài Vòng 1) | UI không có loại thứ ba; API trả 400-01 ở trường `kind`; không tạo mục |
 | `TC-LIB-037` | US-LIB-01 AC-10 | INT | POST không có `kind`; `kind=99` | 400-01 ở trường `kind`; không tạo mục |
 | `TC-LIB-038` | US-LIB-08 AC-01, AC-01a | INT + E2E | Provider giả trả `/ˈwɔːtə/` (nhãn `-uk.mp3`) cho "water"; thêm trường hợp chỉ có bản Anh-Mỹ → ô trống → `GET /suggestions?kind=word` → UI | Ô phiên âm điền sẵn, nhãn "Tự động từ điển"; lưu được với `ipaSource=dictionary` |
@@ -57,19 +57,20 @@
 | `TC-LIB-047` | US-LIB-09 AC-03, BR-LIB-014 | INT | B có "give up"/"bỏ cuộc"; A không có mục nào, gọi suggestions | Không có "bỏ cuộc" trong kết quả của A; SQL truy vấn có điều kiện `UserId` |
 | `TC-LIB-048` | US-LIB-09 AC-04 | E2E | Bấm chip "từ bỏ" | Ô nghĩa điền "từ bỏ"; sửa được |
 | `TC-LIB-049` | US-LIB-09 AC-05 | UNIT (Vitest) | Suggestions rỗng | Không có chip và không có thông báo lỗi |
+| `TC-LIB-051` | US-LIB-01 AC-11 | INT + E2E | POST `kind=word` không có `partOfSpeech`; có "Động từ"; có "Idiom" (ngoài danh sách) | Lưu được với null hoặc "Động từ"; "Idiom" → 400-01 ở trường `partOfSpeech`; form chỉ có danh sách cố định |
 | `TC-LIB-050` | US-LIB-01 AC-02, US-LIB-08 AC-08 | E2E | Chọn Từ vựng, nhập phiên âm, đổi sang Ngữ pháp rồi xác nhận | Hộp xác nhận; khi đồng ý phiên âm bị xóa, nội dung chung giữ lại |
 
 ## 2. Ma trận truy vết
 
 | FR | Story | Test case |
 | --- | --- | --- |
-| `FR-LIB-ITEM-001` | US-LIB-01 | TC-LIB-001, 002, 004, 036 |
+| `FR-LIB-ITEM-001` | US-LIB-01 | TC-LIB-001 → 006, 034, 035, 051 |
 | `FR-LIB-ITEM-002` | US-LIB-02 | TC-LIB-007 → 012 |
 | `FR-LIB-ITEM-003` | US-LIB-03 | TC-LIB-013 → 016 |
 | `FR-LIB-ITEM-004` | US-LIB-04 | TC-LIB-017, 018 |
 | `FR-LIB-ITEM-005` | US-LIB-05 | TC-LIB-019 → 022 |
 | `FR-LIB-ITEM-006` | US-LIB-06 | TC-LIB-023 → 025 |
-| `FR-LIB-ITEM-007` | US-LIB-01 | TC-LIB-003, 033 → 037, 050 |
+| `FR-LIB-ITEM-007` | US-LIB-01 | TC-LIB-033 → 037, 050 |
 | `FR-LIB-ITEM-008` | US-LIB-08 | TC-LIB-038 → 044, 050 |
 | `FR-LIB-ITEM-009` | US-LIB-09 | TC-LIB-045 → 049 |
 | `FR-LIB-SEC-001` | US-LIB-07 | TC-LIB-018, 022, 026 → 028, 047 |

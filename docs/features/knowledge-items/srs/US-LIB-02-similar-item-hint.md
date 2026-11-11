@@ -171,24 +171,23 @@ _Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe A
 │              │ ┌────────────────────────────┐  ┌────────────────────────────┐ │
 │▸ Thư viện    │ │ Từ *                       │  │ Ví dụ (0/20)               │ │
 │▸ Luyện tập   │ │ [give up__________]        │  │ [ + Thêm ví dụ ]           │ │
-│              │ │ Phiên âm                   │  │                            │ │
+│              │ │ Nghĩa *                    │  │                            │ │
 │              │ │ [________________]         │  │ Ghi chú cá nhân            │ │
-│              │ │                            │  │ [________________]         │ │
-│⚙ Cài đặt     │ │ Nghĩa (không bắt buộc)     │  │                            │ │
-│              │ │ [________________]         │  │ Nguồn (gặp ở đâu)          │ │
-│              │ │ [________________]         │  │ [________________]         │ │
-│              │ │ Gợi ý: (chưa có)           │  └────────────────────────────┘ │
+│              │ │ Phiên âm (tự điền)         │  │ [________________]         │ │
+│⚙ Cài đặt     │ │ [________________]         │  └────────────────────────────┘ │
+│              │ │ Loại từ                    │                                 │
+│              │ │ [Chọn loại từ       ▾]     │                                 │
 │              │ └────────────────────────────┘                                 │
 │              │                                                                │
 │              │                      [ Hủy ]   [ Lưu ]                         │
 └──────────────┴────────────────────────────────────────────────────────────────┘
 ```
 
-- Chỉ "Từ" là bắt buộc; phiên âm, nghĩa, ví dụ, ghi chú, nguồn đều tùy chọn.
+- Từ vựng: bắt buộc "Từ" và "Nghĩa" (dấu *). Phiên âm (tự điền từ nguồn, sửa được), loại từ, ví dụ và ghi chú không bắt buộc.
+- Loại từ là danh sách chọn: Danh từ, Động từ, Tính từ, Trạng từ, Giới từ, Liên từ, Thán từ, Cụm từ, Khác; để trống được.
 - Đang lưu: nút "Lưu" có spinner, các ô bị khóa, "Hủy" vẫn dùng được.
 - Mỗi lần mở form sinh một `clientRequestId`; bấm Lưu hai lần hoặc gửi lại chỉ tạo một mục.
 - Form 2 cột ở ≥ 1280 px, 1 cột ở < 1024 px.
-
 ### W-LIB-12 — Hộp thoại mục tương tự
 
 ```text

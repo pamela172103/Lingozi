@@ -7,7 +7,11 @@ import { ItemForm } from "./item-form";
 const push = vi.fn();
 vi.mock("next/navigation", () => ({ useRouter: () => ({ push }) }));
 const createItem = vi.fn();
-vi.mock("@/lib/library/api", () => ({ createItem: (body: unknown) => createItem(body) }));
+const findSimilarItems = vi.fn();
+vi.mock("@/lib/library/api", () => ({
+  createItem: (body: unknown) => createItem(body),
+  findSimilarItems: (kind: string, term: string) => findSimilarItems(kind, term),
+}));
 
 const saved = { kind: "saved", item: { id: "item-1", kind: "word" } };
 
@@ -15,10 +19,24 @@ function fill(label: RegExp | string, value: string) {
   fireEvent.change(screen.getByLabelText(label), { target: { value } });
 }
 
+const none = { kind: "found", items: [], totalCount: 0 };
+const oldItem = (id: string, term = "Give up") => ({
+  id,
+  kind: "word",
+  term,
+  meaning: "từ bỏ",
+  formula: null,
+  partOfSpeech: null,
+  ipa: null,
+  createdAt: "2026-11-08T07:00:00Z",
+});
+
 describe("ItemForm — vocabulary (W-LIB-08)", () => {
   beforeEach(() => {
     push.mockReset();
     createItem.mockReset();
+    findSimilarItems.mockReset();
+    findSimilarItems.mockResolvedValue(none);
   });
 
   it("has Từ, Phiên âm, Nghĩa, Loại từ, Ví dụ, Ghi chú in that order and marks Từ and Nghĩa as required (AC-01)", () => {
@@ -205,6 +223,8 @@ describe("ItemForm — grammar (W-LIB-09)", () => {
   beforeEach(() => {
     push.mockReset();
     createItem.mockReset();
+    findSimilarItems.mockReset();
+    findSimilarItems.mockResolvedValue(none);
   });
 
   it("has Tên cấu trúc, Công thức, Ý nghĩa, Ví dụ, Ghi chú in that order and no phonetic or part-of-speech field (AC-01)", () => {
@@ -241,5 +261,119 @@ describe("ItemForm — grammar (W-LIB-09)", () => {
     const sent = createItem.mock.calls[0]?.[0];
     expect(sent).toMatchObject({ kind: "grammar", term: "Present perfect", formula: "have/has + V3" });
     expect(sent).not.toHaveProperty("ipa");
+  });
+});
+
+describe("ItemForm — similar items (US-LIB-02, W-LIB-13, W-LIB-14)", () => {
+  beforeEach(() => {
+    push.mockReset();
+    createItem.mockReset();
+    findSimilarItems.mockReset();
+  });
+
+  function fillWord() {
+    fill(/^Từ/u, "  give   UP ");
+    fill(/^Nghĩa/u, "bỏ cuộc");
+  }
+
+  it("asks the same library and the trimmed term before saving (AC-06)", async () => {
+    findSimilarItems.mockResolvedValue(none);
+    createItem.mockResolvedValue(saved);
+    renderWithIntl(<ItemForm kind="vocabulary" />);
+    fillWord();
+
+    fireEvent.click(screen.getByRole("button", { name: "Lưu" }));
+
+    await waitFor(() => expect(createItem).toHaveBeenCalledTimes(1));
+    expect(findSimilarItems).toHaveBeenCalledWith("word", "give   UP");
+  });
+
+  it("shows the dialog with the existing item and does not save (AC-01)", async () => {
+    findSimilarItems.mockResolvedValue({ kind: "found", items: [oldItem("old-1")], totalCount: 1 });
+    renderWithIntl(<ItemForm kind="vocabulary" />);
+    fillWord();
+
+    fireEvent.click(screen.getByRole("button", { name: "Lưu" }));
+
+    const dialog = await screen.findByRole("dialog", { name: "Bạn đã lưu nội dung tương tự" });
+    expect(within(dialog).getByText("Give up")).toBeInTheDocument();
+    expect(within(dialog).getByText(/từ bỏ/u)).toBeInTheDocument();
+    expect(within(dialog).getByRole("button", { name: "Vẫn tạo mục mới" })).toBeInTheDocument();
+    expect(within(dialog).getByRole("link", { name: "Mở mục cũ để bổ sung" })).toHaveAttribute(
+      "href",
+      "/library/vocabulary/old-1",
+    );
+    expect(createItem).not.toHaveBeenCalled();
+    expect(screen.getByLabelText(/^Nghĩa/u)).toHaveValue("bỏ cuộc");
+  });
+
+  it("'Vẫn tạo mục mới' saves a new item with the same clientRequestId (AC-03)", async () => {
+    findSimilarItems.mockResolvedValue({ kind: "found", items: [oldItem("old-1")], totalCount: 1 });
+    createItem.mockResolvedValue({ kind: "saved", item: { id: "new-1", kind: "word" } });
+    renderWithIntl(<ItemForm kind="vocabulary" />);
+    fillWord();
+    fireEvent.click(screen.getByRole("button", { name: "Lưu" }));
+    await screen.findByRole("dialog");
+
+    fireEvent.click(screen.getByRole("button", { name: "Vẫn tạo mục mới" }));
+
+    await waitFor(() => expect(push).toHaveBeenCalledWith("/library/vocabulary/new-1?saved=1"));
+    expect(createItem).toHaveBeenCalledTimes(1);
+    expect(findSimilarItems).toHaveBeenCalledTimes(1);
+  });
+
+  it("'Hủy' and Esc close the dialog and keep the typed values (AC-01)", async () => {
+    findSimilarItems.mockResolvedValue({ kind: "found", items: [oldItem("old-1")], totalCount: 1 });
+    renderWithIntl(<ItemForm kind="vocabulary" />);
+    fillWord();
+    fireEvent.click(screen.getByRole("button", { name: "Lưu" }));
+    await screen.findByRole("dialog");
+
+    fireEvent.click(screen.getByRole("button", { name: "Hủy", hidden: false }));
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: "Lưu" }));
+    await screen.findByRole("dialog");
+    fireEvent.keyDown(document, { key: "Escape" });
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    expect(screen.getByLabelText(/^Từ/u)).toHaveValue("  give   UP ");
+    expect(createItem).not.toHaveBeenCalled();
+  });
+
+  it("'Mở mục cũ để bổ sung' opens the existing item (AC-02, detail until US-LIB-05 adds the edit screen)", async () => {
+    findSimilarItems.mockResolvedValue({ kind: "found", items: [oldItem("old-1")], totalCount: 1 });
+    renderWithIntl(<ItemForm kind="vocabulary" />);
+    fillWord();
+    fireEvent.click(screen.getByRole("button", { name: "Lưu" }));
+    const dialog = await screen.findByRole("dialog");
+
+    fireEvent.click(within(dialog).getByRole("link", { name: "Mở mục cũ để bổ sung" }));
+
+    expect(createItem).not.toHaveBeenCalled();
+  });
+
+  it("lists five items and 'và 2 mục khác' when there are seven (AC-05)", async () => {
+    const items = Array.from({ length: 5 }, (_, i) => oldItem(`old-${i}`));
+    findSimilarItems.mockResolvedValue({ kind: "found", items, totalCount: 7 });
+    renderWithIntl(<ItemForm kind="vocabulary" />);
+    fillWord();
+
+    fireEvent.click(screen.getByRole("button", { name: "Lưu" }));
+
+    const dialog = await screen.findByRole("dialog");
+    expect(within(dialog).getAllByRole("link", { name: "Mở" })).toHaveLength(5);
+    expect(within(dialog).getByText("và 2 mục khác")).toBeInTheDocument();
+  });
+
+  it("saves straight away when the lookup fails: the hint never blocks saving", async () => {
+    findSimilarItems.mockResolvedValue({ kind: "unavailable" });
+    createItem.mockResolvedValue({ kind: "saved", item: { id: "x", kind: "word" } });
+    renderWithIntl(<ItemForm kind="vocabulary" />);
+    fillWord();
+
+    fireEvent.click(screen.getByRole("button", { name: "Lưu" }));
+
+    await waitFor(() => expect(push).toHaveBeenCalledWith("/library/vocabulary/x?saved=1"));
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
 });

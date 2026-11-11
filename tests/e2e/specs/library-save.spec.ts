@@ -154,3 +154,32 @@ test("a signed-out visitor who opens a library page is sent to sign in", async (
   await page.goto("/library/vocabulary");
   await expect(page).toHaveURL(/\/auth\/login$/u);
 });
+
+// US-LIB-02 (TC-LIB-008, TC-LIB-010): a similar item is offered before saving; "Vẫn tạo mục mới" still saves.
+test("AC-01/AC-03: a similar item is offered in a dialog and the user can still save a new one", async ({
+  page,
+}) => {
+  await signIn(page);
+  await page.goto("/library/vocabulary/new");
+  await page.getByLabel(/^Từ/u).fill("give up");
+  await page.getByLabel(/^Nghĩa/u).fill("từ bỏ");
+  await page.getByRole("button", { name: "Lưu" }).click();
+  await expect(page).toHaveURL(/\/library\/vocabulary\/[0-9a-f-]{36}$/u);
+
+  await page.goto("/library/vocabulary/new");
+  await page.getByLabel(/^Từ/u).fill("  give   UP ");
+  await page.getByLabel(/^Nghĩa/u).fill("bỏ cuộc");
+  await page.getByRole("button", { name: "Lưu" }).click();
+
+  const dialog = page.getByRole("dialog", {
+    name: "Bạn đã lưu nội dung tương tự",
+  });
+  await expect(dialog).toBeVisible();
+  await expect(dialog.getByText("từ bỏ")).toBeVisible();
+  await expect(page).not.toHaveURL(/\/library\/vocabulary\/[0-9a-f-]{36}/u);
+
+  await dialog.getByRole("button", { name: "Vẫn tạo mục mới" }).click();
+  await expect(page).toHaveURL(/\/library\/vocabulary\/[0-9a-f-]{36}$/u);
+  await page.goto("/library/vocabulary");
+  await expect(page.getByRole("link", { name: /give/u })).toHaveCount(2);
+});

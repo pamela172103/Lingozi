@@ -27,6 +27,13 @@ internal static class LibraryEndpoints
             .ProducesProblem(StatusCodes.Status400BadRequest)
             .ProducesProblem(StatusCodes.Status401Unauthorized);
 
+        group.MapGet("/items/similar", SimilarAsync)
+            .WithName("FindSimilarKnowledgeItems")
+            .WithSummary("Mục cùng loại có cùng nội dung chuẩn hóa của chính người dùng; chỉ gợi ý (FR-LIB-ITEM-002)")
+            .Produces<SimilarItemsResponse>()
+            .ProducesProblem(StatusCodes.Status400BadRequest)
+            .ProducesProblem(StatusCodes.Status401Unauthorized);
+
         group.MapGet("/items/{id}", GetAsync)
             .WithName("GetKnowledgeItem")
             .WithSummary("Chi tiết một mục của chính người dùng (FR-LIB-ITEM-004)")
@@ -73,6 +80,28 @@ internal static class LibraryEndpoints
         }
 
         return TypedResults.Ok(await service.ListAsync(CurrentUserId(context), parsedKind, normalizedPage, normalizedPageSize, cancellationToken));
+    }
+
+    internal static async Task<IResult> SimilarAsync(
+        string? kind, string? term, KnowledgeItemService service, HttpContext context, CancellationToken cancellationToken)
+    {
+        var errors = new Dictionary<string, string>();
+        if (!ItemRules.TryParseKind(kind, out var parsedKind))
+        {
+            errors["kind"] = string.IsNullOrEmpty(kind) ? "required" : "invalid";
+        }
+
+        if (term is not null && term.Length > ItemRules.TermMax)
+        {
+            errors["term"] = "too-long";
+        }
+
+        if (errors.Count > 0)
+        {
+            return LibraryProblems.Invalid(errors);
+        }
+
+        return TypedResults.Ok(await service.FindSimilarAsync(CurrentUserId(context), parsedKind, term, cancellationToken));
     }
 
     internal static async Task<IResult> GetAsync(string id, KnowledgeItemService service, HttpContext context, CancellationToken cancellationToken)

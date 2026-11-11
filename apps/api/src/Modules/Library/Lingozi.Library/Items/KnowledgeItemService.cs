@@ -9,6 +9,9 @@ public sealed class KnowledgeItemService(LibraryDbContext db, TimeProvider clock
     public const int DefaultPageSize = 20;
     public const int MaxPageSize = 50;
 
+    /// <summary>US-LIB-02 AC-05: the dialog lists at most this many similar items.</summary>
+    public const int MaxSimilarItems = 5;
+
     /// <summary>Creates a word or grammar item with its examples in one transaction (BR-LIB-001, 005, 008).</summary>
     public async Task<CreateItemResult> CreateAsync(Guid userId, KnowledgeItemInput? input, CancellationToken cancellationToken)
     {
@@ -93,6 +96,32 @@ public sealed class KnowledgeItemService(LibraryDbContext db, TimeProvider clock
             [.. rows.Select(r => new ItemSummary(r.Id, ItemRules.KindName(r.Kind), r.Term, r.Meaning, r.Formula, r.PartOfSpeech, r.Ipa, DateTime.SpecifyKind(r.CreatedAt, DateTimeKind.Utc)))],
             page,
             pageSize,
+            total);
+    }
+
+    /// <summary>
+    /// FR-LIB-ITEM-002 (US-LIB-02): the user's own items of one kind whose normalized term equals the given term (BR-LIB-003).
+    /// Advisory only: nothing is blocked or merged here. Other users' items are never considered (BR-LIB-014).
+    /// </summary>
+    public async Task<SimilarItemsResponse> FindSimilarAsync(Guid userId, ItemKind kind, string? term, CancellationToken cancellationToken)
+    {
+        if (string.IsNullOrWhiteSpace(term))
+        {
+            return new SimilarItemsResponse([], 0);
+        }
+
+        var normalized = ItemRules.Normalize(term);
+        var hash = ItemRules.HashNormalized(normalized);
+        var query = db.Items.AsNoTracking()
+            .Where(i => i.UserId == userId && i.Kind == kind && i.NormalizedTermHash == hash && i.NormalizedTerm == normalized);
+        var total = await query.CountAsync(cancellationToken);
+        var rows = await query
+            .OrderByDescending(i => i.CreatedAt).ThenByDescending(i => i.Id)
+            .Take(MaxSimilarItems)
+            .Select(i => new { i.Id, i.Kind, i.Term, i.Meaning, i.Formula, i.PartOfSpeech, i.Ipa, i.CreatedAt })
+            .ToListAsync(cancellationToken);
+        return new SimilarItemsResponse(
+            [.. rows.Select(r => new ItemSummary(r.Id, ItemRules.KindName(r.Kind), r.Term, r.Meaning, r.Formula, r.PartOfSpeech, r.Ipa, DateTime.SpecifyKind(r.CreatedAt, DateTimeKind.Utc)))],
             total);
     }
 

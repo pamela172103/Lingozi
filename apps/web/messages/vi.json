@@ -160,6 +160,16 @@
       "notFoundBack": "Về thư viện",
       "loadError": "Không tải được mục này.",
       "retry": "Thử lại"
+    },
+    "similar": {
+      "title": "Bạn đã lưu nội dung tương tự",
+      "intro": "Trong {library} đã có mục này. Bạn muốn làm gì?",
+      "keepNew": "Vẫn tạo mục mới",
+      "openExisting": "Mở mục cũ để bổ sung",
+      "cancel": "Hủy",
+      "open": "Mở",
+      "more": "và {count} mục khác",
+      "created": "tạo {date}"
     }
   }
 }

@@ -3,11 +3,13 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { useEffect, useId, useRef, useState, type FormEvent, type ReactNode } from "react";
+import { useCallback, useEffect, useId, useRef, useState, type FormEvent, type ReactNode } from "react";
 
-import { createItem } from "@/lib/library/api";
+import { createItem, findSimilarItems } from "@/lib/library/api";
 import { FIELD_ORDER, emptyValues, toRequest, validate, type FieldErrors, type FormValues } from "@/lib/library/form";
-import { LIMITS, PARTS_OF_SPEECH, libraryPath, type LibraryKind } from "@/lib/library/kinds";
+import { API_KIND, LIMITS, PARTS_OF_SPEECH, libraryPath, type LibraryKind } from "@/lib/library/kinds";
+import type { ItemSummary } from "@/lib/library/types";
+import { SimilarDialog } from "./similar-dialog";
 
 type Banner = "limit" | "network" | "session" | null;
 
@@ -164,6 +166,9 @@ export function ItemForm({ kind }: { kind: LibraryKind }) {
     return fieldId(example ? `${example.key}-${match[2]}` : "add-example");
   }
 
+  /** US-LIB-02: the similar-items dialog, shown before saving when the user's own library already has this term. */
+  const [similar, setSimilar] = useState<{ items: ItemSummary[]; totalCount: number } | null>(null);
+
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (submitting) return;
@@ -179,6 +184,19 @@ export function ItemForm({ kind }: { kind: LibraryKind }) {
 
     setErrors({});
     setShowSummary(false);
+    setSubmitting(true);
+    const lookup = await findSimilarItems(API_KIND[kind], values.term.trim());
+    if (lookup.kind === "found" && lookup.totalCount > 0) {
+      // Stop here: the user decides in the dialog. The typed values stay in the form.
+      setSubmitting(false);
+      setSimilar({ items: lookup.items, totalCount: lookup.totalCount });
+      return;
+    }
+    await save();
+  }
+
+  /** Saves the form. The same clientRequestId is reused on retries (BR-LIB-008), also after the dialog's "Vẫn tạo mục mới". */
+  async function save() {
     setSubmitting(true);
     const result = await createItem(toRequest(kind, values, requestId.current));
     setSubmitting(false);
@@ -207,6 +225,7 @@ export function ItemForm({ kind }: { kind: LibraryKind }) {
   }
 
   const summaryNames = showSummary ? orderedErrorNames(errors) : [];
+  const closeSimilar = useCallback(() => setSimilar(null), []);
   const summaryFields = [...new Set(summaryNames.map((n) => labelOf(n.startsWith("examples") ? "examples" : n)))];
   const tooManyExamples = values.examples.length >= LIMITS.examples;
 
@@ -407,61 +426,75 @@ export function ItemForm({ kind }: { kind: LibraryKind }) {
     banner === "limit" ? t("limit") : banner === "network" ? t("network") : banner === "session" ? t("session") : null;
 
   return (
-    <form noValidate onSubmit={onSubmit} className="rounded-card bg-surface p-6 shadow-card sm:p-8">
-      {summaryNames.length > 0 && (
-        <div role="alert" className="mb-6 rounded-control border border-danger bg-subtle p-3 text-sm text-danger">
-          <p>
-            <span aria-hidden="true">(!) </span>
-            {t("summary", { fields: summaryFields.join(", ") })}
-          </p>
-          <ul className="mt-1 list-inside list-disc">
-            {summaryNames.slice(0, 5).map((name) => (
-              <li key={name}>
-                <a href={`#${targetOf(name)}`} className="underline">
-                  {labelOf(name.startsWith("examples") ? "examples" : name)}
-                </a>
-                : {messageOf(name)}
-              </li>
-            ))}
-          </ul>
-        </div>
+    <>
+      {similar && (
+        <SimilarDialog
+          kind={kind}
+          items={similar.items}
+          totalCount={similar.totalCount}
+          onCancel={closeSimilar}
+          onKeepNew={() => {
+            setSimilar(null);
+            void save();
+          }}
+        />
       )}
-      {bannerMessage && (
-        <div
-          role="alert"
-          className="mb-6 flex items-center gap-3 rounded-control border border-danger bg-subtle p-3 text-sm text-danger"
-        >
-          <p className="flex-1">
-            <span aria-hidden="true">(!) </span>
-            {bannerMessage}
-          </p>
-          {banner === "network" && (
-            <button
-              type="submit"
-              className={`${buttonBase} border border-border-strong bg-surface text-primary hover:bg-subtle`}
-            >
-              {t("retry")}
-            </button>
-          )}
+      <form noValidate onSubmit={onSubmit} className="rounded-card bg-surface p-6 shadow-card sm:p-8">
+        {summaryNames.length > 0 && (
+          <div role="alert" className="mb-6 rounded-control border border-danger bg-subtle p-3 text-sm text-danger">
+            <p>
+              <span aria-hidden="true">(!) </span>
+              {t("summary", { fields: summaryFields.join(", ") })}
+            </p>
+            <ul className="mt-1 list-inside list-disc">
+              {summaryNames.slice(0, 5).map((name) => (
+                <li key={name}>
+                  <a href={`#${targetOf(name)}`} className="underline">
+                    {labelOf(name.startsWith("examples") ? "examples" : name)}
+                  </a>
+                  : {messageOf(name)}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+        {bannerMessage && (
+          <div
+            role="alert"
+            className="mb-6 flex items-center gap-3 rounded-control border border-danger bg-subtle p-3 text-sm text-danger"
+          >
+            <p className="flex-1">
+              <span aria-hidden="true">(!) </span>
+              {bannerMessage}
+            </p>
+            {banner === "network" && (
+              <button
+                type="submit"
+                className={`${buttonBase} border border-border-strong bg-surface text-primary hover:bg-subtle`}
+              >
+                {t("retry")}
+              </button>
+            )}
+          </div>
+        )}
+        <div className="space-y-5">{FIELD_ORDER[kind].map((name) => fields[name])}</div>
+        <div className="mt-8 flex justify-end gap-3 border-t border-border pt-5">
+          <Link
+            href={libraryPath(kind)}
+            className={`${buttonBase} border border-border-strong bg-surface text-primary hover:bg-subtle`}
+          >
+            {t("cancel")}
+          </Link>
+          <button
+            type="submit"
+            aria-disabled={submitting}
+            className={`${buttonBase} bg-accent text-on-accent hover:brightness-95 ${submitting ? "cursor-not-allowed" : ""}`}
+          >
+            {submitting && <Spinner />}
+            {submitting ? t("saving") : t("save")}
+          </button>
         </div>
-      )}
-      <div className="space-y-5">{FIELD_ORDER[kind].map((name) => fields[name])}</div>
-      <div className="mt-8 flex justify-end gap-3 border-t border-border pt-5">
-        <Link
-          href={libraryPath(kind)}
-          className={`${buttonBase} border border-border-strong bg-surface text-primary hover:bg-subtle`}
-        >
-          {t("cancel")}
-        </Link>
-        <button
-          type="submit"
-          aria-disabled={submitting}
-          className={`${buttonBase} bg-accent text-on-accent hover:brightness-95 ${submitting ? "cursor-not-allowed" : ""}`}
-        >
-          {submitting && <Spinner />}
-          {submitting ? t("saving") : t("save")}
-        </button>
-      </div>
-    </form>
+      </form>
+    </>
   );
 }

@@ -2,7 +2,7 @@
 
 - Cập nhật: 2026-11-11.
 - Giai đoạn: **Vòng 1 — Lưu được kiến thức của riêng mình** (2026-11-08 → 2026-11-21), đang ở bước ② Thiết kế. Vòng 0 xong phần việc. Xem [lộ trình](../product/roadmap.md) §5.
-- Phiên gần nhất: [Code US-LIB-01 (lưu từ vựng và ngữ pháp)](sessions/2026-11-11-25-code-us-lib-01.md).
+- Phiên gần nhất: [Code US-LIB-02 (gợi ý mục tương tự khi lưu)](sessions/2026-11-11-26-code-us-lib-02.md).
 - Đã đọc và gộp 4 commit từ `origin/work` vào `main` theo fast-forward, tới `61514e0`. Bàn giao phiên 05 được lưu cùng commit tài liệu tiếp theo; tra bằng `git log -- docs/project/`.
 
 ## Đã hoàn thành
@@ -23,6 +23,8 @@
 - Phiên 24 (2026-11-11): FEAT-02 tách thành hai thư viện Từ vựng và Ngữ pháp (thiết kế v0.5, chờ duyệt); toàn bộ wireframe FEAT-01 và FEAT-02 đổi từ ASCII sang SVG sinh bằng `tools/wireframes/` (50 màn hình), CI thêm job `feature-docs`.
 
 - Phiên 25 (2026-11-11): code US-LIB-01 — module `Library` (migration, POST/GET API), web `/library/vocabulary` và `/library/grammar` (form, chi tiết và danh sách tối thiểu), 97 integration test, 93 Vitest, 42 E2E; đổi ERD sang `NormalizedTermHash` (chờ xác nhận).
+
+- Phiên 26 (2026-11-11): code US-LIB-02 (`GET /api/library/items/similar`, hộp thoại khi lưu); AC-02 còn thiếu màn hình sửa (US-LIB-05). 106 integration test, 44 E2E đạt.
 
 ## Hiện trạng các phần
 

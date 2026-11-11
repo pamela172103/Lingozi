@@ -1,7 +1,8 @@
 import { ensureXsrfToken, post, problemCode } from "@/lib/auth/api";
 
 import { fromApiErrors, type FieldErrors } from "./form";
-import type { ItemDetail } from "./types";
+import type { ApiKind } from "./kinds";
+import type { ItemDetail, ItemSummary } from "./types";
 
 export type CreateItemResult =
   | { kind: "saved"; item: ItemDetail }
@@ -59,5 +60,26 @@ export async function createItem(
     return { kind: "session-error" };
   } catch {
     return { kind: "network-error" };
+  }
+}
+
+export type SimilarLookupResult = { kind: "found"; items: ItemSummary[]; totalCount: number } | { kind: "unavailable" };
+
+/**
+ * US-LIB-02: asks for items of the same library with the same normalized term. Only a hint: when the lookup fails the form
+ * still saves (srs US-LIB-02, "không chặn việc lưu").
+ */
+export async function findSimilarItems(kind: ApiKind, term: string): Promise<SimilarLookupResult> {
+  try {
+    const params = new URLSearchParams({ kind, term });
+    const response = await fetch(`/api/library/items/similar?${params.toString()}`, {
+      credentials: "same-origin",
+      cache: "no-store",
+    });
+    if (!response.ok) return { kind: "unavailable" };
+    const data = (await response.json()) as { items?: ItemSummary[]; totalCount?: number };
+    return { kind: "found", items: data.items ?? [], totalCount: data.totalCount ?? 0 };
+  } catch {
+    return { kind: "unavailable" };
   }
 }

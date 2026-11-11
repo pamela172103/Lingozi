@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -51,6 +52,9 @@ public static partial class ItemRules
     /// <summary>BR-LIB-003: lower case (culture-invariant), trimmed, every run of white space becomes one space.</summary>
     public static string Normalize(string term) =>
         WhiteSpace().Replace(term.Trim().ToLowerInvariant(), " ");
+
+    /// <summary>Same bytes as the computed column <c>NormalizedTermHash</c>: SHA-256 of the UTF-16LE text, like SQL Server's <c>HASHBYTES('SHA2_256', nvarchar)</c>.</summary>
+    public static byte[] HashNormalized(string normalized) => SHA256.HashData(Encoding.Unicode.GetBytes(normalized));
 
     /// <summary>
     /// BR-LIB-013: only IPA characters. Letters are allowed in the IPA blocks (U+0250–U+02FF, combining marks), a few

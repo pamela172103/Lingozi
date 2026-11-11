@@ -72,3 +72,6 @@ public enum CreateItemOutcome
 /// <param name="Item">The item for <see cref="CreateItemOutcome.Created"/> and <see cref="CreateItemOutcome.Existing"/>.</param>
 /// <param name="Errors">Field name → reason code for <see cref="CreateItemOutcome.Invalid"/>.</param>
 public sealed record CreateItemResult(CreateItemOutcome Outcome, ItemDetail? Item = null, IReadOnlyDictionary<string, string>? Errors = null);
+
+/// <summary>Items of the same kind with the same normalized term (BR-LIB-003). At most 5 newest, plus the full count.</summary>
+public sealed record SimilarItemsResponse(IReadOnlyList<ItemSummary> Items, int TotalCount);

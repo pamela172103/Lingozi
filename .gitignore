@@ -31,3 +31,4 @@ Thumbs.db
 # Local development helper (scripts/dev.ps1)
 /.dev-pids.json
 /logs/
+/.dev-containers.json

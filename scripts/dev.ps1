@@ -2,7 +2,7 @@
 .SYNOPSIS
   Starts the whole local stack in one window: SQL Server and Mailpit (Docker), the API and the web app.
 .DESCRIPTION
-  Local development only (ADR 0002, ADR 0005). Reads .env from the repository root, starts the containers,
+  Local development only (ADR 0002, ADR 0005). Reads .env from the repository root, starts SQL Server and Mailpit if they are not running (Docker or native),
   starts the API and the web app in the background (logs in logs\), waits until both answer, then prints the links.
   Stop everything with scripts\stop-dev.ps1.
 .EXAMPLE
@@ -20,12 +20,39 @@ Get-Content '.env' | ForEach-Object {
   }
 }
 
-# 2. Database and mail capture.
-if (-not (Get-Command docker -ErrorAction SilentlyContinue)) {
-  throw 'Không tìm thấy lệnh docker. Hãy cài Docker Desktop (https://www.docker.com/products/docker-desktop/), mở Docker Desktop, đợi biểu tượng cá voi báo "Running", rồi chạy lại. Nếu đã cài, đóng và mở lại PowerShell.'
+# 2. Database (SQL Server on 1433) and mail capture (Mailpit on 8025).
+#    Each one may already run on this PC (installed SQL Server, or mailpit.exe). Docker is used only when it is needed and available.
+function Test-Port([int]$port) {
+  $client = New-Object System.Net.Sockets.TcpClient
+  try {
+    $async = $client.BeginConnect('127.0.0.1', $port, $null, $null)
+    return $async.AsyncWaitHandle.WaitOne(1000) -and $client.Connected
+  } catch { return $false } finally { $client.Close() }
 }
-docker compose up -d --wait sqlserver mailpit
-if ($LASTEXITCODE -ne 0) { throw 'Docker containers did not start. Is Docker Desktop running?' }
+$hasDocker = [bool](Get-Command docker -ErrorAction SilentlyContinue)
+$startedContainers = @()
+
+if (-not (Test-Port 1433)) {
+  if (-not $hasDocker) {
+    throw 'SQL Server chưa chạy ở localhost:1433. Hoặc bật SQL Server đã cài trên máy, hoặc cài Docker Desktop (https://www.docker.com/products/docker-desktop/) rồi chạy lại.'
+  }
+  docker compose up -d --wait sqlserver
+  if ($LASTEXITCODE -ne 0) { throw 'Không bật được SQL Server bằng Docker. Mở Docker Desktop và đợi trạng thái "Running".' }
+  $startedContainers += 'sqlserver'
+}
+
+if (-not (Test-Port 8025)) {
+  if ($hasDocker) {
+    docker compose up -d mailpit
+    if ($LASTEXITCODE -eq 0) { $startedContainers += 'mailpit' }
+  } elseif (Get-Command mailpit -ErrorAction SilentlyContinue) {
+    New-Item -ItemType Directory -Force -Path 'logs' | Out-Null
+    Start-Process -FilePath 'mailpit' -WindowStyle Hidden -RedirectStandardOutput (Join-Path $root 'logs\mailpit.log') -RedirectStandardError (Join-Path $root 'logs\mailpit.err.log') | Out-Null
+  } else {
+    Write-Host 'Mailpit chưa chạy (localhost:8025). Mở mailpit.exe trước, hoặc cài Docker để script tự bật.' -ForegroundColor Yellow
+  }
+}
+@{ containers = $startedContainers } | ConvertTo-Json | Set-Content '.dev-containers.json'
 
 # 3. Previous run still alive? Stop it first so ports are free.
 if (Test-Path '.dev-pids.json') { & "$PSScriptRoot\stop-dev.ps1" -KeepContainers }
@@ -58,7 +85,7 @@ $webOk = Wait-Http 'http://localhost:3000/auth/login' 180
 Write-Host ''
 if ($apiOk) { Write-Host '  API     http://localhost:5080  (log: logs\api.log)' -ForegroundColor Green } else { Write-Host '  API chưa sẵn sàng. Xem logs\api.err.log' -ForegroundColor Red }
 if ($webOk) { Write-Host '  Web     http://localhost:3000  (log: logs\web.log)' -ForegroundColor Green } else { Write-Host '  Web chưa sẵn sàng. Xem logs\web.err.log' -ForegroundColor Red }
-Write-Host '  Mailpit http://localhost:8025  (mã đăng nhập nằm ở đây)' -ForegroundColor Green
+if (Test-Port 8025) { Write-Host '  Mailpit http://localhost:8025  (mã đăng nhập nằm ở đây)' -ForegroundColor Green } else { Write-Host '  Mailpit chưa chạy: không nhận được mã đăng nhập' -ForegroundColor Yellow }
 Write-Host ''
 Write-Host '  Dừng toàn bộ: powershell -ExecutionPolicy Bypass -File scripts\stop-dev.ps1'
 if ($webOk) { Start-Process 'http://localhost:3000/library' }

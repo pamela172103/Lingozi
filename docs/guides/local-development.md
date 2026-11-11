@@ -113,7 +113,7 @@ Không cần mở nhiều cửa sổ. Từ thư mục gốc repo:
 powershell -ExecutionPolicy Bypass -File scripts\dev.ps1
 ```
 
-Script này nạp `.env`, bật SQL Server và Mailpit bằng Docker, chạy API và website ở nền, chờ cả hai sẵn sàng rồi mở `http://localhost:3000/library`. Log nằm trong `logs\` (`api.log`, `web.log`, và `*.err.log` cho lỗi).
+Script này nạp `.env`, bật SQL Server và Mailpit nếu chưa chạy (dùng Docker nếu có, hoặc SQL Server và `mailpit.exe` đã cài trên máy), chạy API và website ở nền, chờ cả hai sẵn sàng rồi mở `http://localhost:3000/library`. Log nằm trong `logs\` (`api.log`, `web.log`, và `*.err.log` cho lỗi).
 
 Dừng toàn bộ:
 

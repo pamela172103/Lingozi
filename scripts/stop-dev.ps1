@@ -21,7 +21,11 @@ if (Test-Path '.dev-pids.json') {
   Write-Host 'No running API or web app recorded.'
 }
 
-if (-not $KeepContainers) {
-  docker compose stop sqlserver mailpit | Out-Null
-  Write-Host 'SQL Server and Mailpit stopped (data is kept).'
+if (-not $KeepContainers -and (Test-Path '.dev-containers.json')) {
+  $started = (Get-Content '.dev-containers.json' | ConvertFrom-Json).containers
+  if ($started -and (Get-Command docker -ErrorAction SilentlyContinue)) {
+    docker compose stop @started | Out-Null
+    Write-Host "Containers stopped (data is kept): $($started -join ', ')"
+  }
+  Remove-Item '.dev-containers.json' -ErrorAction SilentlyContinue
 }

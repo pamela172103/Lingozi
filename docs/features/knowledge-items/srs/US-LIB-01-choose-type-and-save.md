@@ -83,7 +83,7 @@ _Skill `user-flow`: màn hình và chuyển đổi, kèm các trạng thái giao
 flowchart TD
     A[Bấm Lưu kiến thức] --> K[/library/items/new: hai thẻ Từ vựng, Ngữ pháp/]
     K --> T{Chọn loại}
-    T -- Từ vựng --> W[Form: Từ* · Nghĩa* · Phiên âm · Loại từ · Ví dụ · Ghi chú]
+    T -- Từ vựng --> W[Form: Từ* · Phiên âm · Nghĩa* · Loại từ · Ví dụ · Ghi chú]
     T -- Ngữ pháp --> G[Form: Tên cấu trúc* · Công thức* · Ý nghĩa · Ví dụ · Ghi chú]
     W --> V{Hợp lệ?}
     G --> V
@@ -263,9 +263,9 @@ _Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe A
 │              │ ┌────────────────────────────┐  ┌────────────────────────────┐ │
 │▸ Thư viện    │ │ Từ *                       │  │ Ví dụ (0/20)               │ │
 │▸ Luyện tập   │ │ [give up__________]        │  │ [ + Thêm ví dụ ]           │ │
-│              │ │ Nghĩa *                    │  │                            │ │
+│              │ │ Phiên âm (tự điền)         │  │                            │ │
 │              │ │ [________________]         │  │ Ghi chú cá nhân            │ │
-│              │ │ Phiên âm (tự điền)         │  │ [________________]         │ │
+│              │ │ Nghĩa *                    │  │ [________________]         │ │
 │⚙ Cài đặt     │ │ [________________]         │  └────────────────────────────┘ │
 │              │ │ Loại từ                    │                                 │
 │              │ │ [Chọn loại từ       ▾]     │                                 │
@@ -338,10 +338,10 @@ _Skill `wireframe-ascii`. Figma: chưa dựng màn hình (`DES-01`); wireframe A
 │              │ ┌────────────────────────────┐  ┌────────────────────────────┐ │
 │              │ │ Từ *                       │  │ Ví dụ (0/20)               │ │
 │              │ │ [give up__________]        │  │ [ + Thêm ví dụ ]           │ │
-│⚙ Cài đặt     │ │ Nghĩa *                    │  │                            │ │
-│              │ │ [từ bỏ____________]        │  │ Ghi chú cá nhân            │ │
-│              │ │ Phiên âm (tự điền)         │  │ [________________]         │ │
-│              │ │ [/ɡɪv ʌp/_________]        │  └────────────────────────────┘ │
+│⚙ Cài đặt     │ │ Phiên âm (tự điền)         │  │                            │ │
+│              │ │ [/ɡɪv ʌp/_________]        │  │ Ghi chú cá nhân            │ │
+│              │ │ Nghĩa *                    │  │ [________________]         │ │
+│              │ │ [từ bỏ____________]        │  └────────────────────────────┘ │
 │              │ │ Loại từ                    │                                 │
 │              │ │ [Động từ          ▾]       │                                 │
 │              │ └────────────────────────────┘                                 │

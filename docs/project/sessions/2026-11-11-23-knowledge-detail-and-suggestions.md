@@ -33,3 +33,7 @@ Chưa có test ứng dụng vì chưa có code FEAT-02. Các chữ "nguồn" cò
 
 - Cột `Source` trong ERD còn tồn tại nhưng không dùng; quyết định bỏ hẳn cột chờ chủ dự án xác nhận.
 - Chưa vẽ riêng màn hình chi tiết của ngữ pháp; hiện mô tả trong ghi chú của W-LIB-14.
+
+## Sửa thứ tự trường trên wireframe (cùng ngày)
+
+W-LIB-08, W-LIB-11 và W-LIB-18 (form sửa): đổi thứ tự thành Từ*, Phiên âm, Nghĩa*, Loại từ, rồi Ví dụ, Ghi chú, đúng theo danh sách của chủ dự án. Sơ đồ luồng US-LIB-01 cập nhật theo. Form ngữ pháp đã đúng: Tên cấu trúc*, Công thức*, Ý nghĩa, Ví dụ, Ghi chú.

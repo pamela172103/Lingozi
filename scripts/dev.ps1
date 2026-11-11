@@ -35,12 +35,14 @@ $hasDocker = [bool](Get-Command docker -ErrorAction SilentlyContinue)
 $startedContainers = @()
 
 if (-not (Test-Port 1433)) {
-  if (-not $hasDocker) {
-    throw 'SQL Server chua chay o localhost:1433. Hoac bat SQL Server da cai tren may, hoac cai Docker Desktop (https://www.docker.com/products/docker-desktop/) roi chay lai.'
+  if ($hasDocker) {
+    docker compose up -d --wait sqlserver 2>$null
+    if ($LASTEXITCODE -eq 0) { $startedContainers += 'sqlserver' }
   }
-  docker compose up -d --wait sqlserver
-  if ($LASTEXITCODE -ne 0) { throw 'Khong bat duoc SQL Server bang Docker. Mo Docker Desktop va doi trang thai "Running".' }
-  $startedContainers += 'sqlserver'
+  if (-not (Test-Port 1433)) {
+    # Not an error by itself: SQL Server may use another port or instance name. The API log shows the real connection error.
+    Write-Host 'Canh bao: khong thay SQL Server o localhost:1433 (co the dung cong hoac ten instance khac). Neu API loi ket noi, xem logs\api.err.log.' -ForegroundColor Yellow
+  }
 }
 
 if (-not (Test-Port 8025)) {

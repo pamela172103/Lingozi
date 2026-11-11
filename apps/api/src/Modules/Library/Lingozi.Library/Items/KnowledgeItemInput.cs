@@ -19,7 +19,9 @@ public sealed record KnowledgeItemInput(
     string? PartOfSpeech,
     string? Ipa,
     string? Note,
-    IReadOnlyList<ExampleInput>? Examples);
+    IReadOnlyList<ExampleInput>? Examples,
+    // Only for PUT: the RowVersion of the item the client last read, base64 (BR-LIB-007).
+    string? Version = null);
 
 /// <param name="Text">English sentence.</param>
 /// <param name="Translation">Optional Vietnamese translation.</param>

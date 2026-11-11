@@ -78,7 +78,9 @@
       "emptyTitle": "Chưa có từ vựng nào",
       "emptyHint": "Từ vựng bạn lưu sẽ xuất hiện ở đây.",
       "emptyAction": "Thêm từ vựng đầu tiên",
-      "savedToast": "Đã lưu"
+      "savedToast": "Đã lưu",
+      "editTitle": "Sửa từ vựng",
+      "savedEditToast": "Đã lưu thay đổi"
     },
     "grammar": {
       "title": "Ngữ pháp",
@@ -90,7 +92,9 @@
       "emptyTitle": "Chưa có ngữ pháp nào",
       "emptyHint": "Cấu trúc ngữ pháp bạn lưu sẽ xuất hiện ở đây.",
       "emptyAction": "Thêm ngữ pháp đầu tiên",
-      "savedToast": "Đã lưu"
+      "savedToast": "Đã lưu",
+      "editTitle": "Sửa ngữ pháp",
+      "savedEditToast": "Đã lưu thay đổi"
     },
     "list": {
       "loadError": "Không tải được thư viện.",
@@ -148,7 +152,14 @@
         "invalidIpa": "Phiên âm chỉ được chứa ký tự IPA.",
         "tooMany": "Tối đa 20 ví dụ.",
         "invalid": "Giá trị không hợp lệ."
-      }
+      },
+      "saveChanges": "Lưu thay đổi",
+      "conflict": "Mục này vừa được sửa ở nơi khác.",
+      "reload": "Tải bản mới nhất",
+      "keptTitle": "Bạn đang sửa (giữ lại)",
+      "draftTitle": "Nội dung bạn vừa nhập (chỉ đọc)",
+      "close": "Đóng",
+      "leaveConfirm": "Bạn có thay đổi chưa lưu. Rời trang này?"
     },
     "detail": {
       "back": "Quay lại {library}",
@@ -163,7 +174,8 @@
       "notFoundTitle": "Không tìm thấy mục này.",
       "notFoundBack": "Về thư viện",
       "loadError": "Không tải được mục này.",
-      "retry": "Thử lại"
+      "retry": "Thử lại",
+      "edit": "Sửa"
     },
     "similar": {
       "title": "Bạn đã lưu nội dung tương tự",

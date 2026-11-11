@@ -1,13 +1,15 @@
-import { ensureXsrfToken, post, problemCode } from "@/lib/auth/api";
+import { ensureXsrfToken, problemCode } from "@/lib/auth/api";
 
 import { fromApiErrors, type FieldErrors } from "./form";
 import type { ApiKind } from "./kinds";
 import type { ItemDetail, ItemSummary } from "./types";
 
-export type CreateItemResult =
+export type WriteItemResult =
   | { kind: "saved"; item: ItemDetail }
   | { kind: "invalid"; errors: FieldErrors }
   | { kind: "limit" }
+  | { kind: "conflict"; current: ItemDetail }
+  | { kind: "not-found" }
   | { kind: "unauthorized" }
   | { kind: "session-error" }
   | { kind: "network-error" };
@@ -31,24 +33,31 @@ async function fieldErrors(response: Response): Promise<FieldErrors> {
 }
 
 /**
- * US-LIB-01: saves one item. The same `clientRequestId` is sent on every retry, so a lost response or a second click never
- * creates a duplicate (BR-LIB-008). The antiforgery token is refreshed once on ERR-AUTH-400-05: a token fetched before
+ * Sends a create (POST) or an edit (PUT). The antiforgery token is refreshed once on ERR-AUTH-400-05: a token fetched before
  * signing in is not valid for the signed-in user.
  */
-export async function createItem(
-  body: { clientRequestId: string } & Record<string, unknown>,
-): Promise<CreateItemResult> {
+async function writeItem(method: "POST" | "PUT", path: string, body: unknown): Promise<WriteItemResult> {
   try {
     for (const forceRefresh of [false, true]) {
       const token = await ensureXsrfToken(forceRefresh);
       if (!token) return { kind: "session-error" };
 
-      const response = await post("/api/library/items", body, token);
+      const response = await fetch(path, {
+        method,
+        credentials: "same-origin",
+        headers: { "Content-Type": "application/json", "X-XSRF-TOKEN": token },
+        body: JSON.stringify(body),
+      });
       if (response.status === 201 || response.status === 200) {
         return { kind: "saved", item: (await response.json()) as ItemDetail };
       }
       if (response.status === 401) return { kind: "unauthorized" };
+      if (response.status === 404) return { kind: "not-found" };
       if (response.status === 422) return { kind: "limit" };
+      if (response.status === 409) {
+        const data = (await response.json()) as { current?: ItemDetail };
+        return data.current ? { kind: "conflict", current: data.current } : { kind: "network-error" };
+      }
       const code = await problemCode(response.clone());
       if (response.status === 400 && code === "ERR-AUTH-400-05") {
         if (forceRefresh) return { kind: "session-error" };
@@ -61,6 +70,16 @@ export async function createItem(
   } catch {
     return { kind: "network-error" };
   }
+}
+
+/** US-LIB-01: saves one item. The same `clientRequestId` is sent on every retry, so a lost response or a second click never creates a duplicate (BR-LIB-008). */
+export function createItem(body: { clientRequestId: string } & Record<string, unknown>): Promise<WriteItemResult> {
+  return writeItem("POST", "/api/library/items", body);
+}
+
+/** US-LIB-05: saves an edit. `version` must be the one the form was loaded with; otherwise the answer is a conflict (BR-LIB-007). */
+export function updateItem(id: string, body: Record<string, unknown>): Promise<WriteItemResult> {
+  return writeItem("PUT", `/api/library/items/${encodeURIComponent(id)}`, body);
 }
 
 export type SimilarLookupResult = { kind: "found"; items: ItemSummary[]; totalCount: number } | { kind: "unavailable" };

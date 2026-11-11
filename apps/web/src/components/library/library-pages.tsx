@@ -114,7 +114,15 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 }
 
 /** Detail of one item, with the "Đã lưu" toast right after saving (W-LIB-16, W-LIB-17, W-LIB-18). Edit and delete arrive with US-LIB-05 and US-LIB-06. */
-export async function DetailPage({ kind, id, saved }: { kind: LibraryKind; id: string; saved: boolean }) {
+export async function DetailPage({
+  kind,
+  id,
+  saved,
+}: {
+  kind: LibraryKind;
+  id: string;
+  saved: "create" | "edit" | null;
+}) {
   const t = await getTranslations("Library.detail");
   const nav = await getTranslations("Library.nav");
   const format = await getFormatter();
@@ -159,9 +167,19 @@ export async function DetailPage({ kind, id, saved }: { kind: LibraryKind; id: s
 
   return (
     <LibraryShell active={kind}>
-      {saved && <SavedToast kind={kind} />}
-      {back}
-      <h1 className="mt-1 text-[30px] leading-tight font-bold break-words text-primary">{item.term}</h1>
+      {saved && <SavedToast kind={kind} edited={saved === "edit"} />}
+      <div className="flex items-start justify-between gap-4">
+        <div className="min-w-0">
+          {back}
+          <h1 className="mt-1 text-[30px] leading-tight font-bold break-words text-primary">{item.term}</h1>
+        </div>
+        <Link
+          href={libraryPath(kind, item.id, "edit")}
+          className="mt-6 inline-flex h-11 shrink-0 items-center rounded-control border border-border-strong bg-surface px-4 text-sm font-medium text-primary hover:bg-subtle"
+        >
+          {t("edit")}
+        </Link>
+      </div>
       {!grammar && meta.length > 0 && <p className="mt-1 text-sm text-secondary">{meta.join(" · ")}</p>}
       <div className="mt-6 space-y-6 rounded-card bg-surface p-6 shadow-card sm:p-8">
         {grammar && item.formula && (
@@ -197,6 +215,51 @@ export async function DetailPage({ kind, id, saved }: { kind: LibraryKind; id: s
           {t("timestamps", { created: stamp(item.createdAt), updated: stamp(item.updatedAt) })}
         </p>
       </div>
+    </LibraryShell>
+  );
+}
+
+/**
+ * Edit screen of one item (W-LIB-21, W-LIB-22). Loads the item with its version; a missing item or one from the other library
+ * shows the same "not found" screen as the detail page (ERR-LIB-404-01, BR-LIB-017).
+ */
+export async function EditItemPage({ kind, id }: { kind: LibraryKind; id: string }) {
+  const t = await getTranslations(`Library.${kind}`);
+  const detail = await getTranslations("Library.detail");
+  const nav = await getTranslations("Library.nav");
+  const result = await apiGet<ItemDetail>(`/api/library/items/${encodeURIComponent(id)}`);
+  if (result.status === "unauthorized") redirect("/auth/login");
+
+  const item = result.status === "ok" && libraryKindFromApi(result.data.kind) === kind ? result.data : null;
+  const back = (
+    <Link href={libraryPath(kind)} className="text-sm text-accent-text hover:underline">
+      <span aria-hidden="true">‹ </span>
+      {nav(kind)}
+    </Link>
+  );
+
+  if (!item) {
+    return (
+      <LibraryShell active={kind}>
+        {back}
+        <div className="mt-4 rounded-card bg-surface p-10 text-center shadow-card">
+          <h1 className="text-lg font-semibold text-primary">{detail("notFoundTitle")}</h1>
+          <Link href={libraryPath(kind)} className={`${primaryLink} mt-6`}>
+            {detail("notFoundBack")}
+          </Link>
+        </div>
+      </LibraryShell>
+    );
+  }
+
+  return (
+    <LibraryShell active={kind}>
+      <Link href={libraryPath(kind, item.id)} className="text-sm text-accent-text hover:underline">
+        <span aria-hidden="true">‹ </span>
+        {item.term}
+      </Link>
+      <h1 className="mt-1 mb-6 text-[30px] leading-tight font-bold text-primary">{t("editTitle")}</h1>
+      <ItemForm kind={kind} item={item} />
     </LibraryShell>
   );
 }

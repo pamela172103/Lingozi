@@ -71,6 +71,26 @@ public enum CreateItemOutcome
 /// <param name="Outcome">What happened.</param>
 /// <param name="Item">The item for <see cref="CreateItemOutcome.Created"/> and <see cref="CreateItemOutcome.Existing"/>.</param>
 /// <param name="Errors">Field name → reason code for <see cref="CreateItemOutcome.Invalid"/>.</param>
+public enum UpdateItemOutcome
+{
+    /// <summary>200: saved; <see cref="UpdateItemResult.Item"/> is the new state with the new version.</summary>
+    Updated,
+
+    /// <summary>409 ERR-LIB-409-01: the version sent is not the current one (BR-LIB-007). <see cref="UpdateItemResult.Item"/> is the current state.</summary>
+    Conflict,
+
+    /// <summary>404 ERR-LIB-404-01: missing, someone else's, or malformed id (BR-LIB-006).</summary>
+    NotFound,
+
+    /// <summary>400 ERR-LIB-400-01 (or 400-02): <see cref="UpdateItemResult.Errors"/> says which field.</summary>
+    Invalid,
+}
+
+/// <param name="Outcome">What happened.</param>
+/// <param name="Item">The item after the save (Updated) or the current item (Conflict).</param>
+/// <param name="Errors">Field name → reason code for Invalid.</param>
+public sealed record UpdateItemResult(UpdateItemOutcome Outcome, ItemDetail? Item = null, IReadOnlyDictionary<string, string>? Errors = null);
+
 public sealed record CreateItemResult(CreateItemOutcome Outcome, ItemDetail? Item = null, IReadOnlyDictionary<string, string>? Errors = null);
 
 /// <summary>Items of the same kind with the same normalized term (BR-LIB-003). At most 5 newest, plus the full count.</summary>

@@ -27,6 +27,16 @@ internal static class LibraryEndpoints
             .ProducesProblem(StatusCodes.Status400BadRequest)
             .ProducesProblem(StatusCodes.Status401Unauthorized);
 
+        group.MapPut("/items/{id}", UpdateAsync)
+            .AddEndpointFilter<ValidateAntiforgeryFilter>()
+            .WithName("UpdateKnowledgeItem")
+            .WithSummary("Sửa mục và ví dụ; version phải là bản hiện tại (FR-LIB-ITEM-005)")
+            .Produces<ItemDetail>(StatusCodes.Status200OK)
+            .ProducesProblem(StatusCodes.Status400BadRequest)
+            .ProducesProblem(StatusCodes.Status401Unauthorized)
+            .ProducesProblem(StatusCodes.Status404NotFound)
+            .ProducesProblem(StatusCodes.Status409Conflict);
+
         group.MapGet("/items/similar", SimilarAsync)
             .WithName("FindSimilarKnowledgeItems")
             .WithSummary("Mục cùng loại có cùng nội dung chuẩn hóa của chính người dùng; chỉ gợi ý (FR-LIB-ITEM-002)")
@@ -80,6 +90,24 @@ internal static class LibraryEndpoints
         }
 
         return TypedResults.Ok(await service.ListAsync(CurrentUserId(context), parsedKind, normalizedPage, normalizedPageSize, cancellationToken));
+    }
+
+    internal static async Task<IResult> UpdateAsync(
+        string id, KnowledgeItemInput? body, KnowledgeItemService service, HttpContext context, CancellationToken cancellationToken)
+    {
+        if (!Guid.TryParse(id, out var itemId))
+        {
+            return LibraryProblems.NotFound();
+        }
+
+        var result = await service.UpdateAsync(CurrentUserId(context), itemId, body, cancellationToken);
+        return result.Outcome switch
+        {
+            UpdateItemOutcome.Updated => TypedResults.Ok(result.Item),
+            UpdateItemOutcome.Conflict => LibraryProblems.Conflict(result.Item!),
+            UpdateItemOutcome.NotFound => LibraryProblems.NotFound(),
+            _ => LibraryProblems.Invalid(result.Errors!),
+        };
     }
 
     internal static async Task<IResult> SimilarAsync(
@@ -137,6 +165,10 @@ internal static class LibraryProblems
             onlyIpaCharacters ? "ERR-LIB-400-02" : "ERR-LIB-400-01",
             new Dictionary<string, object?> { ["errors"] = errors });
     }
+
+    /// <summary>ERR-LIB-409-01 with the current state, so the form can show the latest version (BR-LIB-007).</summary>
+    public static IResult Conflict(ItemDetail current) =>
+        Create(StatusCodes.Status409Conflict, "Conflict", "ERR-LIB-409-01", new Dictionary<string, object?> { ["current"] = current });
 
     public static IResult NotFound() => Create(StatusCodes.Status404NotFound, "Not Found", "ERR-LIB-404-01");
 

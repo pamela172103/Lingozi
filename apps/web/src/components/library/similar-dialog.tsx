@@ -16,12 +16,15 @@ export function SimilarDialog({
   items,
   totalCount,
   onKeepNew,
+  onOpen,
   onCancel,
 }: {
   kind: LibraryKind;
   items: ItemSummary[];
   totalCount: number;
   onKeepNew: () => void;
+  /** Called before navigating to an old item, so the typed text can be handed over (US-LIB-02 AC-02). */
+  onOpen: (id: string) => void;
   onCancel: () => void;
 }) {
   const t = useTranslations("Library.similar");
@@ -72,6 +75,7 @@ export function SimilarDialog({
               </div>
               <Link
                 href={libraryPath(kind, item.id)}
+                onClick={() => onOpen(item.id)}
                 className="shrink-0 text-sm font-medium text-accent-text underline"
               >
                 {t("open")}
@@ -100,7 +104,8 @@ export function SimilarDialog({
           {first && (
             <Link
               ref={primary}
-              href={libraryPath(kind, first.id)}
+              href={libraryPath(kind, first.id, "edit")}
+              onClick={() => onOpen(first.id)}
               className={`${button} bg-accent text-on-accent hover:brightness-95`}
             >
               {t("openExisting")}

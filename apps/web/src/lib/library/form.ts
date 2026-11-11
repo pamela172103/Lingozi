@@ -1,3 +1,4 @@
+import type { ItemDetail } from "./types";
 import { API_KIND, LIMITS, type LibraryKind } from "./kinds";
 
 export interface ExampleValues {
@@ -72,10 +73,9 @@ export function validate(kind: LibraryKind, values: FormValues): FieldErrors {
   return errors;
 }
 
-/** Body of `POST /api/library/items`. Empty example rows are dropped; the API trims and turns empty optionals into null. */
-export function toRequest(kind: LibraryKind, values: FormValues, clientRequestId: string) {
+/** Fields of an item body (create and edit). Empty example rows are dropped; the API trims and turns empty optionals into null. */
+export function toBody(kind: LibraryKind, values: FormValues) {
   const base = {
-    clientRequestId,
     kind: API_KIND[kind],
     term: values.term,
     meaning: values.meaning,
@@ -87,6 +87,33 @@ export function toRequest(kind: LibraryKind, values: FormValues, clientRequestId
   return kind === "vocabulary"
     ? { ...base, ipa: values.ipa, partOfSpeech: values.partOfSpeech }
     : { ...base, formula: values.formula };
+}
+
+/** Body of `POST /api/library/items`: the fields plus the request id that makes retries idempotent (BR-LIB-008). */
+export function toRequest(kind: LibraryKind, values: FormValues, clientRequestId: string) {
+  return { clientRequestId, ...toBody(kind, values) };
+}
+
+/** Body of `PUT /api/library/items/{id}`: the fields plus the version the form was loaded with (BR-LIB-007). */
+export function toUpdateRequest(kind: LibraryKind, values: FormValues, version: string) {
+  return { ...toBody(kind, values), version };
+}
+
+/** The form values of a saved item, so an edit starts from what is stored. */
+export function valuesFromItem(item: ItemDetail): FormValues {
+  return {
+    term: item.term,
+    ipa: item.ipa ?? "",
+    meaning: item.meaning ?? "",
+    formula: item.formula ?? "",
+    partOfSpeech: item.partOfSpeech ?? "",
+    note: item.note ?? "",
+    examples: item.examples.map((example, index) => ({
+      key: `saved-${index}`,
+      text: example.text,
+      translation: example.translation ?? "",
+    })),
+  };
 }
 
 /** Maps the API's reason codes (ItemValidator) to the form's. */

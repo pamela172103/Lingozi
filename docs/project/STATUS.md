@@ -2,7 +2,7 @@
 
 - Cập nhật: 2026-11-11.
 - Giai đoạn: **Vòng 1 — Lưu được kiến thức của riêng mình** (2026-11-08 → 2026-11-21), đang ở bước ② Thiết kế. Vòng 0 xong phần việc. Xem [lộ trình](../product/roadmap.md) §5.
-- Phiên gần nhất: [Code US-LIB-03 (danh sách thư viện)](sessions/2026-11-11-27-code-us-lib-03.md).
+- Phiên gần nhất: [Code US-LIB-05 (sửa mục) và hoàn tất AC-02 của US-LIB-02](sessions/2026-11-11-28-code-us-lib-05.md).
 - Đã đọc và gộp 4 commit từ `origin/work` vào `main` theo fast-forward, tới `61514e0`. Bàn giao phiên 05 được lưu cùng commit tài liệu tiếp theo; tra bằng `git log -- docs/project/`.
 
 ## Đã hoàn thành
@@ -27,6 +27,8 @@
 - Phiên 26 (2026-11-11): code US-LIB-02 (`GET /api/library/items/similar`, hộp thoại khi lưu); AC-02 còn thiếu màn hình sửa (US-LIB-05). 106 integration test, 44 E2E đạt.
 
 - Phiên 27 (2026-11-11): code US-LIB-03 (phân trang, trang ngoài phạm vi, trạng thái tải, lỗi); 104 Vitest, 50 E2E đạt.
+
+- Phiên 28 (2026-11-11): code US-LIB-05 (PUT có kiểm tra version, form sửa, xung đột, trang sửa); US-LIB-02 AC-02 hoàn tất. 116 integration test, 56 E2E đạt. AC-03 còn một phần, US-LIB-06 chưa làm.
 
 ## Hiện trạng các phần
 

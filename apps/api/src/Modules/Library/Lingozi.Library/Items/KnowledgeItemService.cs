@@ -16,6 +16,11 @@ public sealed class KnowledgeItemService(LibraryDbContext db, TimeProvider clock
     public async Task<CreateItemResult> CreateAsync(Guid userId, KnowledgeItemInput? input, CancellationToken cancellationToken)
     {
         var (valid, errors) = ItemValidator.Validate(input);
+        if (valid is not null && valid.ClientRequestId is null)
+        {
+            errors["clientRequestId"] = "required";
+            valid = null;
+        }
         if (valid is null)
         {
             return new CreateItemResult(CreateItemOutcome.Invalid, Errors: errors);
@@ -123,6 +128,113 @@ public sealed class KnowledgeItemService(LibraryDbContext db, TimeProvider clock
         return new SimilarItemsResponse(
             [.. rows.Select(r => new ItemSummary(r.Id, ItemRules.KindName(r.Kind), r.Term, r.Meaning, r.Formula, r.PartOfSpeech, r.Ipa, DateTime.SpecifyKind(r.CreatedAt, DateTimeKind.Utc)))],
             total);
+    }
+
+    /// <summary>
+    /// FR-LIB-ITEM-005 (US-LIB-05): replaces the item's fields and examples if <paramref name="input"/>.Version is still current
+    /// (BR-LIB-007). The kind cannot change (BR-LIB-002). The update and the example replacement run in one transaction under the user lock.
+    /// </summary>
+    public async Task<UpdateItemResult> UpdateAsync(Guid userId, Guid id, KnowledgeItemInput? input, CancellationToken cancellationToken)
+    {
+        var errors = new Dictionary<string, string>();
+        byte[]? version = null;
+        if (string.IsNullOrWhiteSpace(input?.Version))
+        {
+            errors["version"] = "required";
+        }
+        else
+        {
+            try
+            {
+                version = Convert.FromBase64String(input.Version);
+            }
+            catch (FormatException)
+            {
+                errors["version"] = "invalid";
+            }
+        }
+
+        var (valid, validationErrors) = ItemValidator.Validate(input, requireClientRequestId: false);
+        foreach (var error in validationErrors)
+        {
+            errors[error.Key] = error.Value;
+        }
+
+        if (errors.Count > 0 || valid is null || version is null)
+        {
+            return new UpdateItemResult(UpdateItemOutcome.Invalid, Errors: errors);
+        }
+
+        var strategy = db.Database.CreateExecutionStrategy();
+        return await strategy.ExecuteAsync(async ct =>
+        {
+            db.ChangeTracker.Clear();
+            await using var transaction = await db.Database.BeginTransactionAsync(ct);
+            await UserLock.AcquireAsync(db, userId, ct);
+
+            var existing = await db.Items.AsNoTracking().FirstOrDefaultAsync(i => i.Id == id && i.UserId == userId, ct);
+            if (existing is null)
+            {
+                await transaction.CommitAsync(ct);
+                return new UpdateItemResult(UpdateItemOutcome.NotFound);
+            }
+
+            if (valid.Kind != existing.Kind)
+            {
+                await transaction.CommitAsync(ct);
+                return new UpdateItemResult(UpdateItemOutcome.Invalid, Errors: new Dictionary<string, string> { ["kind"] = "not-allowed" });
+            }
+
+            var now = clock.GetUtcNow().UtcDateTime;
+            var normalized = ItemRules.Normalize(valid.Term);
+            var searchText = ItemRules.ToSearchText(
+                [valid.Term, valid.Formula, valid.Meaning, valid.PartOfSpeech, valid.Note, .. valid.Examples.SelectMany(e => new[] { e.Text, e.Translation })]);
+
+            // The compare-and-set: the row only changes if the version the client read is still the current one.
+            var updated = await db.Items
+                .Where(i => i.Id == id && i.UserId == userId && i.RowVersion == version)
+                .ExecuteUpdateAsync(s => s
+                    .SetProperty(i => i.Term, valid.Term)
+                    .SetProperty(i => i.NormalizedTerm, normalized)
+                    .SetProperty(i => i.Meaning, valid.Meaning)
+                    .SetProperty(i => i.Formula, valid.Formula)
+                    .SetProperty(i => i.PartOfSpeech, valid.PartOfSpeech)
+                    .SetProperty(i => i.Ipa, valid.Ipa)
+                    // No dictionary lookup exists yet (US-LIB-08), so a stored IPA was always typed by the user.
+                    .SetProperty(i => i.IpaSource, valid.Ipa is null ? null : IpaSource.User)
+                    .SetProperty(i => i.Note, valid.Note)
+                    .SetProperty(i => i.SearchText, searchText)
+                    .SetProperty(i => i.UpdatedAt, now), ct);
+
+            if (updated == 0)
+            {
+                // Someone saved in between: report the current state and write nothing (ERR-LIB-409-01).
+                var current = await GetAsync(userId, id, ct);
+                await transaction.CommitAsync(ct);
+                return current is null
+                    ? new UpdateItemResult(UpdateItemOutcome.NotFound)
+                    : new UpdateItemResult(UpdateItemOutcome.Conflict, current);
+            }
+
+            await db.Examples.Where(e => e.ItemId == id && e.UserId == userId).ExecuteDeleteAsync(ct);
+            for (var i = 0; i < valid.Examples.Count; i++)
+            {
+                db.Examples.Add(new ItemExample
+                {
+                    Id = Guid.CreateVersion7(),
+                    ItemId = id,
+                    UserId = userId,
+                    Text = valid.Examples[i].Text!,
+                    Translation = valid.Examples[i].Translation,
+                    SortOrder = (short)i,
+                });
+            }
+
+            await db.SaveChangesAsync(ct);
+            var saved = await GetAsync(userId, id, ct);
+            await transaction.CommitAsync(ct);
+            return new UpdateItemResult(UpdateItemOutcome.Updated, saved);
+        }, cancellationToken);
     }
 
     /// <summary>BR-LIB-011: <c>page</c> ≥ 1 (default 1), <c>pageSize</c> 1–50 (default 20; larger is capped at 50).</summary>

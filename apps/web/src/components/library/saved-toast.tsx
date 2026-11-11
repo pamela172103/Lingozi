@@ -3,8 +3,11 @@
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 
-/** "Đã lưu" right after saving (W-LIB-16). Announced politely, hides after 5 s, and the `?saved=1` flag is removed so a refresh does not show it again. */
-export function SavedToast({ kind }: { kind: "vocabulary" | "grammar" }) {
+/**
+ * "Đã lưu" after a create, or "Đã lưu thay đổi" after an edit (W-LIB-16, W-LIB-21). Announced politely, hides after 5 s,
+ * and the `saved` flag is removed from the URL so a refresh does not show it again.
+ */
+export function SavedToast({ kind, edited = false }: { kind: "vocabulary" | "grammar"; edited?: boolean }) {
   const t = useTranslations(`Library.${kind}`);
   const [visible, setVisible] = useState(true);
 
@@ -21,7 +24,7 @@ export function SavedToast({ kind }: { kind: "vocabulary" | "grammar" }) {
       {visible && (
         <p className="rounded-card bg-primary px-4 py-3 text-sm font-medium text-surface shadow-overlay">
           <span aria-hidden="true">✓ </span>
-          {t("savedToast")}
+          {edited ? t("savedEditToast") : t("savedToast")}
         </p>
       )}
     </div>

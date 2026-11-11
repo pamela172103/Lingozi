@@ -2,7 +2,7 @@
 
 - Cập nhật: 2026-11-11.
 - Giai đoạn: **Vòng 1 — Lưu được kiến thức của riêng mình** (2026-11-08 → 2026-11-21), đang ở bước ② Thiết kế. Vòng 0 xong phần việc. Xem [lộ trình](../product/roadmap.md) §5.
-- Phiên gần nhất: [Tách thư viện Từ vựng và Ngữ pháp, vẽ lại wireframe bằng SVG](sessions/2026-11-11-24-separate-libraries-and-svg-wireframes.md).
+- Phiên gần nhất: [Code US-LIB-01 (lưu từ vựng và ngữ pháp)](sessions/2026-11-11-25-code-us-lib-01.md).
 - Đã đọc và gộp 4 commit từ `origin/work` vào `main` theo fast-forward, tới `61514e0`. Bàn giao phiên 05 được lưu cùng commit tài liệu tiếp theo; tra bằng `git log -- docs/project/`.
 
 ## Đã hoàn thành
@@ -22,15 +22,17 @@
 
 - Phiên 24 (2026-11-11): FEAT-02 tách thành hai thư viện Từ vựng và Ngữ pháp (thiết kế v0.5, chờ duyệt); toàn bộ wireframe FEAT-01 và FEAT-02 đổi từ ASCII sang SVG sinh bằng `tools/wireframes/` (50 màn hình), CI thêm job `feature-docs`.
 
+- Phiên 25 (2026-11-11): code US-LIB-01 — module `Library` (migration, POST/GET API), web `/library/vocabulary` và `/library/grammar` (form, chi tiết và danh sách tối thiểu), 97 integration test, 93 Vitest, 42 E2E; đổi ERD sang `NormalizedTermHash` (chờ xác nhận).
+
 ## Hiện trạng các phần
 
 | Phần | Trạng thái thực tế |
 | --- | --- |
 | Tài liệu sản phẩm | Có tổng quan đã duyệt (`docs/product/overview.md`); có brainstorm/discovery tái lập; PRD và MVP ở trạng thái Draft chờ duyệt; discovery chưa có bằng chứng người dùng |
 | Nội dung học | Có cấu trúc; chưa có giáo trình, bài học hoặc bài tập |
-| Website | Khung Next.js 16.4.5, TS 6.0.3 strict, Tailwind 4, next-intl; trang "Trạng thái hệ thống"; `/auth/login` và `/auth/code` (US-AUTH-01, theo ảnh Figma), gọi API thật. Chưa nhập và xác nhận được mã (US-AUTH-02) |
-| Backend/database | ASP.NET Core Minimal APIs .NET 10.0.14, EF Core 10.0.14, SQL Server 2025; module Accounts với migration `InitialDataProtectionKeys` và `AddEmailCodeSignIn`; endpoint health, `/api/system/status`, `/api/auth/antiforgery`, `/api/auth/email-code/request`; outbox gửi thư (SMTP, Mailpit ở local). Mới có US-AUTH-01 |
-| Kiểm thử ứng dụng | xUnit v3 + Testcontainers (3 test), Vitest (6 test), Playwright + axe (8 test, desktop và mobile); CI GitHub Actions `.github/workflows/ci.yml` |
+| Website | Khung Next.js 16.4.5, TS 6.0.3 strict, Tailwind 4, next-intl; trang "Trạng thái hệ thống"; `/auth/login` và `/auth/code` (US-AUTH-01, theo ảnh Figma), gọi API thật. Chưa nhập và xác nhận được mã (US-AUTH-02); từ phiên 25: `/library/vocabulary` và `/library/grammar` (danh sách tối thiểu, form thêm, chi tiết) gọi API thật |
+| Backend/database | ASP.NET Core Minimal APIs .NET 10.0.14, EF Core 10.0.14, SQL Server 2025; module Accounts với migration `InitialDataProtectionKeys` và `AddEmailCodeSignIn`; endpoint health, `/api/system/status`, `/api/auth/antiforgery`, `/api/auth/email-code/request`; outbox gửi thư (SMTP, Mailpit ở local). Mới có US-AUTH-01; từ phiên 25: module Library (schema `library`, migration `InitialLibrary`), endpoint `POST/GET /api/library/items`, `GET /api/library/items/{id}` |
+| Kiểm thử ứng dụng | xUnit v3 + Testcontainers (97 test, phiên 25), Vitest (93 test; `code-entry.test.tsx` có 1 test không ổn định từ trước), Playwright + axe (42 test, desktop và mobile); CI GitHub Actions `.github/workflows/ci.yml` (chưa chạy với phiên 25) |
 | OpenBA | Đã nhập và kiểm tra tính toàn vẹn, đường dẫn; chưa xác minh toàn bộ khả năng thực thi của 56 skill |
 | Đồng bộ GitHub | Đã gộp `origin/work` (`61514e0`) vào `main` cục bộ; phiên 05 sẽ push cùng bàn giao và đối chiếu GitHub sau push |
 

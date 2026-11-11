@@ -8,21 +8,21 @@ export type RequestCodeResult =
   | { kind: "network-error" };
 
 const XSRF_COOKIE = "XSRF-TOKEN";
-const DEFAULT_RETRY_AFTER_SECONDS = 60;
+export const DEFAULT_RETRY_AFTER_SECONDS = 60;
 
 function readXsrfToken(): string | null {
   const entry = document.cookie.split("; ").find((c) => c.startsWith(`${XSRF_COOKIE}=`));
   return entry ? decodeURIComponent(entry.slice(XSRF_COOKIE.length + 1)) : null;
 }
 
-async function ensureXsrfToken(forceRefresh: boolean): Promise<string | null> {
+export async function ensureXsrfToken(forceRefresh: boolean): Promise<string | null> {
   const existing = forceRefresh ? null : readXsrfToken();
   if (existing) return existing;
   await fetch("/api/auth/antiforgery", { credentials: "same-origin", cache: "no-store" });
   return readXsrfToken();
 }
 
-async function problemCode(response: Response): Promise<string | null> {
+export async function problemCode(response: Response): Promise<string | null> {
   try {
     const body: unknown = await response.json();
     if (typeof body === "object" && body !== null && "code" in body && typeof body.code === "string") return body.code;
@@ -32,7 +32,7 @@ async function problemCode(response: Response): Promise<string | null> {
   return null;
 }
 
-async function post(path: string, body: unknown, token: string): Promise<Response> {
+export async function post(path: string, body: unknown, token: string): Promise<Response> {
   return fetch(path, {
     method: "POST",
     credentials: "same-origin",

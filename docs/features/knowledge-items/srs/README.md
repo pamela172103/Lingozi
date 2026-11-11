@@ -81,7 +81,7 @@ Mô tả Input, Xử lý, Output của từng FR nằm trong file SRS của stor
 | `BR-LIB-010` | Thời gian | Tạo hoặc sửa | `CreatedAt` và `UpdatedAt` lưu UTC; hiển thị theo múi giờ `Asia/Ho_Chi_Minh` (MVP) | — |
 | `BR-LIB-011` | Phân trang | Liệt kê | `kind` (`word` hoặc `grammar`) bắt buộc: mỗi thư viện chỉ liệt kê mục cùng loại. `page` ≥ 1 (mặc định 1), `pageSize` 1–50 (mặc định 20; lớn hơn thì giới hạn về 50). Sắp theo `CreatedAt` giảm dần, rồi `Id` giảm dần để thứ tự ổn định | — |
 | `BR-LIB-012` | Trường bắt buộc theo loại | Tạo hoặc sửa | `word` (Từ vựng): bắt buộc "Từ" (`term`) và "Nghĩa" (`meaning`). `grammar` (Ngữ pháp): bắt buộc "Tên cấu trúc" (`term`) và "Công thức" (`formula`). Ý nghĩa (ngữ pháp), ví dụ, ghi chú, phiên âm và loại từ không bắt buộc. Form không có trường nguồn | — |
-| `BR-LIB-013` | Phiên âm IPA | Tạo hoặc sửa | **Nguồn và giọng:** chỉ tự điền phiên âm có nhãn Anh-Anh, tức là mục phonetics có `audio` kết thúc bằng `-uk.mp3`; không có thì để trống. Không dùng phiên âm không nhãn hoặc nhãn Anh-Mỹ. Khi hiển thị, ghi "Nguồn: Wiktionary, CC BY-SA 3.0" (ghi nguồn bắt buộc theo giấy phép). Chỉ có với `word`; với `grammar` `ipa` phải null. Sau khi trim, 1–200 ký tự; chỉ chứa ký tự IPA (nhóm Unicode IPA Extensions và Spacing Modifier Letters), `/ [ ] ˈ ˌ ː . ‿` và dấu cách; không chứa `<`, `>`, `&` hay ký tự điều khiển. `IpaSource` = 1 (từ điển) khi giá trị khớp đúng gợi ý nhận được lúc lưu, ngược lại = 2 (người dùng); null khi `ipa` null | Khi nguồn không có phiên âm, người dùng tự nhập thì `IpaSource` = 2 |
+| `BR-LIB-013` | Phiên âm IPA | Tạo hoặc sửa | **Nguồn và giọng:** chỉ tự điền phiên âm có nhãn Anh-Anh, tức là mục phonetics có `audio` kết thúc bằng `-uk.mp3`; không có thì để trống. Không dùng phiên âm không nhãn hoặc nhãn Anh-Mỹ. Khi hiển thị, ghi "Nguồn: Wiktionary, CC BY-SA 3.0" (ghi nguồn bắt buộc theo giấy phép). Chỉ có với `word`; với `grammar` `ipa` phải null. Sau khi trim, 1–200 ký tự; chỉ chứa ký tự IPA (chữ cái ASCII a–z, nhóm Unicode IPA Extensions và Spacing Modifier Letters, dấu kết hợp, và các chữ Latin/Hy Lạp mà IPA mượn: æ ð ŋ œ θ β χ), `/ [ ] ( ) . ‿` và dấu cách; không chứa `<`, `>`, `&` hay ký tự điều khiển. `IpaSource` = 1 (từ điển) khi giá trị khớp đúng gợi ý nhận được lúc lưu, ngược lại = 2 (người dùng); null khi `ipa` null | Khi nguồn không có phiên âm, người dùng tự nhập thì `IpaSource` = 2 |
 | `BR-LIB-014` | Gợi ý nghĩa và phiên âm | Gọi gợi ý | Gợi ý chỉ lấy từ (a) mục của **chính người dùng** có cùng `NormalizedTerm`, và (b) nguồn từ điển được cấu hình (ADR 0007). Không bao giờ lấy dữ liệu của người dùng khác. Gợi ý chỉ điền vào form khi người dùng bấm; API không tự ghi gợi ý vào mục | — |
 | `BR-LIB-015` | Lỗi nguồn từ điển | Gọi nguồn | Timeout 3 giây. Lỗi hoặc timeout của nguồn **không phải lỗi nghiệp vụ**: API trả 200 với danh sách gợi ý rỗng kèm `sourceAvailable = false`, UI hiện dòng "Không lấy được phiên âm tự động" và cho phép nhập tay. Log ghi tên nguồn và loại lỗi, không ghi từ tra cứu gắn với người dùng | — |
 | `BR-LIB-016` | Loại từ | Tạo hoặc sửa | `partOfSpeech` chỉ dùng cho `word`, không bắt buộc. Giá trị thuộc danh sách: Danh từ, Động từ, Tính từ, Trạng từ, Giới từ, Liên từ, Thán từ, Cụm từ, Khác. Giá trị khác bị từ chối với ERR-LIB-400-01 ở trường `partOfSpeech`. Với `grammar` luôn là null | — |
@@ -92,8 +92,8 @@ Mô tả Input, Xử lý, Output của từng FR nằm trong file SRS của stor
 #### Kiểu dữ liệu
 
 ```jsonc
-// KnowledgeItemSummary — dùng trong danh sách
-{ "id": "uuid", "kind": "word", "term": "give up", "meaning": "từ bỏ", "ipa": null, "createdAt": "2026-11-08T07:00:00Z" }
+// KnowledgeItemSummary — dùng trong danh sách (thẻ từ vựng cần phiên âm và loại từ, thẻ ngữ pháp cần công thức)
+{ "id": "uuid", "kind": "word", "term": "give up", "meaning": "từ bỏ", "formula": null, "partOfSpeech": "Động từ", "ipa": null, "createdAt": "2026-11-08T07:00:00Z" }
 
 // KnowledgeItemDetail
 {

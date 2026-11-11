@@ -9,6 +9,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Modules\Accounts\Lingozi.Accounts\Lingozi.Accounts.csproj" />
+    <ProjectReference Include="..\Modules\Library\Lingozi.Library\Lingozi.Library.csproj" />
   </ItemGroup>
   <ItemGroup>
     <InternalsVisibleTo Include="Lingozi.Api.IntegrationTests" />

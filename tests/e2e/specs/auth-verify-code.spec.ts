@@ -36,9 +36,10 @@ test("AC-01: the right code from the email signs in and opens the library (TC-AU
 
   await typeCode(page, code);
 
-  await expect(page).toHaveURL(/\/library$/u);
+  // /library sends people to the first library, Từ vựng (BR-LIB-017).
+  await expect(page).toHaveURL(/\/library\/vocabulary$/u);
   await expect(
-    page.getByRole("heading", { level: 1, name: "Thư viện" }),
+    page.getByRole("heading", { level: 1, name: "Từ vựng" }),
   ).toBeVisible();
 });
 

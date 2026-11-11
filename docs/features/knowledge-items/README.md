@@ -2,7 +2,7 @@
 
 - Module: `LIB` (backend: module `Library`, schema `library`).
 - Vòng: 1 (2026-11-08 → 2026-11-21). Phụ thuộc FEAT-01 (phiên đăng nhập, `UserId`).
-- Trạng thái: **Thiết kế v0.5 (2026-11-11) — chờ chủ dự án duyệt để đạt DoR**. Chưa có code nghiệp vụ.
+- Trạng thái: **Thiết kế v0.5 (2026-11-11) — chờ chủ dự án duyệt để đạt DoR**. Code: **US-LIB-01 đã làm** (module `Library`, form hai thư viện, chi tiết và danh sách tối thiểu; xem [phiên 25](../../project/sessions/2026-11-11-25-code-us-lib-01.md)); các story còn lại chưa code.
 - Nguồn:
   - [Tổng quan](../../product/overview.md) §4.1.
   - [PRD](../../product/prd.md) FEAT-02.

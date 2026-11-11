@@ -73,6 +73,11 @@ jobs:
           dotnet ef migrations has-pending-model-changes --no-build
           --project src/Modules/Accounts/Lingozi.Accounts --startup-project src/Modules/Accounts/Lingozi.Accounts
           --context AccountsDbContext
+      - name: No Library model changes without a migration
+        run: >-
+          dotnet ef migrations has-pending-model-changes --no-build
+          --project src/Modules/Library/Lingozi.Library --startup-project src/Modules/Library/Lingozi.Library
+          --context LibraryDbContext
       - name: Integration tests (Testcontainers SQL Server 2025)
         run: dotnet test --no-build
 

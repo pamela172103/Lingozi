@@ -19,6 +19,17 @@ public static class SessionCookies
                 options.Cookie.Path = "/";
                 options.ExpireTimeSpan = Lifetime;
                 options.SlidingExpiration = true;
+                // The API answers JSON clients: 401/403 instead of a redirect to a login page (the web app redirects itself).
+                options.Events.OnRedirectToLogin = context =>
+                {
+                    context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                    return Task.CompletedTask;
+                };
+                options.Events.OnRedirectToAccessDenied = context =>
+                {
+                    context.Response.StatusCode = StatusCodes.Status403Forbidden;
+                    return Task.CompletedTask;
+                };
             })
             .Services;
 }

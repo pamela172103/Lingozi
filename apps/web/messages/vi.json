@@ -62,7 +62,104 @@
     }
   },
   "Library": {
-    "title": "Thư viện",
-    "placeholder": "Bạn đã đăng nhập. Màn hình thư viện thuộc Vòng 1 (FEAT-02) và chưa được xây dựng."
+    "nav": {
+      "label": "Thư viện",
+      "group": "Thư viện",
+      "vocabulary": "Từ vựng",
+      "grammar": "Ngữ pháp"
+    },
+    "vocabulary": {
+      "title": "Từ vựng",
+      "metaTitle": "Từ vựng · Lingozi",
+      "count": "{count} từ",
+      "add": "+ Thêm từ vựng",
+      "newTitle": "Thêm từ vựng",
+      "newMetaTitle": "Thêm từ vựng · Lingozi",
+      "emptyTitle": "Chưa có từ vựng nào",
+      "emptyHint": "Từ vựng bạn lưu sẽ xuất hiện ở đây.",
+      "emptyAction": "Thêm từ vựng đầu tiên",
+      "savedToast": "Đã lưu"
+    },
+    "grammar": {
+      "title": "Ngữ pháp",
+      "metaTitle": "Ngữ pháp · Lingozi",
+      "count": "{count} mục",
+      "add": "+ Thêm ngữ pháp",
+      "newTitle": "Thêm ngữ pháp",
+      "newMetaTitle": "Thêm ngữ pháp · Lingozi",
+      "emptyTitle": "Chưa có ngữ pháp nào",
+      "emptyHint": "Cấu trúc ngữ pháp bạn lưu sẽ xuất hiện ở đây.",
+      "emptyAction": "Thêm ngữ pháp đầu tiên",
+      "savedToast": "Đã lưu"
+    },
+    "list": {
+      "loadError": "Không tải được thư viện.",
+      "retry": "Thử lại",
+      "previous": "‹ Trước",
+      "next": "Sau ›",
+      "pageOf": "Trang {page} / {pages}",
+      "created": "Tạo {date}"
+    },
+    "form": {
+      "term": "Từ",
+      "termPlaceholder": "Ví dụ: give up",
+      "grammarTerm": "Tên cấu trúc",
+      "grammarTermPlaceholder": "Ví dụ: Present perfect",
+      "ipa": "Phiên âm",
+      "ipaPlaceholder": "Ví dụ: /ɡɪv ʌp/",
+      "meaning": "Nghĩa",
+      "meaningPlaceholder": "Nhập nghĩa của từ",
+      "grammarMeaning": "Ý nghĩa",
+      "grammarMeaningPlaceholder": "Cấu trúc này dùng để làm gì",
+      "formula": "Công thức",
+      "formulaPlaceholder": "Ví dụ: have/has + V3",
+      "partOfSpeech": "Loại từ",
+      "partOfSpeechPlaceholder": "Chọn loại từ",
+      "note": "Ghi chú",
+      "notePlaceholder": "Cách dùng, lưu ý cá nhân",
+      "examples": "Ví dụ",
+      "examplesEmpty": "Chưa có ví dụ. Không bắt buộc.",
+      "examplesMax": "Tối đa 20 ví dụ.",
+      "addExample": "+ Thêm ví dụ",
+      "removeExample": "Xóa ví dụ {index}",
+      "exampleText": "Câu ví dụ",
+      "exampleTranslation": "Nghĩa tiếng Việt",
+      "cancel": "Hủy",
+      "save": "Lưu",
+      "saving": "Đang lưu",
+      "required": "bắt buộc",
+      "counter": "{count}/{max}",
+      "summary": "Vui lòng kiểm tra lại thông tin đã nhập: {fields}.",
+      "limit": "Bạn đã đạt giới hạn 10.000 mục.",
+      "network": "Mất kết nối. Vui lòng thử lại.",
+      "retry": "Thử lại",
+      "session": "Phiên làm việc không hợp lệ. Vui lòng tải lại trang.",
+      "error": {
+        "term": "Vui lòng nhập từ.",
+        "grammarTerm": "Vui lòng nhập tên cấu trúc.",
+        "meaning": "Vui lòng nhập nghĩa.",
+        "formula": "Vui lòng nhập công thức.",
+        "required": "Vui lòng nhập nội dung.",
+        "tooLong": "Tối đa {max} ký tự.",
+        "invalidIpa": "Phiên âm chỉ được chứa ký tự IPA.",
+        "tooMany": "Tối đa 20 ví dụ.",
+        "invalid": "Giá trị không hợp lệ."
+      }
+    },
+    "detail": {
+      "back": "Quay lại {library}",
+      "meaning": "Nghĩa",
+      "grammarMeaning": "Ý nghĩa",
+      "formula": "Công thức",
+      "examples": "Ví dụ",
+      "note": "Ghi chú",
+      "partOfSpeech": "Loại từ",
+      "ipaUser": "phiên âm do bạn nhập",
+      "timestamps": "Tạo {created} · Sửa {updated}",
+      "notFoundTitle": "Không tìm thấy mục này.",
+      "notFoundBack": "Về thư viện",
+      "loadError": "Không tải được mục này.",
+      "retry": "Thử lại"
+    }
   }
 }

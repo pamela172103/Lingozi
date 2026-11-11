@@ -2,6 +2,8 @@ using Lingozi.Accounts;
 using Lingozi.Accounts.Persistence;
 using Lingozi.Api.Authentication;
 using Lingozi.Api.Endpoints;
+using Lingozi.Library;
+using Lingozi.Library.Persistence;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
@@ -18,8 +20,10 @@ if (string.IsNullOrWhiteSpace(connectionString))
 builder.Services.AddProblemDetails();
 builder.Services.AddOpenApi();
 builder.Services.AddAccountsModule(connectionString, builder.Configuration);
+builder.Services.AddLibraryModule(connectionString);
 builder.Services.AddAuthRateLimiting();
 builder.Services.AddSessionCookies();
+builder.Services.AddAuthorization();
 builder.Services.AddAntiforgery(options =>
 {
     options.HeaderName = "X-XSRF-TOKEN";
@@ -41,7 +45,8 @@ builder.Services.Configure<ForwardedHeadersOptions>(options =>
     }
 });
 builder.Services.AddHealthChecks()
-    .AddDbContextCheck<AccountsDbContext>("database", tags: ["ready"]);
+    .AddDbContextCheck<AccountsDbContext>("database", tags: ["ready"])
+    .AddDbContextCheck<LibraryDbContext>("library-database", tags: ["ready"]);
 builder.Services.AddSingleton(TimeProvider.System);
 
 var app = builder.Build();
@@ -49,7 +54,9 @@ var app = builder.Build();
 if (app.Configuration.GetValue<bool>("Database:ApplyMigrationsOnStartup"))
 {
     await using var scope = app.Services.CreateAsyncScope();
+    // Accounts first: the Library migration adds a foreign key to accounts.Users.
     await scope.ServiceProvider.GetRequiredService<AccountsDbContext>().Database.MigrateAsync();
+    await scope.ServiceProvider.GetRequiredService<LibraryDbContext>().Database.MigrateAsync();
 }
 
 app.UseForwardedHeaders();
@@ -57,6 +64,7 @@ app.UseExceptionHandler();
 app.UseStatusCodePages();
 app.UseRateLimiter();
 app.UseAuthentication();
+app.UseAuthorization();
 
 if (app.Environment.IsDevelopment())
 {
@@ -71,6 +79,7 @@ app.MapHealthChecks("/health/live", new HealthCheckOptions { Predicate = _ => fa
 app.MapHealthChecks("/health/ready", new HealthCheckOptions { Predicate = check => check.Tags.Contains("ready") });
 app.MapSystemEndpoints();
 app.MapAuthEndpoints();
+app.MapLibraryEndpoints();
 
 await app.RunAsync();
 

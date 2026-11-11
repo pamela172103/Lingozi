@@ -3,6 +3,9 @@
     <Project Path="src/Lingozi.Api/Lingozi.Api.csproj" />
   </Folder>
   <Folder Name="/src/Modules/" />
+  <Folder Name="/src/Modules/Library/">
+    <Project Path="src/Modules/Library/Lingozi.Library/Lingozi.Library.csproj" />
+  </Folder>
   <Folder Name="/src/Modules/Accounts/">
     <Project Path="src/Modules/Accounts/Lingozi.Accounts/Lingozi.Accounts.csproj" />
   </Folder>

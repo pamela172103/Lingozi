@@ -251,6 +251,7 @@ Mỗi email chỉ có một mã còn hiệu lực (mã mới vô hiệu mã cũ)
 | Ghi chú | `Note` | nvarchar | 4000 | Có | — | — | Ghi chú cá nhân, cách dùng |
 | Nguồn / bối cảnh | `Source` | nvarchar | 300 | Có | — | — | Không còn trên form Vòng 1 (cập nhật 2026-11-11); cột giữ lại, chưa ghi dữ liệu. Quyết định bỏ hẳn cột chờ chủ dự án xác nhận |
 | Văn bản tìm kiếm | `SearchText` | nvarchar | max | Không | — | Ứng dụng tính lại mỗi khi lưu: ghép Term, Formula, Meaning, PartOfSpeech, Note và các ví dụ; chữ thường, bỏ dấu tiếng Việt, đ → d | Tìm kiếm Vòng 2 (`Q-07`). Cách đánh index chốt ở Vòng 2 (mục 5) |
+| Băm nội dung chuẩn hóa | `NormalizedTermHash` | varbinary | 32 | Không | — | Cột tính sẵn (persisted): `HASHBYTES('SHA2_256', NormalizedTerm)` | Index trên `NormalizedTerm` (1000 ký tự nvarchar = 2000 byte) vượt giới hạn 1700 byte của khóa index không cụm, nên tìm mục tương tự dùng băm này rồi so lại văn bản (phát hiện khi viết integration test US-LIB-01, 2026-11-11) |
 | Mã yêu cầu tạo | `ClientRequestId` | uniqueidentifier | — | Có | — | Unique có lọc (`UserId`, `ClientRequestId`) WHERE NOT NULL | Idempotency: gửi lại cùng yêu cầu tạo thì không sinh mục trùng |
 | Tạo lúc | `CreatedAt` | datetime2(3) | — | Không | — | UTC | Mốc của dòng thời gian (`Q-06`) |
 | Sửa lúc | `UpdatedAt` | datetime2(3) | — | Không | — | UTC | — |
@@ -259,8 +260,8 @@ Mỗi email chỉ có một mã còn hiệu lực (mã mới vô hiệu mã cũ)
 Index:
 
 - (`UserId`, `CreatedAt` DESC) cho dòng thời gian và danh sách mặc định.
-- (`UserId`, `NormalizedTerm`) cho gợi ý trùng.
-- (`UserId`, `Kind`) cho lọc theo loại.
+- (`UserId`, `Kind`, `NormalizedTermHash`) cho gợi ý trùng cùng loại (thay cho (`UserId`, `NormalizedTerm`), xem `NormalizedTermHash`).
+- (`UserId`, `Kind`, `CreatedAt` DESC) cho danh sách từng thư viện.
 
 **`library.ItemExamples`**: một mục có 0..n ví dụ.
 

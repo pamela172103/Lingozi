@@ -2,7 +2,7 @@ import { ensureXsrfToken, problemCode } from "@/lib/auth/api";
 
 import { fromApiErrors, type FieldErrors } from "./form";
 import type { ApiKind } from "./kinds";
-import type { ItemDetail, ItemSummary } from "./types";
+import type { ItemDetail, ItemSummary, Suggestions } from "./types";
 
 export type WriteItemResult =
   | { kind: "saved"; item: ItemDetail }
@@ -135,5 +135,21 @@ export async function deleteItem(id: string): Promise<DeleteItemResult> {
     return { kind: "session-error" };
   } catch {
     return { kind: "network-error" };
+  }
+}
+
+/** US-LIB-08 and US-LIB-09: suggestions for the term being typed. Returns null when the request itself fails (no note is shown then). */
+export async function findSuggestions(kind: ApiKind, term: string, signal: AbortSignal): Promise<Suggestions | null> {
+  try {
+    const params = new URLSearchParams({ kind, term });
+    const response = await fetch(`/api/library/suggestions?${params.toString()}`, {
+      credentials: "same-origin",
+      cache: "no-store",
+      signal,
+    });
+    if (!response.ok) return null;
+    return (await response.json()) as Suggestions;
+  } catch {
+    return null;
   }
 }

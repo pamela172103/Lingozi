@@ -198,6 +198,7 @@ export async function DetailPage({
         </div>
       </div>
       {!grammar && meta.length > 0 && <p className="mt-1 text-sm text-secondary">{meta.join(" · ")}</p>}
+      {!grammar && item.ipaSource === "dictionary" && <p className="mt-1 text-xs text-muted">{t("ipaSource")}</p>}
       <div className="mt-6 space-y-6 rounded-card bg-surface p-6 shadow-card sm:p-8">
         {grammar && item.formula && (
           <Section title={t("formula")}>

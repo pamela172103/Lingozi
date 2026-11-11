@@ -132,7 +132,7 @@ Mô tả Input, Xử lý, Output của từng FR nằm trong file SRS của stor
 | --- | --- | --- | --- |
 | `GET /api/library/items?kind=word&page=1&pageSize=20` | — | `200 { items: Summary[], page, pageSize, totalCount }` | 400-01 |
 | `GET /api/library/items/similar?kind=&term=` | — | `200 { items: Summary[] (tối đa 5, cùng `kind`), totalCount }`; `term` rỗng thì danh sách rỗng | 400-01 (`term` > 1000 ký tự, thiếu `kind`) |
-| `GET /api/library/suggestions?term=&kind=` | — | `200 { ipa: { value, source: "dictionary" } \| null, sourceAvailable: bool, meanings: [{ text, source: "own" \| "dictionary" }] }` (tối đa 5 nghĩa; `ipa` chỉ khi `kind = word`) | 400-01 |
+| `GET /api/library/suggestions?term=&kind=` | — | `200 { ipa: { value, source: "dictionary" } \| null, sourceEnabled: bool, sourceAvailable: bool, meanings: [{ text, source: "own" \| "dictionary" }] }` (tối đa 5 nghĩa; `ipa` chỉ khi `kind = word`; `sourceEnabled = false` khi chưa bật nguồn ngoài, khi đó không có yêu cầu nào ra ngoài) | 400-01 |
 | `POST /api/library/items` | `Input` + `clientRequestId` (uuid, bắt buộc) | `201 Detail` + `Location`; `200 Detail` nếu `clientRequestId` đã dùng (BR-LIB-008) | 400-01, 400-02, 422-01 |
 | `GET /api/library/items/{id}` | — | `200 Detail` | 404-01 |
 | `PUT /api/library/items/{id}` | `Input` (`kind` phải bằng `kind` của mục, BR-LIB-002) + `version` (bắt buộc) | `200 Detail` (có `version` mới) | 400-01, 400-02, 404-01, 409-01 kèm `current: Detail` |
@@ -144,7 +144,7 @@ Mô tả Input, Xử lý, Output của từng FR nằm trong file SRS của stor
 - Không có endpoint "danh mục loại": hai form là cố định theo thư viện, danh sách loại từ (BR-LIB-016) nằm trong `messages` của web và API vẫn kiểm tra lại.
 - API xác định mục theo `id`; web so `kind` của mục với thư viện của route và hiện màn hình "Không tìm thấy" khi không khớp (BR-LIB-017).
 - `suggestions` không ghi gì vào database. Nguồn lỗi hoặc quá 3 giây trả `sourceAvailable = false`, `ipa = null`, `meanings = [own]`, status vẫn 200 (BR-LIB-015).
-- `POST`/`PUT` với `kind` khác `word` mà có `ipa` khác null → 400-01 ở trường `ipa`.
+- `POST`/`PUT` với `kind` khác `word` mà có `ipa` khác null → 400-01 ở trường `ipa`. `ipaSource` gửi kèm là `dictionary` khi phiên âm là giá trị form nhận từ gợi ý và chưa bị sửa, còn lại `user`; giá trị khác bị từ chối ở trường `ipaSource` (client có thể gửi sai, nên nhãn chỉ là thông tin hiển thị, không ảnh hưởng quyền hay dữ liệu nghiệp vụ).
 - `ipaSource` do server xác định theo BR-LIB-013: khớp gợi ý đã nhận → `dictionary`, còn lại → `user`. Client không được tự đặt `dictionary` cho giá trị do người dùng sửa.
 - `id` không đúng định dạng uuid cũng trả 404-01.
 

@@ -88,6 +88,7 @@ describe("toRequest", () => {
       ipa: "/ɡɪv ʌp/",
       partOfSpeech: "Động từ",
       note: "",
+      ipaSource: "user",
       examples: [{ text: "Don't give up.", translation: "Đừng bỏ cuộc." }],
     });
   });

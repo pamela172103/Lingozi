@@ -10,7 +10,8 @@ internal sealed record ValidItem(
     string? PartOfSpeech,
     string? Ipa,
     string? Note,
-    IReadOnlyList<ExampleInput> Examples);
+    IReadOnlyList<ExampleInput> Examples,
+    IpaSource? IpaSourceValue = null);
 
 /// <summary>Server-side validation for create (BR-LIB-001, 002, 004, 012, 013, 016). Error values are reason codes the web app turns into messages.</summary>
 internal static class ItemValidator
@@ -38,6 +39,7 @@ internal static class ItemValidator
         }
 
         ItemKind kind = default;
+        IpaSource? ipaSource = null;
         var kindOk = ItemRules.TryParseKind(input.Kind, out kind);
         if (!kindOk)
         {
@@ -78,6 +80,12 @@ internal static class ItemValidator
                     errors["ipa"] = InvalidCharacters;
                 }
             }
+
+            ipaSource = ipa is null ? null : ResolveIpaSource(input.IpaSource);
+            if (ipa is not null && ipaSource is null)
+            {
+                errors["ipaSource"] = Invalid;
+            }
         }
         else if (kindOk)
         {
@@ -115,8 +123,16 @@ internal static class ItemValidator
             return (null, errors);
         }
 
-        return (new ValidItem(input.ClientRequestId, kind, term, meaning, formula, partOfSpeech, ipa, note, examples), errors);
+        return (new ValidItem(input.ClientRequestId, kind, term, meaning, formula, partOfSpeech, ipa, note, examples, ipaSource), errors);
     }
+
+    /// <summary>"dictionary" → dictionary, "user" or missing → user, anything else → null (rejected by the caller).</summary>
+    private static IpaSource? ResolveIpaSource(string? value) => value switch
+    {
+        "dictionary" => Items.IpaSource.Dictionary,
+        null or "user" => Items.IpaSource.User,
+        _ => null,
+    };
 
     private static void Text(Dictionary<string, string> errors, string field, string? value, int max, bool required)
     {

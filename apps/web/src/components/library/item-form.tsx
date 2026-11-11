@@ -19,6 +19,7 @@ import { clearDraft, parseDraft, readDraftRaw, saveDraft } from "@/lib/library/d
 import {
   FIELD_ORDER,
   emptyValues,
+  type IpaSourceLabel,
   toRequest,
   toUpdateRequest,
   validate,
@@ -28,7 +29,9 @@ import {
 } from "@/lib/library/form";
 import { API_KIND, LIMITS, PARTS_OF_SPEECH, libraryPath, type LibraryKind } from "@/lib/library/kinds";
 import type { ItemDetail, ItemSummary } from "@/lib/library/types";
+import { MeaningSuggestions } from "./meaning-suggestions";
 import { SimilarDialog } from "./similar-dialog";
+import { useSuggestions } from "./use-suggestions";
 
 type Banner = "limit" | "network" | "session" | "conflict" | null;
 
@@ -169,6 +172,7 @@ function KeptPanel({
  */
 export function ItemForm({ kind, item }: { kind: LibraryKind; item?: ItemDetail }) {
   const t = useTranslations("Library.form");
+  const suggestT = useTranslations("Library.suggest");
   const router = useRouter();
   const [start] = useState<FormValues>(() => (item ? valuesFromItem(item) : emptyValues()));
   const [values, setValues] = useState<FormValues>(start);
@@ -183,6 +187,20 @@ export function ItemForm({ kind, item }: { kind: LibraryKind; item?: ItemDetail 
   const [showSummary, setShowSummary] = useState(false);
   const editing = Boolean(item);
   const dirty = JSON.stringify(values) !== baseline;
+
+  // US-LIB-08 and US-LIB-09. The suggested pronunciation is shown in the field until the user edits it; it is not stored in `values`,
+  // so the form always submits exactly what it shows (BR-LIB-013).
+  const suggestions = useSuggestions(API_KIND[kind], values.term);
+  const [ipaEdited, setIpaEdited] = useState(false);
+  const autoIpa = !editing && !ipaEdited && suggestions?.ipa ? suggestions.ipa.value : null;
+  const ipaShown = autoIpa ?? values.ipa;
+  const effective: FormValues = { ...values, ipa: ipaShown };
+  const ipaSourceSent: IpaSourceLabel =
+    autoIpa !== null && ipaShown === autoIpa
+      ? "dictionary"
+      : editing && item?.ipaSource === "dictionary" && ipaShown === item.ipa
+        ? "dictionary"
+        : "user";
   const requestId = useRef(crypto.randomUUID());
   const exampleCounter = useRef(0);
   const focusAfter = useRef<string | null>(null);
@@ -277,7 +295,7 @@ export function ItemForm({ kind, item }: { kind: LibraryKind; item?: ItemDetail 
     event.preventDefault();
     if (submitting) return;
 
-    const found = validate(kind, values);
+    const found = validate(kind, effective);
     setBanner(null);
     if (Object.keys(found).length > 0) {
       setErrors(found);
@@ -309,8 +327,8 @@ export function ItemForm({ kind, item }: { kind: LibraryKind; item?: ItemDetail 
     setSubmitting(true);
     const result =
       item && version !== null
-        ? await updateItem(item.id, toUpdateRequest(kind, values, version))
-        : await createItem(toRequest(kind, values, requestId.current));
+        ? await updateItem(item.id, toUpdateRequest(kind, effective, version, ipaSourceSent))
+        : await createItem(toRequest(kind, effective, requestId.current, ipaSourceSent));
     setSubmitting(false);
 
     switch (result.kind) {
@@ -366,7 +384,7 @@ export function ItemForm({ kind, item }: { kind: LibraryKind; item?: ItemDetail 
             id={id}
             name={name}
             type="text"
-            value={values[name]}
+            value={name === "ipa" ? ipaShown : values[name]}
             disabled={submitting}
             required={name === "term"}
             aria-invalid={invalid}
@@ -374,7 +392,10 @@ export function ItemForm({ kind, item }: { kind: LibraryKind; item?: ItemDetail 
             placeholder={placeholder}
             autoComplete="off"
             spellCheck={false}
-            onChange={(e) => set(name, e.target.value)}
+            onChange={(e) => {
+              if (name === "ipa") setIpaEdited(true);
+              set(name, e.target.value);
+            }}
             className={`${inputClass} ${mono ? "font-mono" : ""} ${invalid ? "border-danger" : "border-border-strong"}`}
           />
         )}
@@ -529,14 +550,48 @@ export function ItemForm({ kind, item }: { kind: LibraryKind; item?: ItemDetail 
     </fieldset>
   );
 
+  // The note under the pronunciation field (srs US-LIB-08 AC-01 to AC-07).
+  const ipaNote: string | null = (() => {
+    if (grammar) return null;
+    if (editing && item) {
+      if (ipaEdited && item.ipaSource === "dictionary") return suggestT("edited");
+      if (!ipaEdited && item.ipaSource === "dictionary" && ipaShown)
+        return `${suggestT("autoIpa")} · ${suggestT("source")}`;
+      return null;
+    }
+    if (autoIpa !== null && ipaShown === autoIpa) return `${suggestT("autoIpa")} · ${suggestT("source")}`;
+    if (ipaEdited && suggestions?.ipa && ipaShown !== suggestions.ipa.value) return suggestT("edited");
+    if (!ipaShown && suggestions?.sourceEnabled && !suggestions.sourceAvailable) return suggestT("unavailable");
+    if (
+      !ipaShown &&
+      suggestions?.sourceEnabled &&
+      suggestions.sourceAvailable &&
+      !suggestions.ipa &&
+      values.term.trim()
+    )
+      return suggestT("noIpa");
+    return null;
+  })();
+
   const fields: Record<string, ReactNode> = {
     term: text("term", t(grammar ? "grammarTermPlaceholder" : "termPlaceholder")),
-    ipa: text("ipa", t("ipaPlaceholder")),
-    meaning: area(
-      "meaning",
-      t(grammar ? "grammarMeaningPlaceholder" : "meaningPlaceholder"),
-      grammar ? 3 : 3,
-      !grammar,
+    ipa: (
+      <div key="ipa">
+        {text("ipa", t("ipaPlaceholder"))}
+        {ipaNote && <p className="mt-1 text-xs text-muted">{ipaNote}</p>}
+      </div>
+    ),
+    meaning: (
+      <div key="meaning">
+        {area("meaning", t(grammar ? "grammarMeaningPlaceholder" : "meaningPlaceholder"), grammar ? 3 : 3, !grammar)}
+        {suggestions && suggestions.meanings.length > 0 && (
+          <MeaningSuggestions
+            meanings={suggestions.meanings}
+            value={values.meaning}
+            onPick={(text) => set("meaning", text)}
+          />
+        )}
+      </div>
     ),
     formula: area("formula", t("formulaPlaceholder"), 2, true, true),
     partOfSpeech,
@@ -600,7 +655,7 @@ export function ItemForm({ kind, item }: { kind: LibraryKind; item?: ItemDetail 
           items={similar.items}
           totalCount={similar.totalCount}
           onCancel={closeSimilar}
-          onOpen={(id) => saveDraft(kind, id, values)}
+          onOpen={(id) => saveDraft(kind, id, effective)}
           onKeepNew={() => {
             setSimilar(null);
             void save();

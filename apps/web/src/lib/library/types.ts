@@ -40,3 +40,13 @@ export interface ItemPage {
   pageSize: number;
   totalCount: number;
 }
+
+/** GET /api/library/suggestions (US-LIB-08, US-LIB-09). Nothing here is saved until the user keeps it in the form. */
+export interface Suggestions {
+  ipa: { value: string; source: "dictionary" } | null;
+  /** False when no outside word source is configured (ADR 0007): the form then shows no note about it. */
+  sourceEnabled: boolean;
+  /** False when the configured source failed or timed out (BR-LIB-015). */
+  sourceAvailable: boolean;
+  meanings: { text: string; source: "own" | "dictionary" }[];
+}

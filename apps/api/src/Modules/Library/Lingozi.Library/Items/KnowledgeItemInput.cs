@@ -21,7 +21,9 @@ public sealed record KnowledgeItemInput(
     string? Note,
     IReadOnlyList<ExampleInput>? Examples,
     // Only for PUT: the RowVersion of the item the client last read, base64 (BR-LIB-007).
-    string? Version = null);
+    string? Version = null,
+    // "dictionary" when the value is the one the form took from a suggestion and was not changed, otherwise "user" or null (BR-LIB-013).
+    string? IpaSource = null);
 
 /// <param name="Text">English sentence.</param>
 /// <param name="Translation">Optional Vietnamese translation.</param>

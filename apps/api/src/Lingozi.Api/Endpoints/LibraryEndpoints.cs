@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using Lingozi.Library.Items;
+using Lingozi.Library.Suggestions;
 
 namespace Lingozi.Api.Endpoints;
 
@@ -44,6 +45,13 @@ internal static class LibraryEndpoints
             .Produces(StatusCodes.Status204NoContent)
             .ProducesProblem(StatusCodes.Status401Unauthorized)
             .ProducesProblem(StatusCodes.Status404NotFound);
+
+        group.MapGet("/suggestions", SuggestionsAsync)
+            .WithName("GetLibrarySuggestions")
+            .WithSummary("Gợi ý phiên âm và nghĩa khi nhập: của chính người dùng và từ nguồn ngoài nếu được bật (US-LIB-08, US-LIB-09)")
+            .Produces<SuggestionsResponse>()
+            .ProducesProblem(StatusCodes.Status400BadRequest)
+            .ProducesProblem(StatusCodes.Status401Unauthorized);
 
         group.MapGet("/items/similar", SimilarAsync)
             .WithName("FindSimilarKnowledgeItems")
@@ -127,6 +135,28 @@ internal static class LibraryEndpoints
 
         var deleted = await service.DeleteAsync(CurrentUserId(context), itemId, cancellationToken);
         return deleted ? TypedResults.NoContent() : LibraryProblems.NotFound();
+    }
+
+    internal static async Task<IResult> SuggestionsAsync(
+        string? kind, string? term, SuggestionService service, HttpContext context, CancellationToken cancellationToken)
+    {
+        var errors = new Dictionary<string, string>();
+        if (!ItemRules.TryParseKind(kind, out var parsedKind))
+        {
+            errors["kind"] = string.IsNullOrEmpty(kind) ? "required" : "invalid";
+        }
+
+        if (term is not null && term.Length > ItemRules.TermMax)
+        {
+            errors["term"] = "too-long";
+        }
+
+        if (errors.Count > 0)
+        {
+            return LibraryProblems.Invalid(errors);
+        }
+
+        return TypedResults.Ok(await service.GetAsync(CurrentUserId(context), parsedKind, term, cancellationToken));
     }
 
     internal static async Task<IResult> SimilarAsync(

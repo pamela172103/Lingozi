@@ -67,4 +67,6 @@ Nếu điều khoản không cho phép một trong các điểm trên, quay lạ
 
 ## Trạng thái hiện tại
 
+- **2026-11-11 (cập nhật):** đã code provider `dictionaryapi` sau cấu hình `Pronunciation:Provider`, **mặc định `none`** (không có yêu cầu nào ra ngoài). Đã kiểm tra từ môi trường làm việc: `api.dictionaryapi.dev` trả 200, `water` có `-uk.mp3`, `learn` không có bản Anh-Anh, `give up` không có kết quả; dữ liệu ghi giấy phép CC BY-SA 3.0. Đã chạy luồng tự điền với nguồn thật một lần trên máy phát triển. **ADR vẫn Proposed**: cổng điều khoản, pháp lý share-alike và đo độ phủ chưa đạt.
+
 Theo `AGENTS.md` §6: US-LIB-08 và US-LIB-09 có trạng thái **integration ready** khi đã code abstraction và test với provider giả; **không** được ghi là hoạt động cho tới khi cổng kiểm tra ở trên đạt và provider thật được cấu hình. Form vẫn dùng được đầy đủ với phiên âm nhập tay.

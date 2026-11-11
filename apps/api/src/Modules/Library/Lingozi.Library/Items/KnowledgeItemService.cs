@@ -60,7 +60,7 @@ public sealed class KnowledgeItemService(LibraryDbContext db, TimeProvider clock
                 PartOfSpeech = valid.PartOfSpeech,
                 Ipa = valid.Ipa,
                 // No dictionary lookup exists yet (US-LIB-08), so a stored IPA was always typed by the user.
-                IpaSource = valid.Ipa is null ? null : IpaSource.User,
+                IpaSource = valid.IpaSourceValue,
                 Note = valid.Note,
                 ClientRequestId = valid.ClientRequestId,
                 CreatedAt = now,
@@ -201,7 +201,7 @@ public sealed class KnowledgeItemService(LibraryDbContext db, TimeProvider clock
                     .SetProperty(i => i.PartOfSpeech, valid.PartOfSpeech)
                     .SetProperty(i => i.Ipa, valid.Ipa)
                     // No dictionary lookup exists yet (US-LIB-08), so a stored IPA was always typed by the user.
-                    .SetProperty(i => i.IpaSource, valid.Ipa is null ? null : IpaSource.User)
+                    .SetProperty(i => i.IpaSource, valid.IpaSourceValue)
                     .SetProperty(i => i.Note, valid.Note)
                     .SetProperty(i => i.SearchText, searchText)
                     .SetProperty(i => i.UpdatedAt, now), ct);

@@ -74,7 +74,10 @@ export function validate(kind: LibraryKind, values: FormValues): FieldErrors {
 }
 
 /** Fields of an item body (create and edit). Empty example rows are dropped; the API trims and turns empty optionals into null. */
-export function toBody(kind: LibraryKind, values: FormValues) {
+/** "dictionary" when the pronunciation is the one the form took from a suggestion and was not changed; otherwise "user" (BR-LIB-013). */
+export type IpaSourceLabel = "dictionary" | "user";
+
+export function toBody(kind: LibraryKind, values: FormValues, ipaSource: IpaSourceLabel = "user") {
   const base = {
     kind: API_KIND[kind],
     term: values.term,
@@ -85,18 +88,28 @@ export function toBody(kind: LibraryKind, values: FormValues) {
       .map((e) => ({ text: e.text, translation: e.translation })),
   };
   return kind === "vocabulary"
-    ? { ...base, ipa: values.ipa, partOfSpeech: values.partOfSpeech }
+    ? { ...base, ipa: values.ipa, ipaSource: values.ipa.trim() ? ipaSource : null, partOfSpeech: values.partOfSpeech }
     : { ...base, formula: values.formula };
 }
 
 /** Body of `POST /api/library/items`: the fields plus the request id that makes retries idempotent (BR-LIB-008). */
-export function toRequest(kind: LibraryKind, values: FormValues, clientRequestId: string) {
-  return { clientRequestId, ...toBody(kind, values) };
+export function toRequest(
+  kind: LibraryKind,
+  values: FormValues,
+  clientRequestId: string,
+  ipaSource: IpaSourceLabel = "user",
+) {
+  return { clientRequestId, ...toBody(kind, values, ipaSource) };
 }
 
 /** Body of `PUT /api/library/items/{id}`: the fields plus the version the form was loaded with (BR-LIB-007). */
-export function toUpdateRequest(kind: LibraryKind, values: FormValues, version: string) {
-  return { ...toBody(kind, values), version };
+export function toUpdateRequest(
+  kind: LibraryKind,
+  values: FormValues,
+  version: string,
+  ipaSource: IpaSourceLabel = "user",
+) {
+  return { ...toBody(kind, values, ipaSource), version };
 }
 
 /** The form values of a saved item, so an edit starts from what is stored. */

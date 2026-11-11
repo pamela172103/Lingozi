@@ -2,7 +2,7 @@
 
 - Cập nhật: 2026-11-11.
 - Giai đoạn: **Vòng 1 — Lưu được kiến thức của riêng mình** (2026-11-08 → 2026-11-21), đang ở bước ② Thiết kế. Vòng 0 xong phần việc. Xem [lộ trình](../product/roadmap.md) §5.
-- Phiên gần nhất: [Code US-LIB-06 (xóa từ vựng và ngữ pháp)](sessions/2026-11-11-29-code-us-lib-06.md).
+- Phiên gần nhất: [Gợi ý phiên âm và nghĩa (US-LIB-08 integration ready, US-LIB-09)](sessions/2026-11-11-30-suggestions-us-lib-08-09.md).
 - Đã đọc và gộp 4 commit từ `origin/work` vào `main` theo fast-forward, tới `61514e0`. Bàn giao phiên 05 được lưu cùng commit tài liệu tiếp theo; tra bằng `git log -- docs/project/`.
 
 ## Đã hoàn thành
@@ -31,6 +31,8 @@
 - Phiên 28 (2026-11-11): code US-LIB-05 (PUT có kiểm tra version, form sửa, xung đột, trang sửa); US-LIB-02 AC-02 hoàn tất. 116 integration test, 56 E2E đạt. AC-03 còn một phần, US-LIB-06 chưa làm.
 
 - Phiên 29 (2026-11-11): code US-LIB-06 (DELETE có xác nhận, thông báo "Đã xóa" và "không còn tồn tại"). 123 integration test, 60 E2E đạt. FEAT-02 còn guard điều hướng cho US-LIB-05 AC-03 và chờ duyệt thiết kế v0.5.
+
+- Phiên 30 (2026-11-11): US-LIB-09 đạt AC-01 đến AC-05; US-LIB-08 integration ready (provider `dictionaryapi` sau cấu hình, mặc định tắt; đã thử một lần với nguồn thật trên máy phát triển). 138 integration test, 64 E2E, 124 Vitest.
 
 ## Hiện trạng các phần
 

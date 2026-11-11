@@ -10,10 +10,12 @@ vi.mock("next/navigation", () => ({ useRouter: () => ({ push }) }));
 const createItem = vi.fn();
 const findSimilarItems = vi.fn();
 const updateItem = vi.fn();
+const findSuggestionsMock = vi.fn();
 vi.mock("@/lib/library/api", () => ({
   createItem: (body: unknown) => createItem(body),
   findSimilarItems: (kind: string, term: string) => findSimilarItems(kind, term),
   updateItem: (id: string, body: unknown) => updateItem(id, body),
+  findSuggestions: (kind: string, term: string, signal: AbortSignal) => findSuggestionsMock(kind, term, signal),
 }));
 
 function fill(label: RegExp | string, value: string) {
@@ -396,6 +398,7 @@ const storedItem: ItemDetail = {
   version: "v1",
 };
 
+const noSuggestions = { ipa: null, sourceEnabled: false, sourceAvailable: false, meanings: [] };
 const savedEdit = { kind: "saved", item: { id: "item-1", kind: "word" } };
 
 describe("ItemForm — edit (US-LIB-05, W-LIB-21 to W-LIB-23)", () => {
@@ -501,5 +504,127 @@ describe("similar-items dialog hands the typed text to the old item (US-LIB-02 A
     const storedDraft = JSON.parse(sessionStorage.getItem("lingozi.library-draft.vocabulary.old-1") ?? "{}");
     expect(storedDraft.meaning).toBe("bỏ cuộc");
     expect(storedDraft.term).toBe("give up");
+  });
+});
+
+describe("ItemForm — pronunciation and meaning suggestions (US-LIB-08, US-LIB-09)", () => {
+  beforeEach(() => {
+    push.mockReset();
+    createItem.mockReset();
+    findSimilarItems.mockReset();
+    findSimilarItems.mockResolvedValue(none);
+    findSuggestionsMock.mockReset();
+    findSuggestionsMock.mockResolvedValue(noSuggestions);
+  });
+
+  const water = {
+    ipa: { value: "/ˈwɔːtə/", source: "dictionary" as const },
+    sourceEnabled: true,
+    sourceAvailable: true,
+    meanings: [
+      { text: "từ bỏ", source: "own" as const },
+      { text: "a clear liquid", source: "dictionary" as const },
+    ],
+  };
+
+  it("fills the pronunciation from the British source with its label after the user stops typing (AC-01)", async () => {
+    findSuggestionsMock.mockResolvedValue(water);
+    renderWithIntl(<ItemForm kind="vocabulary" />);
+
+    fill(/^Từ/u, "water");
+
+    expect(await screen.findByDisplayValue("/ˈwɔːtə/")).toBeInTheDocument();
+    expect(screen.getByText("Tự động từ từ điển (Anh-Anh) · Nguồn: Wiktionary, CC BY-SA 3.0")).toBeInTheDocument();
+    expect(findSuggestionsMock).toHaveBeenCalledWith("word", "water", expect.any(AbortSignal));
+  });
+
+  it("saves the suggested pronunciation as 'dictionary' and an edited one as 'user' (AC-02, AC-04)", async () => {
+    findSuggestionsMock.mockResolvedValue(water);
+    createItem.mockResolvedValue({ kind: "saved", item: { id: "w-1", kind: "word" } });
+    renderWithIntl(<ItemForm kind="vocabulary" />);
+    fill(/^Từ/u, "water");
+    await screen.findByDisplayValue("/ˈwɔːtə/");
+    fill(/^Nghĩa \*$/u, "nước");
+
+    fireEvent.click(screen.getByRole("button", { name: "Lưu" }));
+    await waitFor(() => expect(createItem).toHaveBeenCalled());
+    expect(createItem.mock.calls[0]?.[0]).toMatchObject({ ipa: "/ˈwɔːtə/", ipaSource: "dictionary" });
+  });
+
+  it("an edited suggestion is labelled 'Bạn đã chỉnh sửa' and saved as the user's (AC-02)", async () => {
+    findSuggestionsMock.mockResolvedValue(water);
+    createItem.mockResolvedValue({ kind: "saved", item: { id: "w-2", kind: "word" } });
+    renderWithIntl(<ItemForm kind="vocabulary" />);
+    fill(/^Từ/u, "water");
+    const ipa = await screen.findByDisplayValue("/ˈwɔːtə/");
+
+    fireEvent.change(ipa, { target: { value: "/ˈwɔːtə x/" } });
+    expect(screen.getByText("Bạn đã chỉnh sửa")).toBeInTheDocument();
+    fill(/^Nghĩa \*$/u, "nước");
+    fireEvent.click(screen.getByRole("button", { name: "Lưu" }));
+
+    await waitFor(() => expect(createItem).toHaveBeenCalled());
+    expect(createItem.mock.calls[0]?.[0]).toMatchObject({ ipa: "/ˈwɔːtə x/", ipaSource: "user" });
+  });
+
+  it("a word with no British pronunciation leaves the field empty with a hint, and the user can type it (AC-03)", async () => {
+    findSuggestionsMock.mockResolvedValue({ ...water, ipa: null, meanings: [] });
+    renderWithIntl(<ItemForm kind="vocabulary" />);
+
+    fill(/^Từ/u, "learn");
+
+    expect(await screen.findByText("Chưa có phiên âm Anh-Anh, bạn có thể tự nhập")).toBeInTheDocument();
+    expect(screen.getByLabelText("Phiên âm")).toHaveValue("");
+  });
+
+  it("a failing source shows a plain note, not an error, and never blocks the form (AC-06)", async () => {
+    findSuggestionsMock.mockResolvedValue({ ...water, ipa: null, sourceAvailable: false, meanings: [] });
+    renderWithIntl(<ItemForm kind="vocabulary" />);
+
+    fill(/^Từ/u, "give up");
+
+    expect(await screen.findByText("Không lấy được phiên âm tự động")).toBeInTheDocument();
+    expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+    expect(screen.getByLabelText(/^Nghĩa/u)).toBeEnabled();
+  });
+
+  it("with no outside source configured there is no note at all", async () => {
+    findSuggestionsMock.mockResolvedValue(noSuggestions);
+    renderWithIntl(<ItemForm kind="vocabulary" />);
+
+    fill(/^Từ/u, "water");
+
+    await waitFor(() => expect(findSuggestionsMock).toHaveBeenCalled());
+    expect(screen.queryByText("Không lấy được phiên âm tự động")).not.toBeInTheDocument();
+    expect(screen.queryByText(/Chưa có phiên âm/u)).not.toBeInTheDocument();
+  });
+
+  it("meaning chips show the source and a click fills the meaning, which stays editable (US-LIB-09 AC-01, AC-02, AC-04)", async () => {
+    findSuggestionsMock.mockResolvedValue(water);
+    renderWithIntl(<ItemForm kind="vocabulary" />);
+    fill(/^Từ/u, "water");
+
+    const own = await screen.findByRole("button", { name: /từ bỏ/u });
+    expect(own).toHaveTextContent("Từ mục của bạn");
+    expect(screen.getByRole("button", { name: /a clear liquid/u })).toHaveTextContent("Từ từ điển");
+    expect(screen.getByLabelText(/^Nghĩa \*$/u)).toHaveValue("");
+
+    fireEvent.click(own);
+
+    expect(screen.getByLabelText(/^Nghĩa \*$/u)).toHaveValue("từ bỏ");
+    expect(own).toHaveAttribute("aria-pressed", "true");
+    fill(/^Nghĩa \*$/u, "từ bỏ, dừng lại");
+    expect(screen.getByLabelText(/^Nghĩa \*$/u)).toHaveValue("từ bỏ, dừng lại");
+  });
+
+  it("grammar suggests meanings for 'Ý nghĩa' without any pronunciation (US-LIB-09 AC-03 scope)", async () => {
+    findSuggestionsMock.mockResolvedValue({ ...water, ipa: { value: "/x/", source: "dictionary" } });
+    renderWithIntl(<ItemForm kind="grammar" />);
+    fill(/^Tên cấu trúc/u, "water");
+
+    expect(await screen.findByRole("button", { name: /từ bỏ/u })).toBeInTheDocument();
+    expect(screen.queryByLabelText("Phiên âm")).not.toBeInTheDocument();
+    expect(screen.queryByText("/x/")).not.toBeInTheDocument();
+    expect(findSuggestionsMock).toHaveBeenCalledWith("grammar", "water", expect.any(AbortSignal));
   });
 });

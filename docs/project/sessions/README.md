@@ -38,5 +38,6 @@ Mỗi phiên dùng một file `YYYY-MM-DD-NN-short-topic.md`, theo [mẫu](../se
 - [2026-11-11 · 27 · Code US-LIB-03 (danh sách thư viện)](2026-11-11-27-code-us-lib-03.md).
 - [2026-11-11 · 28 · Code US-LIB-05 (sửa mục) và hoàn tất AC-02 của US-LIB-02](2026-11-11-28-code-us-lib-05.md).
 - [2026-11-11 · 29 · Code US-LIB-06 (xóa từ vựng và ngữ pháp)](2026-11-11-29-code-us-lib-06.md).
+- [2026-11-11 · 30 · Gợi ý phiên âm và nghĩa (US-LIB-08 integration ready, US-LIB-09)](2026-11-11-30-suggestions-us-lib-08-09.md).
 
 Thêm liên kết nhật ký mới vào danh sách này sau mỗi phiên.

@@ -20,7 +20,7 @@ if (string.IsNullOrWhiteSpace(connectionString))
 builder.Services.AddProblemDetails();
 builder.Services.AddOpenApi();
 builder.Services.AddAccountsModule(connectionString, builder.Configuration);
-builder.Services.AddLibraryModule(connectionString);
+builder.Services.AddLibraryModule(connectionString, builder.Configuration);
 builder.Services.AddAuthRateLimiting();
 builder.Services.AddSessionCookies();
 builder.Services.AddAuthorization();

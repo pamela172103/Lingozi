@@ -1,11 +1,12 @@
 import Link from "next/link";
 import { getFormatter, getTranslations } from "next-intl/server";
 
+import { listHref, pageCount } from "@/lib/library/paging";
 import { libraryKindFromApi, libraryPath, type LibraryKind } from "@/lib/library/kinds";
 import type { ItemPage, ItemSummary } from "@/lib/library/types";
 
-function Card({ item, kind, date }: { item: ItemSummary; kind: LibraryKind; date: string }) {
-  const grammar = kind === "grammar";
+function Card({ item, date }: { item: ItemSummary; date: string }) {
+  const grammar = libraryKindFromApi(item.kind) === "grammar";
   return (
     <li className="min-w-0">
       <Link
@@ -31,11 +32,12 @@ function Card({ item, kind, date }: { item: ItemSummary; kind: LibraryKind; date
   );
 }
 
-/** Cards of one page (W-LIB-01, W-LIB-03) with simple previous/next links. Search, filters and the full states of US-LIB-03 come later. */
+/** One page of cards (W-LIB-01, W-LIB-03) with previous and next links that keep the page size (US-LIB-03 AC-01). */
 export async function ItemList({ kind, data }: { kind: LibraryKind; data: ItemPage }) {
   const t = await getTranslations("Library.list");
   const format = await getFormatter();
-  const pages = Math.max(1, Math.ceil(data.totalCount / data.pageSize));
+  const pages = pageCount(data.totalCount, data.pageSize);
+  const base = libraryPath(kind);
   const date = (value: string) =>
     t("created", {
       date: format.dateTime(new Date(value), {
@@ -49,14 +51,14 @@ export async function ItemList({ kind, data }: { kind: LibraryKind; data: ItemPa
     <>
       <ul className="grid gap-4 md:grid-cols-2">
         {data.items.map((item) => (
-          <Card key={item.id} item={item} kind={kind} date={date(item.createdAt)} />
+          <Card key={item.id} item={item} date={date(item.createdAt)} />
         ))}
       </ul>
       {pages > 1 && (
-        <nav aria-label="Phân trang" className="mt-6 flex items-center justify-center gap-4 text-sm">
+        <nav aria-label={t("pagination")} className="mt-6 flex items-center justify-center gap-4 text-sm">
           {data.page > 1 ? (
             <Link
-              href={`${libraryPath(kind)}?page=${data.page - 1}`}
+              href={listHref(base, data.page - 1, data.pageSize)}
               className="rounded-control border border-border-strong px-4 py-2 font-medium"
             >
               {t("previous")}
@@ -67,7 +69,7 @@ export async function ItemList({ kind, data }: { kind: LibraryKind; data: ItemPa
           <span className="text-secondary">{t("pageOf", { page: data.page, pages })}</span>
           {data.page < pages ? (
             <Link
-              href={`${libraryPath(kind)}?page=${data.page + 1}`}
+              href={listHref(base, data.page + 1, data.pageSize)}
               className="rounded-control border border-border-strong px-4 py-2 font-medium"
             >
               {t("next")}

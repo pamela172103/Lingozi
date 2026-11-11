@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { getFormatter, getTranslations } from "next-intl/server";
 
 import { API_KIND, libraryKindFromApi, libraryPath, type LibraryKind } from "@/lib/library/kinds";
+import { listHref, pageCount } from "@/lib/library/paging";
 import { apiGet } from "@/lib/library/server";
 import type { ItemDetail, ItemPage } from "@/lib/library/types";
 
@@ -14,12 +15,21 @@ import { SavedToast } from "./saved-toast";
 const primaryLink =
   "inline-flex h-11 items-center justify-center rounded-control bg-accent px-4 text-sm font-medium text-on-accent hover:brightness-95";
 
-/** Library list (W-LIB-01…04). A signed-out visitor goes to the sign-in page (BR-AUTH, US-AUTH-09 will make this a shared guard). */
-export async function ListPage({ kind, page }: { kind: LibraryKind; page: number }) {
+/**
+ * Library list (W-LIB-01…04). Shows the page of items; an empty library, a page past the end, and a failed load each have their own state.
+ * A signed-out visitor is sent to sign-in (US-AUTH-09 will make this a shared guard).
+ */
+export async function ListPage({ kind, page, pageSize }: { kind: LibraryKind; page: number; pageSize: number }) {
   const t = await getTranslations(`Library.${kind}`);
   const list = await getTranslations("Library.list");
-  const result = await apiGet<ItemPage>(`/api/library/items?kind=${API_KIND[kind]}&page=${page}`);
+  const base = libraryPath(kind);
+  const result = await apiGet<ItemPage>(`/api/library/items?kind=${API_KIND[kind]}&page=${page}&pageSize=${pageSize}`);
   if (result.status === "unauthorized") redirect("/auth/login");
+
+  const total = result.status === "ok" ? result.data.totalCount : 0;
+  const pages = pageCount(total, pageSize);
+  const empty = result.status === "ok" && total === 0 && page === 1;
+  const outOfRange = result.status === "ok" && page > pages;
 
   return (
     <LibraryShell active={kind}>
@@ -28,7 +38,7 @@ export async function ListPage({ kind, page }: { kind: LibraryKind; page: number
           {t("title")}
           {result.status === "ok" && (
             <span className="ml-3 rounded-full bg-subtle px-2.5 py-0.5 align-middle text-xs font-semibold text-secondary">
-              {t("count", { count: result.data.totalCount })}
+              {t("count", { count: total })}
             </span>
           )}
         </h1>
@@ -37,13 +47,22 @@ export async function ListPage({ kind, page }: { kind: LibraryKind; page: number
         </Link>
       </div>
       <div className="mt-6">
-        {result.status === "ok" && result.data.items.length > 0 && <ItemList kind={kind} data={result.data} />}
-        {result.status === "ok" && result.data.items.length === 0 && (
+        {result.status === "ok" && !empty && !outOfRange && <ItemList kind={kind} data={result.data} />}
+        {empty && (
           <div className="rounded-card bg-surface p-10 text-center shadow-card">
             <h2 className="text-lg font-semibold text-primary">{t("emptyTitle")}</h2>
             <p className="mt-2 text-sm text-secondary">{t("emptyHint")}</p>
             <Link href={libraryPath(kind, "new")} className={`${primaryLink} mt-6`}>
               {t("emptyAction")}
+            </Link>
+          </div>
+        )}
+        {outOfRange && (
+          // AC-04: a page past the end shows an empty list and a link back to page 1.
+          <div className="rounded-card bg-surface p-10 text-center shadow-card">
+            <p className="text-sm text-secondary">{list("outOfRange")}</p>
+            <Link href={listHref(base, 1, pageSize)} className={`${primaryLink} mt-6`}>
+              {list("firstPage")}
             </Link>
           </div>
         )}
@@ -57,7 +76,7 @@ export async function ListPage({ kind, page }: { kind: LibraryKind; page: number
               {list("loadError")}
             </p>
             <Link
-              href={`${libraryPath(kind)}?page=${page}`}
+              href={listHref(base, page, pageSize)}
               className="inline-flex h-11 items-center rounded-control border border-border-strong bg-surface px-4 font-medium text-primary"
             >
               {list("retry")}

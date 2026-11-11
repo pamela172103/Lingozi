@@ -98,7 +98,11 @@
       "previous": "‹ Trước",
       "next": "Sau ›",
       "pageOf": "Trang {page} / {pages}",
-      "created": "Tạo {date}"
+      "created": "Tạo {date}",
+      "loading": "Đang tải thư viện",
+      "pagination": "Phân trang",
+      "outOfRange": "Trang này không có mục nào.",
+      "firstPage": "Về trang 1"
     },
     "form": {
       "term": "Từ",

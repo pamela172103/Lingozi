@@ -21,6 +21,9 @@ Get-Content '.env' | ForEach-Object {
 }
 
 # 2. Database and mail capture.
+if (-not (Get-Command docker -ErrorAction SilentlyContinue)) {
+  throw 'Không tìm thấy lệnh docker. Hãy cài Docker Desktop (https://www.docker.com/products/docker-desktop/), mở Docker Desktop, đợi biểu tượng cá voi báo "Running", rồi chạy lại. Nếu đã cài, đóng và mở lại PowerShell.'
+}
 docker compose up -d --wait sqlserver mailpit
 if ($LASTEXITCODE -ne 0) { throw 'Docker containers did not start. Is Docker Desktop running?' }
 

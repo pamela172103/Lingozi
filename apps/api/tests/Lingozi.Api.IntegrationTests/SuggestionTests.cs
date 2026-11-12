@@ -1,4 +1,5 @@
 using System.Net;
+using Lingozi.Library.Items;
 using Lingozi.Library.Suggestions;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
@@ -221,6 +222,37 @@ public sealed class SuggestionTests(SqlServerApiFactory factory)
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         Assert.Equal("user", (await response.JsonAsync()).GetProperty("ipaSource").GetString());
+    }
+
+    [Fact]
+    public async Task ExamplesKeepTheirTranslationAndAreDistinctBoundedAndNotSaved()
+    {
+        var reference = Water with
+        {
+            Examples = [
+                new("  She abandoned her old car.  ", "  Cô ấy bỏ chiếc xe cũ.  "),
+                new("she abandoned her old car.", null),
+                new("", "empty"),
+                new(new string('x', ItemRules.ExampleTextMax + 1), null),
+                new("An oversized translation.", new string('x', ItemRules.ExampleTranslationMax + 1)),
+                new("Second example.", null),
+                new("Third example.", null),
+                new("Fourth example.", null),
+                new("Fifth example.", null),
+                new("Sixth example.", null),
+            ],
+        };
+        var fake = new FakeWordReferenceProvider { Behaviour = (_, _) => Task.FromResult<WordReference?>(reference) };
+        var client = await SignedInClient.CreateAsync(With(fake));
+        using var response = await client.SendAsync(HttpMethod.Get, Query("word", "abandon"), null);
+        var examples = (await response.JsonAsync()).GetProperty("examples");
+        Assert.Equal(5, examples.GetArrayLength());
+        Assert.Equal("She abandoned her old car.", examples[0].GetProperty("text").GetString());
+        Assert.Equal("Cô ấy bỏ chiếc xe cũ.", examples[0].GetProperty("translation").GetString());
+        Assert.Equal(JsonValueKindNull, examples[1].GetProperty("translation").ValueKind);
+
+        using var items = await client.SendAsync(HttpMethod.Get, "/api/library/items?kind=word", null);
+        Assert.Equal(0, (await items.JsonAsync()).GetProperty("totalCount").GetInt32());
     }
 
     private const System.Text.Json.JsonValueKind JsonValueKindNull = System.Text.Json.JsonValueKind.Null;

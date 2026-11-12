@@ -29,7 +29,7 @@ import {
 } from "@/lib/library/form";
 import { API_KIND, LIMITS, PARTS_OF_SPEECH, libraryPath, type LibraryKind } from "@/lib/library/kinds";
 import type { ItemDetail, ItemSummary } from "@/lib/library/types";
-import { MeaningSuggestions } from "./meaning-suggestions";
+import { SuggestionInput } from "./suggestion-input";
 import { SimilarDialog } from "./similar-dialog";
 import { useSuggestions } from "./use-suggestions";
 
@@ -419,21 +419,53 @@ export function ItemForm({ kind, item }: { kind: LibraryKind; item?: ItemDetail 
         count={{ length: values[name].length, max: LIMITS[name] }}
         key={name}
       >
-        {({ id, invalid, describedBy }) => (
-          <textarea
-            id={id}
-            name={name}
-            rows={rows}
-            value={values[name]}
-            disabled={submitting}
-            required={required}
-            aria-invalid={invalid}
-            aria-describedby={describedBy}
-            placeholder={placeholder}
-            onChange={(e) => set(name, e.target.value)}
-            className={`${areaClass} ${mono ? "font-mono" : ""} ${invalid ? "border-danger" : "border-border-strong"}`}
-          />
-        )}
+        {({ id, invalid, describedBy }) =>
+          name === "meaning" ? (
+            <SuggestionInput
+              id={id}
+              name={name}
+              multiline
+              rows={rows}
+              value={values[name]}
+              disabled={submitting}
+              required={required}
+              aria-invalid={invalid}
+              aria-describedby={describedBy}
+              placeholder={placeholder}
+              onChange={(value) => set(name, value)}
+              options={(suggestions?.meanings ?? []).map((meaning) => ({
+                value: meaning.text,
+                detail: suggestT(
+                  meaning.source === "own"
+                    ? "own"
+                    : suggestions?.provider === "scandict"
+                      ? "sourceScandict"
+                      : "dictionary",
+                ),
+              }))}
+              listLabel={suggestT("label")}
+              onPick={(index) => {
+                const meaning = suggestions?.meanings[index];
+                if (meaning) set("meaning", meaning.text);
+              }}
+              className={`${areaClass} ${mono ? "font-mono" : ""} ${invalid ? "border-danger" : "border-border-strong"}`}
+            />
+          ) : (
+            <textarea
+              id={id}
+              name={name}
+              rows={rows}
+              value={values[name]}
+              disabled={submitting}
+              required={required}
+              aria-invalid={invalid}
+              aria-describedby={describedBy}
+              placeholder={placeholder}
+              onChange={(event) => set(name, event.target.value)}
+              className={`${areaClass} ${mono ? "font-mono" : ""} ${invalid ? "border-danger" : "border-border-strong"}`}
+            />
+          )
+        }
       </Field>
     );
   }
@@ -500,15 +532,30 @@ export function ItemForm({ kind, item }: { kind: LibraryKind; item?: ItemDetail 
                 <div className="grid min-w-0 flex-1 gap-3 sm:grid-cols-2">
                   <Field id={fieldId(`${example.key}-text`)} label={t("exampleText")} error={textError}>
                     {({ id, invalid, describedBy }) => (
-                      <input
+                      <SuggestionInput
                         id={id}
-                        type="text"
                         value={example.text}
                         disabled={submitting}
                         aria-invalid={invalid}
                         aria-describedby={describedBy}
-                        autoComplete="off"
-                        onChange={(e) => updateExample(index, "text", e.target.value)}
+                        onChange={(value) => updateExample(index, "text", value)}
+                        options={(suggestions?.examples ?? []).map((entry) => ({
+                          value: entry.text,
+                          detail: entry.translation ?? undefined,
+                        }))}
+                        listLabel={suggestT("examplesLabel")}
+                        onPick={(choice) => {
+                          const picked = suggestions?.examples?.[choice];
+                          if (picked)
+                            set(
+                              "examples",
+                              values.examples.map((entry, i) =>
+                                i === index
+                                  ? { ...entry, text: picked.text, translation: picked.translation ?? "" }
+                                  : entry,
+                              ),
+                            );
+                        }}
                         className={`${inputClass} ${invalid ? "border-danger" : "border-border-strong"}`}
                       />
                     )}
@@ -555,11 +602,11 @@ export function ItemForm({ kind, item }: { kind: LibraryKind; item?: ItemDetail 
     if (grammar) return null;
     if (editing && item) {
       if (ipaEdited && item.ipaSource === "dictionary") return suggestT("edited");
-      if (!ipaEdited && item.ipaSource === "dictionary" && ipaShown)
-        return `${suggestT("autoIpa")} · ${suggestT("source")}`;
+      if (!ipaEdited && item.ipaSource === "dictionary" && ipaShown) return suggestT("storedIpa");
       return null;
     }
-    if (autoIpa !== null && ipaShown === autoIpa) return `${suggestT("autoIpa")} · ${suggestT("source")}`;
+    if (autoIpa !== null && ipaShown === autoIpa)
+      return `${suggestT("autoIpa")} · ${suggestT(suggestions?.provider === "scandict" ? "sourceScandict" : "source")}`;
     if (ipaEdited && suggestions?.ipa && ipaShown !== suggestions.ipa.value) return suggestT("edited");
     if (!ipaShown && suggestions?.sourceEnabled && !suggestions.sourceAvailable) return suggestT("unavailable");
     if (
@@ -584,13 +631,6 @@ export function ItemForm({ kind, item }: { kind: LibraryKind; item?: ItemDetail 
     meaning: (
       <div key="meaning">
         {area("meaning", t(grammar ? "grammarMeaningPlaceholder" : "meaningPlaceholder"), grammar ? 3 : 3, !grammar)}
-        {suggestions && suggestions.meanings.length > 0 && (
-          <MeaningSuggestions
-            meanings={suggestions.meanings}
-            value={values.meaning}
-            onPick={(text) => set("meaning", text)}
-          />
-        )}
       </div>
     ),
     formula: area("formula", t("formulaPlaceholder"), 2, true, true),

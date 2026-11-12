@@ -33,10 +33,15 @@ public static class LibraryModule
             client.BaseAddress = new Uri(sp.GetRequiredService<IOptions<PronunciationOptions>>().Value.DictionaryApiBaseUrl);
             client.Timeout = PronunciationOptions.Timeout;
         });
+        services.AddHttpClient<ScandictProvider>(client => client.Timeout = PronunciationOptions.Timeout)
+            .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler { AllowAutoRedirect = false });
         services.AddScoped<IWordReferenceProvider>(sp =>
-            sp.GetRequiredService<IOptions<PronunciationOptions>>().Value.Provider == "dictionaryapi"
-                ? sp.GetRequiredService<DictionaryApiProvider>()
-                : new NoWordReferenceProvider());
+            sp.GetRequiredService<IOptions<PronunciationOptions>>().Value.Provider switch
+            {
+                "dictionaryapi" => sp.GetRequiredService<DictionaryApiProvider>(),
+                "scandict" => sp.GetRequiredService<ScandictProvider>(),
+                _ => new NoWordReferenceProvider(),
+            });
 
         services.AddScoped<KnowledgeItemService>();
         services.AddScoped<SuggestionService>();

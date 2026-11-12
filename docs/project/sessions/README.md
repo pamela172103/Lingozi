@@ -41,3 +41,7 @@ Mỗi phiên dùng một file `YYYY-MM-DD-NN-short-topic.md`, theo [mẫu](../se
 - [2026-11-11 · 30 · Gợi ý phiên âm và nghĩa (US-LIB-08 integration ready, US-LIB-09)](2026-11-11-30-suggestions-us-lib-08-09.md).
 
 Thêm liên kết nhật ký mới vào danh sách này sau mỗi phiên.
+
+- [2026-11-12 · 01 · Dropdown nghĩa/ví dụ và chuẩn bị Scandict](2026-11-12-01-scandict-suggestions.md).
+
+- [2026-11-12 · 02 · Tích hợp Scandict và xác minh luồng thật](2026-11-12-02-scandict-live-integration.md).

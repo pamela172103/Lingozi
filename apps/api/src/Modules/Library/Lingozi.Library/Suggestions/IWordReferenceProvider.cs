@@ -1,9 +1,14 @@
 namespace Lingozi.Library.Suggestions;
 
 /// <summary>What an outside source knows about one English word.</summary>
-/// <param name="BritishIpa">Pronunciation with an en-GB audio file (BR-LIB-013), or null.</param>
-/// <param name="Definitions">Short English definitions, at most five.</param>
-public sealed record WordReference(string? BritishIpa, IReadOnlyList<string> Definitions);
+/// <param name="BritishIpa">Pronunciation explicitly marked as British by the configured source, or null.</param>
+/// <param name="Definitions">Short definitions from the configured source, at most five.</param>
+public sealed record WordReference(string? BritishIpa, IReadOnlyList<string> Definitions)
+{
+    public IReadOnlyList<ReferenceExample> Examples { get; init; } = [];
+}
+
+public sealed record ReferenceExample(string Text, string? Translation);
 
 /// <summary>
 /// The outside word source (ADR 0007). Only the word is sent. Implementations throw on transport or format errors;

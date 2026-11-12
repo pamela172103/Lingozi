@@ -38,12 +38,13 @@ test("US-LIB-09 AC-01/AC-04: my own meaning is suggested and a click fills the f
 
   await page.goto("/library/vocabulary/new");
   await page.getByLabel(/^Từ/u).fill("give up");
-  const chip = page.getByRole("button", { name: /từ bỏ/u });
-  await expect(chip).toBeVisible();
-  await expect(chip).toContainText("Từ mục của bạn");
+  await page.getByLabel(/^Nghĩa/u).focus();
+  const suggestion = page.getByRole("option", { name: /từ bỏ/u });
+  await expect(suggestion).toBeVisible();
+  await expect(suggestion).toContainText("Từ mục của bạn");
   await expect(page.getByLabel(/^Nghĩa/u)).toHaveValue("");
 
-  await chip.click();
+  await suggestion.click();
   await expect(page.getByLabel(/^Nghĩa/u)).toHaveValue("từ bỏ");
   await page.getByLabel(/^Nghĩa/u).fill("từ bỏ, dừng lại");
   await expect(page.getByLabel(/^Nghĩa/u)).toHaveValue("từ bỏ, dừng lại");

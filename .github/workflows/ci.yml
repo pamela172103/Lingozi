@@ -103,6 +103,7 @@ jobs:
             echo "MSSQL_SA_PASSWORD=$PW"
             echo "ConnectionStrings__Lingozi=\"Server=localhost,1433;Database=Lingozi;User Id=sa;Password=$PW;TrustServerCertificate=true;Encrypt=true\""
             echo "ASPNETCORE_ENVIRONMENT=Development"
+            echo "Pronunciation__Provider=none"
             echo "API_ORIGIN=http://localhost:5080"
             echo "Auth__LoginCodeHmacKey=$(openssl rand -base64 32)"
             echo "Auth__RequestCodePerIpPer10Minutes=1000"

@@ -176,7 +176,7 @@
       "loadError": "Không tải được mục này.",
       "retry": "Thử lại",
       "edit": "Sửa",
-      "ipaSource": "Nguồn: Wiktionary, CC BY-SA 3.0"
+      "ipaSource": "Phiên âm từ từ điển bên ngoài. Nếu dùng Wiktionary: CC BY-SA 3.0."
     },
     "similar": {
       "title": "Bạn đã lưu nội dung tương tự",
@@ -200,11 +200,14 @@
       "gone": "Mục này không còn tồn tại."
     },
     "suggest": {
+      "examplesLabel": "Gợi ý ví dụ",
       "label": "Gợi ý:",
       "own": "Từ mục của bạn",
       "dictionary": "Từ từ điển",
       "autoIpa": "Tự động từ từ điển (Anh-Anh)",
       "source": "Nguồn: Wiktionary, CC BY-SA 3.0",
+      "sourceScandict": "Nguồn: Scandict",
+      "storedIpa": "Phiên âm đã lưu từ từ điển",
       "edited": "Bạn đã chỉnh sửa",
       "noIpa": "Chưa có phiên âm Anh-Anh, bạn có thể tự nhập",
       "unavailable": "Không lấy được phiên âm tự động"

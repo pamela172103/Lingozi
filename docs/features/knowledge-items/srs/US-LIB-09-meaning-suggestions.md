@@ -64,17 +64,17 @@ flowchart TD
     A[Nhập Từ hoặc Tên cấu trúc, rời ô] --> B[GET /suggestions?term&kind]
     B --> C{Có gợi ý nghĩa?}
     C -- Không --> D[Không hiện gì, nghĩa vẫn không bắt buộc]
-    C -- Có --> E[Hàng chip gợi ý: Từ mục của bạn, Từ từ điển]
-    E --> F{Bấm một chip?}
+    C -- Có --> E[Danh sách thả xuống gợi ý: Từ mục của bạn, Từ từ điển]
+    E --> F{Chọn một gợi ý?}
     F -- Có --> G[Điền ô Nghĩa, vẫn sửa được]
     F -- Không --> H[Ô Nghĩa giữ nguyên trống]
 ```
 
 | Trạng thái | Hiển thị |
 | --- | --- |
-| Bình thường | Hàng chip gợi ý dưới ô "Nghĩa", mỗi chip có nhãn nguồn. |
-| Đang tải | Không chặn form; chip xuất hiện khi có kết quả. |
-| Trống | Không có gợi ý: không hiện chip và không có thông báo. |
+| Bình thường | Danh sách thả xuống gợi ý dưới ô "Nghĩa", mỗi lựa chọn có nhãn nguồn. |
+| Đang tải | Không chặn form; dropdown xuất hiện khi ô có focus khi có kết quả. |
+| Trống | Không có gợi ý: không hiện dropdown và không có thông báo. |
 | Lỗi | Nguồn lỗi: chỉ còn gợi ý từ mục của người dùng (nếu có); không hiện lỗi đỏ. |
 | Mất kết nối | Không hỗ trợ ngoại tuyến. Hiện "Mất kết nối" và nút "Thử lại"; không mất dữ liệu đã nhập. |
 
@@ -95,8 +95,8 @@ sequenceDiagram
     A->>DB: Nghĩa của mục cùng NormalizedTerm WHERE UserId = người dùng
     A->>D: Tra nghĩa (timeout 3 giây, chỉ gửi từ cần tra)
     A-->>W: 200 {meanings: [{text, source: own}, {text, source: dictionary}]}
-    W-->>U: Hàng chip gợi ý
-    U->>W: Bấm chip
+    W-->>U: Danh sách thả xuống gợi ý
+    U->>W: Chọn gợi ý
     W-->>U: Điền ô Nghĩa (người dùng vẫn sửa được)
 ```
 
@@ -147,7 +147,7 @@ _Wireframe mức thấp (khung xám, đúng bố cục màn hình thật) vẽ b
 
 ![W-LIB-32 Gợi ý nghĩa: từ mục của bạn](../wireframes/W-LIB-32.svg)
 
-- Chip gợi ý có nhãn nguồn bằng chữ; ô "Nghĩa" vẫn trống cho tới khi bấm chip. Vùng gợi ý có `aria-live="polite"`.
+- Dropdown gợi ý xuất hiện khi focus ô nghĩa, có nhãn nguồn bằng chữ; ô "Nghĩa" vẫn trống cho tới khi chọn gợi ý. Vùng gợi ý có `aria-live="polite"`.
 - Chỉ gợi ý từ mục cùng loại của chính người dùng (ở form từ vựng thì từ thư viện Từ vựng).
 - Form Ngữ pháp dùng cùng thành phần cho ô "Ý nghĩa": chỉ gợi ý từ mục ngữ pháp của chính người dùng, không có gợi ý từ điển.
 
@@ -161,14 +161,14 @@ _Wireframe mức thấp (khung xám, đúng bố cục màn hình thật) vẽ b
 
 ![W-LIB-34 Gợi ý nghĩa: không có gợi ý](../wireframes/W-LIB-34.svg)
 
-- Không hiện chip và không có thông báo lỗi; ô "Nghĩa" vẫn trống để người dùng tự nhập (nghĩa của từ vựng là bắt buộc).
+- Không hiện dropdown và không có thông báo lỗi; ô "Nghĩa" vẫn trống để người dùng tự nhập (nghĩa của từ vựng là bắt buộc).
 - Gợi ý của người dùng khác không bao giờ xuất hiện: người dùng chưa có mục nào thì không có gợi ý "Từ mục của bạn".
 
 ### W-LIB-35 — Gợi ý nghĩa: sau khi bấm một gợi ý
 
 ![W-LIB-35 Gợi ý nghĩa: sau khi bấm một gợi ý](../wireframes/W-LIB-35.svg)
 
-- Bấm chip mới điền vào ô "Nghĩa"; người dùng vẫn sửa được. Chip đã chọn được đánh dấu.
+- Chọn gợi ý mới điền vào ô "Nghĩa"; người dùng vẫn sửa được. Danh sách đóng sau khi chọn; ArrowUp/ArrowDown, Enter, Escape được hỗ trợ.
 
 ## 6. API
 
@@ -195,11 +195,11 @@ Tối đa 5 nghĩa. Nguồn lỗi hoặc quá 3 giây: `sourceAvailable = false`
 
 | TC | Loại | Bước chính | Kết quả mong đợi |
 | --- | --- | --- | --- |
-| `TC-LIB-045` | INT + E2E | Có mục "give up"/"từ bỏ" của A; A nhập "give up" ở loại grammar | `suggestions.meanings` có `{source: own}`; chip hiện; ô nghĩa trống cho tới khi bấm |
+| `TC-LIB-045` | INT + E2E | Có mục "give up"/"từ bỏ" của A; A nhập "give up" ở loại grammar | `suggestions.meanings` có `{source: own}`; dropdown hiện khi focus ô nghĩa; ô nghĩa trống cho tới khi bấm |
 | `TC-LIB-046` | INT | Provider trả nghĩa | Gợi ý có `source=dictionary` |
 | `TC-LIB-047` | INT | B có "give up"/"bỏ cuộc"; A không có mục nào, gọi suggestions | Không có "bỏ cuộc" trong kết quả của A; SQL truy vấn có điều kiện `UserId` |
-| `TC-LIB-048` | E2E | Bấm chip "từ bỏ" | Ô nghĩa điền "từ bỏ"; sửa được |
-| `TC-LIB-049` | UNIT (Vitest) | Suggestions rỗng | Không có chip và không có thông báo lỗi |
+| `TC-LIB-048` | E2E | Chọn gợi ý "từ bỏ" | Ô nghĩa điền "từ bỏ"; sửa được |
+| `TC-LIB-049` | UNIT (Vitest) | Suggestions rỗng | Không có dropdown và không có thông báo lỗi |
 
 ## 8. Lịch sử sửa đổi
 

@@ -538,6 +538,17 @@ describe("ItemForm — pronunciation and meaning suggestions (US-LIB-08, US-LIB-
     expect(findSuggestionsMock).toHaveBeenCalledWith("word", "water", expect.any(AbortSignal));
   });
 
+  it("labels Scandict pronunciation and meanings with the actual provider", async () => {
+    findSuggestionsMock.mockResolvedValue({ ...water, provider: "scandict" });
+    renderWithIntl(<ItemForm kind="vocabulary" />);
+    fill(/^Từ/u, "abandon");
+    await screen.findByDisplayValue("/ˈwɔːtə/");
+    expect(screen.getByText("Tự động từ từ điển (Anh-Anh) · Nguồn: Scandict")).toBeInTheDocument();
+    fireEvent.focus(screen.getByLabelText(/^Nghĩa \*$/u));
+    expect(screen.getByRole("option", { name: /a clear liquid/u })).toHaveTextContent("Nguồn: Scandict");
+    expect(screen.queryByText(/Wiktionary/u)).not.toBeInTheDocument();
+  });
+
   it("saves the suggested pronunciation as 'dictionary' and an edited one as 'user' (AC-02, AC-04)", async () => {
     findSuggestionsMock.mockResolvedValue(water);
     createItem.mockResolvedValue({ kind: "saved", item: { id: "w-1", kind: "word" } });
@@ -599,20 +610,22 @@ describe("ItemForm — pronunciation and meaning suggestions (US-LIB-08, US-LIB-
     expect(screen.queryByText(/Chưa có phiên âm/u)).not.toBeInTheDocument();
   });
 
-  it("meaning chips show the source and a click fills the meaning, which stays editable (US-LIB-09 AC-01, AC-02, AC-04)", async () => {
+  it("meaning dropdown shows the source and a click fills the meaning, which stays editable (US-LIB-09 AC-01, AC-02, AC-04)", async () => {
     findSuggestionsMock.mockResolvedValue(water);
     renderWithIntl(<ItemForm kind="vocabulary" />);
     fill(/^Từ/u, "water");
 
-    const own = await screen.findByRole("button", { name: /từ bỏ/u });
+    await screen.findByDisplayValue("/ˈwɔːtə/");
+    fireEvent.focus(screen.getByLabelText(/^Nghĩa \*$/u));
+    const own = screen.getByRole("option", { name: /từ bỏ/u });
     expect(own).toHaveTextContent("Từ mục của bạn");
-    expect(screen.getByRole("button", { name: /a clear liquid/u })).toHaveTextContent("Từ từ điển");
+    expect(screen.getByRole("option", { name: /a clear liquid/u })).toHaveTextContent("Từ từ điển");
     expect(screen.getByLabelText(/^Nghĩa \*$/u)).toHaveValue("");
 
     fireEvent.click(own);
 
     expect(screen.getByLabelText(/^Nghĩa \*$/u)).toHaveValue("từ bỏ");
-    expect(own).toHaveAttribute("aria-pressed", "true");
+    expect(screen.queryByRole("listbox")).not.toBeInTheDocument();
     fill(/^Nghĩa \*$/u, "từ bỏ, dừng lại");
     expect(screen.getByLabelText(/^Nghĩa \*$/u)).toHaveValue("từ bỏ, dừng lại");
   });
@@ -622,9 +635,46 @@ describe("ItemForm — pronunciation and meaning suggestions (US-LIB-08, US-LIB-
     renderWithIntl(<ItemForm kind="grammar" />);
     fill(/^Tên cấu trúc/u, "water");
 
-    expect(await screen.findByRole("button", { name: /từ bỏ/u })).toBeInTheDocument();
+    await waitFor(() => expect(findSuggestionsMock).toHaveBeenCalled());
+    await waitFor(() => {
+      fireEvent.focus(screen.getByLabelText("Ý nghĩa"));
+      expect(screen.getByRole("option", { name: /từ bỏ/u })).toBeInTheDocument();
+    });
     expect(screen.queryByLabelText("Phiên âm")).not.toBeInTheDocument();
     expect(screen.queryByText("/x/")).not.toBeInTheDocument();
     expect(findSuggestionsMock).toHaveBeenCalledWith("grammar", "water", expect.any(AbortSignal));
+  });
+});
+
+describe("example suggestions", () => {
+  it("fills the example and paired translation and submits the selected editable values", async () => {
+    findSuggestionsMock.mockResolvedValue({
+      ipa: null,
+      sourceEnabled: true,
+      sourceAvailable: true,
+      meanings: [],
+      examples: [{ text: "She abandoned her old car.", translation: "Cô ấy bỏ chiếc xe cũ." }],
+    });
+    findSimilarItems.mockResolvedValue(none);
+    createItem.mockReset();
+    createItem.mockResolvedValue({ kind: "saved", item: { id: "ex-1", kind: "word" } });
+    renderWithIntl(<ItemForm kind="vocabulary" />);
+    fill(/^Từ/u, "abandon");
+    fill(/^Nghĩa \*$/u, "bỏ rơi");
+    fireEvent.click(screen.getByRole("button", { name: "+ Thêm ví dụ" }));
+    const example = screen.getByLabelText("Câu ví dụ");
+    await waitFor(() => {
+      fireEvent.focus(example);
+      expect(screen.getByRole("option", { name: /She abandoned/u })).toBeInTheDocument();
+    });
+    fireEvent.click(screen.getByRole("option", { name: /She abandoned/u }));
+    expect(example).toHaveValue("She abandoned her old car.");
+    expect(screen.getByLabelText("Nghĩa tiếng Việt")).toHaveValue("Cô ấy bỏ chiếc xe cũ.");
+    fireEvent.change(example, { target: { value: "She abandoned the car." } });
+    fireEvent.click(screen.getByRole("button", { name: "Lưu" }));
+    await waitFor(() => expect(createItem).toHaveBeenCalled());
+    expect(createItem.mock.calls[0]?.[0]).toMatchObject({
+      examples: [{ text: "She abandoned the car.", translation: "Cô ấy bỏ chiếc xe cũ." }],
+    });
   });
 });

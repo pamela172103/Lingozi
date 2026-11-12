@@ -447,15 +447,20 @@ def w31():
 
 
 # ---------------------------------------------------------------- meaning suggestions (US-LIB-09)
-def meaning_fragment(value="", chips=None, error=None):
-    return Fragment(Card(Field("Từ", "give up", req=True),
-                         Field("Nghĩa", value, req=True, kind="area", rows=2, placeholder="Nhập nghĩa của từ"),
-                         Col(Muted("Gợi ý:"), Chips(*chips), gap=6) if chips else None, pad=24, gap=16),
-                    caption="Một phần của form Thêm từ vựng")
+def meaning_fragment(value="", chips=None, error=None, example_menu=False):
+    menu = Card(*(Col(Text(option.label, 14), Muted(option.sub or "", 12), gap=4)
+                  for option in (chips or [])), pad=12, gap=14) if chips and not value else None
+    return Fragment(Card(Field("Từ", "abandon", req=True),
+                         Col(Field("Nghĩa", value, req=True, kind="area", rows=2, placeholder="Nhập nghĩa của từ"),
+                             menu, gap=0),
+                         Col(Field("Câu ví dụ", "", placeholder="Chọn hoặc nhập ví dụ"),
+                             Card(Col(Text("We abandoned the old car", 14), Muted("Chúng tôi bỏ lại chiếc xe cũ", 12), gap=4),
+                                  Col(Text("To abandon a hope", 14), Muted("Từ bỏ hy vọng", 12), gap=4), pad=12, gap=14), gap=0) if example_menu else None,
+                         pad=24, gap=16), caption="Dropdown khi ô nghĩa hoặc ví dụ có focus (dữ liệu minh họa)")
 
 
 @screen("W-LIB-32", F, "Gợi ý nghĩa: từ mục của bạn", [
-    "Chip gợi ý có nhãn nguồn bằng chữ; ô \"Nghĩa\" vẫn trống cho tới khi bấm chip. Vùng gợi ý có `aria-live=\"polite\"`.",
+    "Dropdown gợi ý xuất hiện khi focus ô nghĩa, có nhãn nguồn bằng chữ; ô \"Nghĩa\" vẫn trống cho tới khi chọn gợi ý. Vùng gợi ý có `aria-live=\"polite\"`.",
     "Chỉ gợi ý từ mục cùng loại của chính người dùng (ở form từ vựng thì từ thư viện Từ vựng).",
     "Form Ngữ pháp dùng cùng thành phần cho ô \"Ý nghĩa\": chỉ gợi ý từ mục ngữ pháp của chính người dùng, không có gợi ý từ điển.",
 ])
@@ -467,11 +472,11 @@ def w32():
     "Tối đa 5 gợi ý; gợi ý của chính người dùng luôn hiện trước gợi ý từ điển.",
 ])
 def w33():
-    return meaning_fragment(chips=[Chip("từ bỏ", "Từ mục của bạn"), Chip("ngừng cố gắng", "Từ mục của bạn"), Chip("to stop trying", "Từ từ điển")])
+    return meaning_fragment(chips=[Chip("từ bỏ", "Từ mục của bạn"), Chip("ngừng cố gắng", "Từ mục của bạn"), Chip("từ bỏ; bỏ lại phía sau", "Scandict")], example_menu=True)
 
 
 @screen("W-LIB-34", F, "Gợi ý nghĩa: không có gợi ý", [
-    "Không hiện chip và không có thông báo lỗi; ô \"Nghĩa\" vẫn trống để người dùng tự nhập (nghĩa của từ vựng là bắt buộc).",
+    "Không hiện dropdown và không có thông báo lỗi; ô \"Nghĩa\" vẫn trống để người dùng tự nhập (nghĩa của từ vựng là bắt buộc).",
     "Gợi ý của người dùng khác không bao giờ xuất hiện: người dùng chưa có mục nào thì không có gợi ý \"Từ mục của bạn\".",
 ])
 def w34():
@@ -479,7 +484,7 @@ def w34():
 
 
 @screen("W-LIB-35", F, "Gợi ý nghĩa: sau khi bấm một gợi ý", [
-    "Bấm chip mới điền vào ô \"Nghĩa\"; người dùng vẫn sửa được. Chip đã chọn được đánh dấu.",
+    "Chọn gợi ý mới điền vào ô \"Nghĩa\"; người dùng vẫn sửa được. Danh sách đóng sau khi chọn; ArrowUp/ArrowDown, Enter, Escape được hỗ trợ.",
 ])
 def w35():
     return meaning_fragment(value="từ bỏ", chips=[Chip("từ bỏ", "Từ mục của bạn", active=True), Chip("to stop trying", "Từ từ điển")])

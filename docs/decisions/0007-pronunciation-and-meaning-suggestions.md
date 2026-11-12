@@ -70,3 +70,11 @@ Nếu điều khoản không cho phép một trong các điểm trên, quay lạ
 - **2026-11-11 (cập nhật):** đã code provider `dictionaryapi` sau cấu hình `Pronunciation:Provider`, **mặc định `none`** (không có yêu cầu nào ra ngoài). Đã kiểm tra từ môi trường làm việc: `api.dictionaryapi.dev` trả 200, `water` có `-uk.mp3`, `learn` không có bản Anh-Anh, `give up` không có kết quả; dữ liệu ghi giấy phép CC BY-SA 3.0. Đã chạy luồng tự điền với nguồn thật một lần trên máy phát triển. **ADR vẫn Proposed**: cổng điều khoản, pháp lý share-alike và đo độ phủ chưa đạt.
 
 Theo `AGENTS.md` §6: US-LIB-08 và US-LIB-09 có trạng thái **integration ready** khi đã code abstraction và test với provider giả; **không** được ghi là hoạt động cho tới khi cổng kiểm tra ở trên đạt và provider thật được cấu hình. Form vẫn dùng được đầy đủ với phiên âm nhập tay.
+
+## Bổ sung 2026-11-12 — nguồn Scandict theo yêu cầu chủ dự án
+
+Chủ dự án yêu cầu dùng `scandict.com` lấy phiên âm, nghĩa và ví dụ với dropdown. Adapter `scandict` đã được triển khai sau `IWordReferenceProvider`, giữ provider cũ để tương thích. Development bật Scandict; production mặc định `none`, bật bằng `Pronunciation__Provider=scandict`. Đây là lựa chọn mới theo yêu cầu trực tiếp, không tự chuyển trạng thái các quyết định cũ về dictionaryapi.dev.
+
+Quan sát thực tế: `GET /api/autocomplete?q=abandon` trả 500; `GET /search-redirect?q=abandon` chuyển tới `/dictionary/abandon-o2Qj3`, trả HTML có IPA Anh–Anh, nghĩa Việt và ví dụ song ngữ. Không tìm thấy API JSON công khai cho dữ liệu chi tiết trong các tài nguyên đã kiểm tra. Implementation đọc HTML công khai bằng AngleSharp, không thực thi script và không tải subresource. Giới hạn 1 MiB, timeout 3 giây, chỉ theo tối đa 3 redirect HTTPS cùng host tới trang tra từ/tìm kiếm. Chỉ gửi từ cần tra; lỗi nguồn không chặn nhập tay/lưu mục.
+
+Bằng chứng: tra thật `abandon`, `water`, từ không có; parser/HTTP tests; E2E desktop/mobile nhận nguồn thật, chọn nghĩa/ví dụ, sửa, lưu và tải lại từ SQL Server. Đây là bằng chứng hành vi hiện tại; không mô tả adapter HTML là API JSON chính thức hoặc cam kết giao diện website ổn định. Không thêm cache, không thực hiện crawl hàng loạt. Cột IPA hiện chỉ lưu dictionary/user nên tên provider chỉ chính xác ở response gợi ý mới; màn chi tiết dùng nhãn nguồn chung.

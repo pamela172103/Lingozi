@@ -1,8 +1,8 @@
 # Trạng thái dự án Lingozi
 
-- Cập nhật: 2026-11-11.
+- Cập nhật: 2026-11-12.
 - Giai đoạn: **Vòng 1 — Lưu được kiến thức của riêng mình** (2026-11-08 → 2026-11-21), đang ở bước ② Thiết kế. Vòng 0 xong phần việc. Xem [lộ trình](../product/roadmap.md) §5.
-- Phiên gần nhất: [Gợi ý phiên âm và nghĩa (US-LIB-08 integration ready, US-LIB-09)](sessions/2026-11-11-30-suggestions-us-lib-08-09.md).
+- Phiên gần nhất: [Tích hợp Scandict và luồng thật đã kiểm chứng](sessions/2026-11-12-02-scandict-live-integration.md).
 - Đã đọc và gộp 4 commit từ `origin/work` vào `main` theo fast-forward, tới `61514e0`. Bàn giao phiên 05 được lưu cùng commit tài liệu tiếp theo; tra bằng `git log -- docs/project/`.
 
 ## Đã hoàn thành
@@ -123,3 +123,9 @@ Trong phiên cloud trên môi trường "Lingozi": .NET SDK được setup scrip
 - Phiên 2026-11-10-21: code US-AUTH-02 (xác minh mã, tạo tài khoản, cookie phiên, màn nhập mã theo Figma W-AUTH-06 đến 08). Backend 49/49, web 61/61, E2E 32/32. Đã commit cùng phiên này.
 - Phiên 2026-11-11-22: US-LIB-01 đổi form theo loại (từ vựng: Từ*, Nghĩa*, phiên âm, loại từ, ví dụ, ghi chú; ngữ pháp: Tên cấu trúc*, Công thức*, ý nghĩa, ví dụ, ghi chú; bỏ Nguồn). Cập nhật đặc tả, BR, wireframe, test case, ERD. Còn lại: US-LIB-09 và màn hình chi tiết/sửa.
 - Phiên 2026-11-11-23: cập nhật chi tiết (W-LIB-14, 15), sửa (W-LIB-18, 19), gợi ý nghĩa (US-LIB-09, AC-05) và danh mục theo form mới; bỏ Nguồn. Còn lại: ERD cột Source chờ xác nhận.
+
+## Phiên 2026-11-12 — Scandict
+
+- `done`: adapter Scandict qua HTML công khai, tự điền IPA UK, dropdown nghĩa Việt và ví dụ song ngữ, cho phép sửa/lưu. Development đã bật, production mặc định tắt. Nhánh `feat/scandict-suggestions`; chủ dự án đã yêu cầu commit, bàn giao đi cùng commit tích hợp Scandict (tra bằng `git log`).
+- Bằng chứng: 11/11 parser/HTTP, 12/12 integration gợi ý SQL Server, 40/40 test form/dropdown và 2/2 live E2E desktop/mobile đạt; build API/web, lint/typecheck/format, tài liệu/wireframe đạt. Live E2E xác minh lưu và đọc lại từ SQL Server, axe không có lỗi serious/critical.
+- Giới hạn: Scandict chưa có API JSON chi tiết được xác minh; adapter phụ thuộc markup HTML. Tên provider chưa được lưu riêng cùng IPA, nên mục đã lưu dùng nhãn từ điển chung. Full E2E/CI chưa chạy trong phiên này. Xem nhật ký mới nhất để tiếp tục.

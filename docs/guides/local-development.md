@@ -144,3 +144,21 @@ Lần đầu chạy có thể mất vài phút (API build, website biên dịch)
 - Môi trường này không có PowerShell: script `.ps1` chưa được chạy thử ở đây.
 - Khi E2E lỗi hàng loạt ở bước đăng nhập, kiểm tra trước: Mailpit còn chạy (cổng 8025), API còn sống (`/health/ready`), web đang chạy bản build mới.
 
+
+## Gợi ý từ Scandict
+
+Development dùng `Pronunciation:Provider=scandict` trong `appsettings.Development.json`. Ghi đè bằng `Pronunciation__Provider=none` để tắt, hoặc `dictionaryapi` để dùng nguồn cũ. Production vẫn mặc định `none`; muốn bật Scandict cần đặt `Pronunciation__Provider=scandict`. Không cần API key.
+
+Backend gọi HTTPS `https://scandict.com/search-redirect?q=<word>`, theo redirect cùng host tới `/dictionary/...` hoặc `/search`, rồi đọc HTML để lấy IPA Anh–Anh, nghĩa tiếng Việt và tối đa 5 ví dụ kèm bản dịch. Đây là adapter trang công khai, **không phải API JSON chính thức**; `/api/autocomplete` trả 500 khi kiểm tra ngày 2026-11-12. Thay đổi markup của website có thể làm nguồn tạm không khả dụng. Timeout toàn bộ lookup 3 giây, tối đa 3 redirect và giới hạn body 1 MiB; không gửi thông tin tài khoản ra Scandict.
+
+Kiểm tra thủ công: đăng nhập, mở form thêm từ vựng, nhập `abandon`, đợi phiên âm `/əˈbændən/` và nhãn Scandict. Focus ô Nghĩa để chọn dropdown; bấm + Thêm ví dụ rồi focus Câu ví dụ để chọn câu và bản dịch. Có thể sửa mọi nội dung trước khi lưu.
+
+Kiểm tra tự động với website thật (API/SQL Server/Mailpit/web phải chạy, provider là `scandict`):
+
+```bash
+SCANDICT_LIVE_E2E=1 pnpm --filter @lingozi/e2e exec playwright test specs/library-scandict.spec.ts --workers=1
+```
+
+Bài kiểm tra live mặc định bỏ qua trong CI để không phụ thuộc website ngoài. Test parser/HTTP `ScandictProviderTests` dùng fixture nhỏ theo cấu trúc đã quan sát; test `SuggestionTests` dùng SQL Server thật và provider test.
+
+Giới hạn lịch sử: database hiện chỉ lưu nhãn IPA `dictionary/user`, không lưu tên provider. Nhãn nguồn chính xác xuất hiện khi nhận gợi ý mới; chi tiết các mục đã lưu dùng nhãn từ điển chung để tránh gán nhầm dữ liệu Scandict thành Wiktionary.

@@ -52,11 +52,11 @@
 | `TC-LIB-042` | US-LIB-08 AC-06, BR-LIB-015 | INT + UNIT (Vitest) | Provider timeout 3 giây | `suggestions` trả 200 với `sourceAvailable=false`; form lưu được; không có thông báo đỏ |
 | `TC-LIB-043` | US-LIB-08 AC-07 | INT | Xóa phiên âm rồi lưu | `ipa` null; `ipaSource` null |
 | `TC-LIB-044` | US-LIB-08 AC-08, BR-LIB-013 | INT | POST `kind=grammar` kèm `ipa` khác null | 400-01 ở trường `ipa`; nguồn phiên âm không được gọi (đếm lần gọi bằng provider giả) |
-| `TC-LIB-045` | US-LIB-09 AC-01 | INT + E2E | Có mục "give up"/"từ bỏ" của A; A nhập "give up" ở form thêm từ vựng | `suggestions.meanings` có `{source: own}`; chip hiện; ô nghĩa trống cho tới khi bấm |
+| `TC-LIB-045` | US-LIB-09 AC-01 | INT + E2E | Có mục "give up"/"từ bỏ" của A; A nhập "give up" ở form thêm từ vựng | `suggestions.meanings` có `{source: own}`; dropdown hiện khi focus ô nghĩa; ô nghĩa trống cho tới khi bấm |
 | `TC-LIB-046` | US-LIB-09 AC-02 | INT | Provider trả nghĩa | Gợi ý có `source=dictionary` |
 | `TC-LIB-047` | US-LIB-09 AC-03, BR-LIB-014 | INT | B có "give up"/"bỏ cuộc"; A không có mục nào, gọi suggestions | Không có "bỏ cuộc" trong kết quả của A; SQL truy vấn có điều kiện `UserId` |
-| `TC-LIB-048` | US-LIB-09 AC-04 | E2E | Bấm chip "từ bỏ" | Ô nghĩa điền "từ bỏ"; sửa được |
-| `TC-LIB-049` | US-LIB-09 AC-05 | UNIT (Vitest) | Suggestions rỗng | Không có chip và không có thông báo lỗi |
+| `TC-LIB-048` | US-LIB-09 AC-04 | E2E | Chọn gợi ý "từ bỏ" | Ô nghĩa điền "từ bỏ"; sửa được |
+| `TC-LIB-049` | US-LIB-09 AC-05 | UNIT (Vitest) | Suggestions rỗng | Không có dropdown và không có thông báo lỗi |
 | `TC-LIB-051` | US-LIB-01 AC-11 | INT + E2E | POST `kind=word` không có `partOfSpeech`; có "Động từ"; có "Idiom" (ngoài danh sách) | Lưu được với null hoặc "Động từ"; "Idiom" → 400-01 ở trường `partOfSpeech`; form chỉ có danh sách cố định |
 | `TC-LIB-052` | US-LIB-04 AC-02 | E2E | Mở mục ngữ pháp bằng `/library/vocabulary/{id}` và mục từ vựng bằng `/library/grammar/{id}` | Cả hai hiện màn hình "Không tìm thấy mục này" như ERR-LIB-404-01, nút "Về thư viện" |
 | `TC-LIB-053` | US-LIB-02 AC-06 | INT + E2E | Có ngữ pháp tên "give up"; thêm từ vựng "give up" (và ngược lại) | `/similar?kind=word` trả rỗng; UI không hiện hộp thoại, lưu ngay |

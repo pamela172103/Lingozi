@@ -14,7 +14,11 @@ public sealed record SuggestionsResponse(
     SuggestedIpa? Ipa,
     bool SourceEnabled,
     bool SourceAvailable,
-    IReadOnlyList<SuggestedMeaning> Meanings);
+    IReadOnlyList<SuggestedMeaning> Meanings,
+    IReadOnlyList<ReferenceExample> Examples)
+{
+    public string? Provider { get; init; }
+}
 
 /// <summary>
 /// BR-LIB-014 and BR-LIB-015: suggestions come from the user's own items of the same kind, and from the outside source when it is enabled.
@@ -23,12 +27,13 @@ public sealed record SuggestionsResponse(
 public sealed partial class SuggestionService(LibraryDbContext db, IWordReferenceProvider provider, ILogger<SuggestionService> logger)
 {
     public const int MaxMeanings = 5;
+    public const int MaxExamples = 5;
 
     public async Task<SuggestionsResponse> GetAsync(Guid userId, ItemKind kind, string? term, CancellationToken cancellationToken)
     {
         if (string.IsNullOrWhiteSpace(term))
         {
-            return new SuggestionsResponse(null, provider.Enabled, false, []);
+            return new SuggestionsResponse(null, provider.Enabled, false, [], []);
         }
 
         var normalized = ItemRules.Normalize(term);
@@ -44,6 +49,7 @@ public sealed partial class SuggestionService(LibraryDbContext db, IWordReferenc
             .ToList();
 
         var meanings = own.Select(text => new SuggestedMeaning(text, "own")).ToList();
+        var examples = new List<ReferenceExample>();
         SuggestedIpa? ipa = null;
         var available = false;
 
@@ -61,6 +67,19 @@ public sealed partial class SuggestionService(LibraryDbContext db, IWordReferenc
                     if (kind == ItemKind.Word && reference.BritishIpa is not null)
                     {
                         ipa = new SuggestedIpa(reference.BritishIpa, "dictionary");
+                    }
+
+                    foreach (var example in reference.Examples)
+                    {
+                        if (examples.Count >= MaxExamples) break;
+                        var text = example.Text.Trim();
+                        var translation = ItemRules.Clean(example.Translation);
+                        if (text.Length is > 0 and <= ItemRules.ExampleTextMax
+                            && (translation is null || translation.Length <= ItemRules.ExampleTranslationMax)
+                            && !examples.Any(e => string.Equals(e.Text, text, StringComparison.OrdinalIgnoreCase)))
+                        {
+                            examples.Add(new ReferenceExample(text, translation));
+                        }
                     }
 
                     foreach (var definition in reference.Definitions)
@@ -84,7 +103,7 @@ public sealed partial class SuggestionService(LibraryDbContext db, IWordReferenc
             }
         }
 
-        return new SuggestionsResponse(ipa, provider.Enabled, available, meanings);
+        return new SuggestionsResponse(ipa, provider.Enabled, available, meanings, examples) { Provider = provider.Name };
     }
 
     [LoggerMessage(Level = LogLevel.Warning, Message = "Word source {Source} timed out")]

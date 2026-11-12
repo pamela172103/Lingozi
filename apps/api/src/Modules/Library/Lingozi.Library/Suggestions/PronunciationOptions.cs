@@ -3,8 +3,8 @@ using System.ComponentModel.DataAnnotations;
 namespace Lingozi.Library.Suggestions;
 
 /// <summary>
-/// Configuration of the external word source (ADR 0007). <c>Provider</c> is <c>none</c> by default: no outside request is made
-/// until the owner accepts the ADR. <c>dictionaryapi</c> turns on dictionaryapi.dev for development and testing only.
+/// External word source. Production defaults to <c>none</c>; Development selects <c>scandict</c>.
+/// <c>dictionaryapi</c> remains available for existing deployments.
 /// </summary>
 public sealed class PronunciationOptions
 {
@@ -14,7 +14,7 @@ public sealed class PronunciationOptions
     public static readonly TimeSpan Timeout = TimeSpan.FromSeconds(3);
 
     [Required]
-    [RegularExpression("^(none|dictionaryapi)$")]
+    [RegularExpression("^(none|dictionaryapi|scandict)$")]
     public string Provider { get; set; } = "none";
 
     [Required]

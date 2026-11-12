@@ -122,3 +122,25 @@ powershell -ExecutionPolicy Bypass -File scripts\stop-dev.ps1
 ```
 
 Lần đầu chạy có thể mất vài phút (API build, website biên dịch). Nếu script báo "chưa sẵn sàng", mở `logs\api.err.log` hoặc `logs\web.err.log`. Script chưa được kiểm chứng trên máy Windows của người dùng; lần chạy đầu hãy báo lại kết quả.
+
+## Xử lý sự cố thường gặp
+
+### Máy Windows của người dùng
+
+- Người dùng thường chỉ có SQL Server cài sẵn hoặc Docker tùy máy, và chạy `mailpit.exe` riêng; `scripts\dev.ps1` chỉ gọi Docker khi cổng 1433 hoặc 8025 chưa mở và có lệnh `docker`. Nếu thiếu Docker thì báo cảnh báo chứ không dừng.
+- Mỗi cửa sổ PowerShell phải nạp lại `.env` (script đã làm). Chạy script bằng `powershell -ExecutionPolicy Bypass -File scripts\dev.ps1` và nhớ dấu `\` giữa `scripts` và `dev.ps1`.
+- Windows PowerShell 5.1 đọc `.ps1` không có BOM theo ANSI: **file script chỉ dùng ký tự ASCII**.
+- Dùng `npx pnpm@10.28.0 ...` thay vì `pnpm` nếu PowerShell chặn corepack.
+- Cookie hoặc bản build cũ làm trang sai hành vi: xóa cookie của `localhost`, dừng hẳn tiến trình cũ rồi chạy lại.
+- Nguồn phiên âm tự động mặc định tắt. Để thử trên máy phát triển, thêm `Pronunciation__Provider=dictionaryapi` vào `.env` rồi chạy lại API; không bật ở môi trường người dùng thật (ADR 0007 chưa Accepted).
+- Cảnh báo "A tree hydrated but some attributes..." trong dev do tiện ích trình duyệt (Grammarly) thêm thuộc tính vào `<body>`; không phải lỗi của ứng dụng.
+
+### Môi trường cloud của Claude Code
+
+- **Docker daemon hay dừng.** Khởi động lại: `rm -f /var/run/docker.pid; pkill -f dockerd; pkill -f containerd; containerd &` rồi `dockerd &` và chờ `docker info`. Test Testcontainers báo "Docker is either not running" nghĩa là daemon đã chết.
+- Container Mailpit có thể hỏng lớp ghi sau khi daemon chết (`RWLayer ... is unexpectedly nil`): `docker compose rm -f mailpit && docker compose up -d --wait mailpit` (Mailpit không giữ dữ liệu).
+- SQL Server vừa khởi động lại có thể báo "Server is in script upgrade mode": chờ vài chục giây rồi chạy lại API.
+- `next start` phải có `API_ORIGIN=http://localhost:5080` trong môi trường; API cần các biến trong `.env` (`set -a; . ./.env; set +a`).
+- Môi trường này không có PowerShell: script `.ps1` chưa được chạy thử ở đây.
+- Khi E2E lỗi hàng loạt ở bước đăng nhập, kiểm tra trước: Mailpit còn chạy (cổng 8025), API còn sống (`/health/ready`), web đang chạy bản build mới.
+

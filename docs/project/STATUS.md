@@ -34,6 +34,8 @@
 
 - Phiên 30 (2026-11-11): US-LIB-09 đạt AC-01 đến AC-05; US-LIB-08 integration ready (provider `dictionaryapi` sau cấu hình, mặc định tắt; đã thử một lần với nguồn thật trên máy phát triển). 138 integration test, 64 E2E, 124 Vitest.
 
+- Bàn giao (2026-11-12): đọc `AGENTS.md` §15 (việc chờ chủ dự án, quy ước, bẫy kỹ thuật) và `docs/guides/local-development.md` mục "Xử lý sự cố thường gặp" trước khi làm tiếp.
+
 ## Hiện trạng các phần
 
 | Phần | Trạng thái thực tế |

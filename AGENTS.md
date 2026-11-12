@@ -6,7 +6,7 @@ Bạn là trợ lý kỹ thuật đa vai trò cho dự án English Learning Plat
 
 Mục tiêu là giúp xây dựng sản phẩm có chất lượng production theo từng giai đoạn, có nghiệp vụ thực sự hoạt động, dữ liệu được lưu bền vững và có bằng chứng kiểm thử. Không coi việc tạo giao diện tĩnh là hoàn thành một chức năng.
 
-Repository hiện chứa tài liệu phát triển, nội dung học và vị trí dành cho website; chưa có ứng dụng hay lệnh build/test. Stack định hướng theo yêu cầu người dùng ở dưới chưa đồng nghĩa với môi trường hoặc tích hợp đã được kiểm chứng. Không phát sinh ứng dụng mẫu khi nhiệm vụ chỉ liên quan tài liệu.
+Repository chứa tài liệu phát triển, nội dung học và ứng dụng đang xây dựng theo từng vòng (xem `docs/project/STATUS.md` để biết cái nào đã có): `apps/api` (ASP.NET Core, .NET 10), `apps/web` (Next.js 16), `tests/e2e` (Playwright), kèm lệnh build/test thật. Stack định hướng theo yêu cầu người dùng chưa đồng nghĩa với môi trường hoặc tích hợp đã được kiểm chứng. Không phát sinh ứng dụng mẫu khi nhiệm vụ chỉ liên quan tài liệu.
 
 ## 2. Ngôn ngữ và cách phối hợp
 
@@ -149,3 +149,52 @@ Trước khi kết thúc mỗi phiên làm việc:
 - PRD/roadmap toàn sản phẩm vào `docs/product/`; brainstorm, BRD, URD, use case, user story và AC vào `requirements/`; đặc tả theo từng user story vào `srs/` (`srs/README.md` là danh mục chung; mỗi story một file `US-XXX-NN-<slug>.md` gồm FR, BR, ERR, luồng, sequence, state, wireframe, API và AC); test case và checklist vào `testing/` của tính năng. Không dùng thư mục `design/` cho tính năng. **Quy tắc wireframe:** mỗi file SRS của story phải vẽ đủ (mục `## 5. Wireframe`, mỗi khung có mã `W-<MODULE>-NN`) mọi màn hình, hộp thoại, thông báo và trạng thái (ban đầu, đang tải, trống, lỗi, thành công, bị khóa) mà AC của story nhắc tới; cột "Wireframe" của bảng AC phải trỏ tới khung đã vẽ hoặc ghi "Không có UI"; màn hình dùng chung xuất hiện giống hệt ở từng story, màn hình của tính năng khác thì liên kết. **Wireframe là ảnh SVG sinh bằng script `tools/wireframes/` (không dùng ASCII), bố cục giống màn hình thật, các ô và nút xếp đúng thứ tự trường theo AC**; không sửa tay SVG, sửa script rồi chạy `build.py` và `sync_docs.py`. Không thêm thành phần UI ngoài AC. `tools/feature-docs/check_feature_docs.py` kiểm tra quy tắc này. Thiết kế API dùng chung vào `docs/architecture/`. Chi tiết và script kiểm tra: `docs/features/README.md`.
 - Giữ nguyên bản kit đã nhập và giấy phép MIT. Nếu cần sửa kit, thực hiện trong nhiệm vụ riêng, ghi lại khác biệt và nguồn trong `tools/openba-kit-source.md`.
 - Không mặc định tích hợp Jira, Confluence, Figma hoặc dịch vụ bên ngoài; chỉ dùng khi nhiệm vụ yêu cầu và có quyền truy cập phù hợp.
+
+## 15. Lưu ý vận hành và bẫy đã gặp (bàn giao giữa các AI)
+
+Đọc mục này sau `docs/project/STATUS.md`. Đây là điều rút ra từ các phiên 20–30; trạng thái công việc và nhật ký từng phiên vẫn nằm ở `docs/project/`.
+
+### Việc chờ chủ dự án quyết định (không tự quyết)
+
+- **ADR 0007 (nguồn phiên âm và gợi ý nghĩa) còn `Proposed`.** Nguồn ngoài (`dictionaryapi.dev`) chỉ bật được bằng `Pronunciation__Provider=dictionaryapi`; **mặc định `none` và không được bật cho người dùng thật** cho tới khi chủ dự án xử lý điều khoản, giấy phép CC BY-SA 3.0 (share-alike) và độ phủ. Không viết test tự động gọi dịch vụ thật; test dùng `FakeWordReferenceProvider`. Không ghi US-LIB-08 là "hoạt động".
+- **ERD:** thêm cột `NormalizedTermHash` (index 1000 ký tự nvarchar vượt 1700 byte) đã làm nhưng **chờ xác nhận**; cột `Source` của `KnowledgeItems` chưa tạo, chờ quyết định bỏ hẳn.
+- **Thiết kế FEAT-02 v0.5** (hai thư viện tách nhau, route `/library/vocabulary` và `/library/grammar`, form một cột) chờ duyệt.
+- Việc còn dở: US-LIB-05 AC-03 mới bắt được đóng hoặc tải lại tab và nút "Hủy" (chưa bắt nút quay lại của trình duyệt và liên kết khác); US-LIB-08 AC-01 mới tra cứu sau 500 ms không gõ, **chưa tra ngay khi rời ô "Từ"**; US-AUTH-03 đến 10 chưa làm.
+
+### Quy ước chủ dự án đã chốt (đừng hỏi lại)
+
+- Thứ tự trường trên form: Từ vựng = Từ\*, Phiên âm, Nghĩa\*, Loại từ, Ví dụ, Ghi chú; Ngữ pháp = Tên cấu trúc\*, Công thức\*, Ý nghĩa, Ví dụ, Ghi chú. Không có trường "Nguồn". Mỗi form một cột.
+- Từ vựng và Ngữ pháp là hai thư viện riêng trong menu, không có bước "chọn loại".
+- Màn hình đăng nhập và nhập mã không theo theme; nút Google và Facebook hiện nhưng `disabled` cho tới US-AUTH-04, 05.
+- Người dùng là BA, dùng Windows và PowerShell: đưa lệnh PowerShell khi hướng dẫn chạy; trả lời bằng tiếng Việt.
+- Wireframe là SVG sinh bằng `tools/wireframes/` (xem §14), không vẽ tay và không dùng ASCII.
+
+### Kiểm tra bắt buộc trước khi commit
+
+- Tài liệu: `python3 -I tools/feature-docs/check_feature_docs.py`, `python3 tools/wireframes/build.py --check`, `python3 tools/wireframes/sync_docs.py --check`.
+- API (`apps/api`): `dotnet build -warnaserror`, `dotnet test --project tests/Lingozi.Api.IntegrationTests` (cần Docker cho Testcontainers). Analyzer nghiêm: dùng `[LoggerMessage]` thay `logger.LogX`, mảng hằng trong test phải là `static readonly` (CA1861).
+- Web (`apps/web`): `npx tsc --noEmit`, `npx eslint . --max-warnings 0`, `npx prettier --check .`, `npx vitest run`. Prettier sửa lại cách xuống dòng nên script chỉnh file bằng chuỗi cố định dễ lệch: chạy prettier trước khi viết patch dựa trên văn bản cũ.
+- E2E (`tests/e2e`): cần web, API, SQL Server, Mailpit đang chạy; chạy bằng `PLAYWRIGHT_CHROMIUM_EXECUTABLE=... npx playwright test --trace off`.
+- Mỗi phiên: nhật ký trong `docs/project/sessions/`, cập nhật `STATUS.md` và mục lục phiên (§13).
+
+### Bẫy kỹ thuật
+
+- **Migration Library:** `InitialLibrary` có thêm khóa ngoại tới `accounts.Users` bằng SQL tay (`migrationBuilder.Sql`). Nếu sinh lại migration phải thêm lại đoạn này. Accounts phải migrate trước Library (đã làm trong `Program.cs`). CI kiểm tra `has-pending-model-changes` cho cả hai DbContext.
+- **Antiforgery gắn với người dùng:** token lấy trước khi đăng nhập không dùng được sau khi đăng nhập (ERR-AUTH-400-05). Web đã tự lấy lại một lần (`writeItem` ở `lib/library/api.ts`); test API phải gọi `/api/auth/antiforgery` lần nữa sau khi đăng nhập (xem `SignedInClient`). Cookie phiên là `__Host-` và `Secure` nên client test phải gắn cookie bằng tay.
+- **Ghi mục thư viện:** sửa dùng compare-and-set theo `RowVersion` bằng `ExecuteUpdateAsync`, xóa ví dụ rồi ghi lại trong một transaction; mọi ghi chạy dưới khóa ứng dụng theo người dùng (`UserLock`) để chặn trùng và vượt giới hạn 10.000 mục. Lỗi trả Problem Details có `code` (`ERR-LIB-*`) và `errors` (trường → lý do); web đổi lý do thành thông báo ở `lib/library/form.ts`.
+- **next-intl dùng ICU:** dấu nháy đơn là ký tự thoát; viết `''` để hiện `'`. Thiếu khóa message chỉ hiện lỗi trong log test, dễ bỏ sót.
+- **ESLint `react-hooks`:** không gọi `setState` đồng bộ trong `useEffect`. Mẫu đã dùng: debounce bằng `setTimeout` (`use-suggestions.ts`) và `useSyncExternalStore` cho bản nháp ở `sessionStorage`. Bản nháp chỉ nằm trong `sessionStorage` của tab, không phải trạng thái lưu bền (§6).
+- **Next.js:** `next start` cần `API_ORIGIN` lúc chạy (trang server gọi API); thiếu thì mọi trang gọi API báo "không tải được". Sau khi đổi tên hoặc di chuyển route, xóa `apps/web/.next` rồi mới chạy `tsc` (cache `.next/types` cũ làm tsc báo lỗi). Nhóm route `(list)` chỉ để gắn `loading.tsx` cho danh sách.
+- **Playwright:** `getByRole("alert")` khớp cả bộ thông báo route của Next.js, nên lọc theo nội dung. Toast "Đã lưu" xóa `?saved=` khỏi URL ngay sau khi hiện: kiểm tra URL phải chấp nhận có hoặc không có tham số.
+- **Cảnh báo hydration trong dev** do tiện ích trình duyệt (ví dụ Grammarly thêm thuộc tính vào `<body>`): vô hại; nếu cần có thể thêm `suppressHydrationWarning` vào `<body>` ở `layout.tsx`.
+- **Script `.ps1` chỉ dùng ký tự ASCII.** Windows PowerShell 5.1 đọc file không có BOM theo bảng mã ANSI, chữ có dấu làm hỏng cú pháp.
+
+### Kiểm thử không ổn định đã biết (không do code thư viện)
+
+- `apps/web/src/components/auth/code-entry.test.tsx` ("wrong code … focuses the first") thỉnh thoảng thất bại; cũng thất bại trên bản code trước thay đổi.
+- Hai E2E thỉnh thoảng hết thời gian chờ khi chạy toàn bộ song song (xung đột hai tab của US-LIB-05, accessibility danh sách trên mobile); chạy riêng thì đạt. Chưa tìm nguyên nhân.
+- Số liệu lúc bàn giao (2026-11-12): API 138 test, Vitest 124, E2E 64.
+
+### Môi trường cloud (sandbox) và máy Windows của người dùng
+
+Xem chi tiết và cách xử lý ở `docs/guides/local-development.md` mục "Xử lý sự cố thường gặp".
